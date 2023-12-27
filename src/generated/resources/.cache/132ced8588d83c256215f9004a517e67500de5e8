@@ -1,0 +1,5 @@
+// 1.20.2	2023-12-27T14:38:20.1780825	Ender IO Data (examplemod com.example.examplemod.registry.EnderBlockRegistry@430b5c0e)
+c1179f903b7e75f188bc87b191d646264a7c1c10 assets/examplemod/blockstates/example_block.json
+d32c5ad4076b1e22be3420304265a566242e4fb7 assets/examplemod/lang/en_us.json
+7c88b8231b94199736a42deb3c7c4afaf43ce8c6 assets/examplemod/models/block/example_block.json
+dea7c460ab71faf20207d3584b00732bdd44ae43 data/examplemod/loot_tables/blocks/example_block.json

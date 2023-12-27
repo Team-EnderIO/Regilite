@@ -1,9 +1,16 @@
 package com.example.examplemod;
 
+import com.example.examplemod.data.EnderBlockLootProvider;
+import com.example.examplemod.data.EnderItemModelProvider;
+import com.example.examplemod.registry.EnderBlockRegistry;
+import com.example.examplemod.registry.EnderDeferredBlock;
+import com.example.examplemod.registry.EnderItemRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -21,6 +28,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -39,16 +47,23 @@ public class ExampleMod
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    public static final EnderBlockRegistry BLOCKS = EnderBlockRegistry.createRegistry(MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    public static final EnderItemRegistry ITEMS = EnderItemRegistry.createRegistry(MODID);
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
+    public static final EnderDeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS
+            .registerBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
+            .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK)
+            .setBlockStateProvider(BlockStateProvider::simpleBlock)
+            .setLootTable(EnderBlockLootProvider::dropSelf)
+            .createBlockItem()
+            .addBlockItemTags(ItemTags.PLANKS)
+            .setModelProvider(EnderItemModelProvider::basicItem)
+            .setTab(CreativeModeTabs.BUILDING_BLOCKS)
+            .finishBlockItem();
 
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
@@ -102,8 +117,8 @@ public class ExampleMod
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
-            event.accept(EXAMPLE_BLOCK_ITEM);
+        //if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
+            //event.accept(EXAMPLE_BLOCK_ITEM);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
