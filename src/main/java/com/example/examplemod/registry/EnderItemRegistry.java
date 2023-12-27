@@ -182,7 +182,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        bus.addListener(EventPriority.LOWEST, this::onGatherData);
+        this.onGatherData();
         bus.addListener(this::addCreative);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ColorEvents(null, this)::registerBlockColor);
@@ -190,17 +190,10 @@ public class EnderItemRegistry extends DeferredRegister.Items {
 
     }
 
-    private void onGatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = event.getGenerator().getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-
-        EnderDataProvider provider = new EnderDataProvider(getNamespace() + " " + this);
-
-        provider.addSubProvider(event.includeServer(), new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
-        provider.addSubProvider(event.includeServer(), new EnderLangProvider(packOutput,getNamespace(), "en_us", this));
-        generator.addProvider(true, provider);
+    private void onGatherData() {
+        EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
+        provider.addItems(this.getEntries());
+        provider.addServerSubProvider((packOutput, existingFileHelper) -> new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {

@@ -102,24 +102,17 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
     public void register(IEventBus bus) {
         super.register(bus);
         ItemRegistry.register(bus);
-        bus.addListener(EventPriority.LOWEST, this::onGatherData);
+        this.onGatherData();
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ColorEvents(this, getItemRegistry())::registerBlockColor);
         }
     }
 
-    private void onGatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = event.getGenerator().getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-
-        EnderDataProvider provider = EnderDataProvider.getInstance();
-
-        provider.addSubProvider(event.includeServer(), new EnderBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
-        provider.addSubProvider(event.includeServer(), new EnderLangProvider(packOutput,getNamespace(), "en_us", this ));
-        provider.addSubProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
+    private void onGatherData() {
+        EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
+        provider.addBlocks(this.getEntries());
+        provider.addServerSubProvider((packOutput, existingFileHelper) -> new EnderBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
+        provider.addServerSubProvider((packOutput, existingFileHelper) -> new LootTableProvider(packOutput, Collections.emptySet(),
             List.of(new LootTableProvider.SubProviderEntry(() -> new EnderBlockLootProvider(Set.of(), this), LootContextParamSets.BLOCK))));
-        generator.addProvider(true, provider);
     }
 }

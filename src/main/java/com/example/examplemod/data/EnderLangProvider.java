@@ -11,34 +11,37 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnderLangProvider extends LanguageProvider {
-    @Nullable
-    private EnderBlockRegistry blocks;
-    @Nullable
-    private EnderItemRegistry items;
+    private final List<DeferredHolder<Block, ? extends Block>> blocks = new ArrayList<>();
+    private final List<DeferredHolder<Item, ? extends Item>> items = new ArrayList<>();
 
-    public EnderLangProvider(PackOutput output, String modid, String locale, EnderBlockRegistry registry) {
+    public EnderLangProvider(PackOutput output, String modid, String locale) {
         super(output, modid, locale);
-        this.blocks = registry;
     }
 
-    public EnderLangProvider(PackOutput output, String modid, String locale, EnderItemRegistry registry) {
-        super(output, modid, locale);
-        this.items = registry;
+    public void addBlocks(List<DeferredHolder<Block, ? extends Block>> blocks) {
+        this.blocks.addAll(blocks);
+    }
+
+    public void addItems(List<DeferredHolder<Item, ? extends Item>> items) {
+        this.items.addAll(items);
     }
 
     @Override
     protected void addTranslations() {
-        if (blocks != null) {
-            for (DeferredHolder<Block, ? extends Block> block : blocks.getEntries()) {
-                this.add(block.get(), ((EnderDeferredBlock<Block>) block).getTranslation());
-            }
+        String translation = "";
+        for (DeferredHolder<Block, ? extends Block> block : blocks) {
+            translation = ((EnderDeferredBlock<Block>) block).getTranslation();
+            if (!translation.isEmpty())
+                this.add(block.get(), translation);
         }
-        if (items != null) {
-            for (DeferredHolder<Item, ? extends Item> item : items.getEntries()) {
-                this.add(item.get(), ((EnderDeferredItem<Item>) item).getTranslation());
-            }
+        for (DeferredHolder<Item, ? extends Item> item : items) {
+            translation = ((EnderDeferredItem<Item>) item).getTranslation();
+            if (!translation.isEmpty())
+                this.add(item.get(), translation);
         }
     }
 }
