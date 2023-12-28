@@ -3,37 +3,22 @@ package com.example.examplemod.registry;
 import com.example.examplemod.data.*;
 import com.example.examplemod.events.ColorEvents;
 import com.example.examplemod.mixin.DeferredRegisterAccessor;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -166,6 +151,24 @@ public class EnderItemRegistry extends DeferredRegister.Items {
         return this.registerItem(name, Item::new, new Item.Properties());
     }
 
+    public <I extends BucketItem> EnderDeferredItem.EnderDeferredBucketItem<I> registerBucket(String name, Supplier<? extends I> supp) {
+        return this.registerBucket(name, key -> supp.get());
+    }
+
+    public <I extends BucketItem> EnderDeferredItem.EnderDeferredBucketItem<I> registerBucket(String name, Function<ResourceLocation, ? extends I> func) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(func);
+        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+
+        EnderDeferredItem.EnderDeferredBucketItem<I>  ret = createBucketHolder(getRegistryKey(), key);
+
+        if (((DeferredRegisterAccessor<Item>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+            throw new IllegalArgumentException("Duplicate registration " + name);
+        }
+
+        return ret;
+    }
+
     @Override
     protected <I extends Item> EnderDeferredItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
         return EnderDeferredItem.createItem(ResourceKey.create(registryKey, key));
@@ -173,6 +176,10 @@ public class EnderItemRegistry extends DeferredRegister.Items {
 
     protected <I extends BlockItem, U extends Block> EnderDeferredBlockItem<I, U> createBlockItemHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, EnderDeferredBlock<U> block) {
         return EnderDeferredBlockItem.createBlockItem(ResourceKey.create(registryKey, key), block);
+    }
+
+    protected <I extends BucketItem> EnderDeferredItem.EnderDeferredBucketItem<I> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
+        return EnderDeferredItem.EnderDeferredBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key));
     }
 
     public static EnderItemRegistry createRegistry(String modid) {
@@ -192,7 +199,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
 
     private void onGatherData() {
         EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
-        provider.addItems(this.getEntries());
+        provider.addTranslations(this.getEntries());
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
     }

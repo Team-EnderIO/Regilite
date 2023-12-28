@@ -5,26 +5,20 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.apache.commons.lang3.function.TriFunction;
-import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = ExampleMod.MODID)
 public class EnderDataProvider implements DataProvider {
     private final String modid;
-    private final List<DeferredHolder<Block, ? extends Block>> BLOCKS = new ArrayList<>();
-    private final List<DeferredHolder<Item, ? extends Item>> ITEMS = new ArrayList<>();
+    private final List<DeferredHolder<?, ?>> entries = new ArrayList<>();
     private final List<DataProvider> subProviders = new ArrayList<>();
     private final List<TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider>> serverSubProviderConsumers = new ArrayList<>();
     private static final Map<String, EnderDataProvider> INSTANCES = new HashMap<>();
@@ -43,13 +37,10 @@ public class EnderDataProvider implements DataProvider {
         }
     }
 
-    public void addBlocks(Collection<DeferredHolder<Block, ? extends Block>> blocks) {
-        BLOCKS.addAll(blocks);
+    public <T> void addTranslations(Collection<DeferredHolder<T, ? extends T>> entries) {
+        this.entries.addAll(entries);
     }
 
-    public void addItems(Collection<DeferredHolder<Item, ? extends Item>> items) {
-        ITEMS.addAll(items);
-    }
 
     public void addServerSubProvider(TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider> function) {
         serverSubProviderConsumers.add(function);
@@ -78,8 +69,7 @@ public class EnderDataProvider implements DataProvider {
                 }
             }
             EnderLangProvider enUs = new EnderLangProvider(event.getGenerator().getPackOutput(), provider.modid, "en_us");
-            enUs.addBlocks(provider.BLOCKS);
-            enUs.addItems(provider.ITEMS);
+            enUs.add(provider.entries);
             provider.subProviders.add(enUs);
             event.getGenerator().addProvider(true, provider);
         }

@@ -13,8 +13,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.apache.commons.lang3.StringUtils;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -22,37 +25,49 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EnderDeferredFluid<T extends FluidType> extends EnderDeferredObject<FluidType, T>{
+public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITranslatable, ITagagble<Fluid>{
+    protected String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
     private Set<TagKey<Fluid>> FluidTags = Set.of();
-    protected Set<TagKey<Item>> ItemTags = Set.of();
-    protected ResourceKey<CreativeModeTab> tab;
-    @Nullable
-    protected BiConsumer<EnderItemModelProvider, ? extends BucketItem> modelProvider = EnderItemModelProvider::basicItem;
-    private EnderDeferredObject<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
-    private EnderDeferredObject<Fluid, BaseFlowingFluid.Source> sourceFluid;
-    private DeferredBlock<? extends LiquidBlock> block;
-    private DeferredItem<? extends Item> bucket;
+    private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
+    private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
+    private EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> block;
+    private EnderDeferredItem.EnderDeferredBucketItem<? extends Item> bucket;
     private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, sourceFluid, flowingFluid).block(block).bucket(bucket);
-    private EnderRegistry<Fluid> fluid;
-    private DeferredRegister.Blocks BLOCKS;
-    private DeferredRegister.Items ITEMS;
+    private DeferredRegister<Fluid> fluid;
+    private EnderBlockRegistry BLOCKS;
+    private EnderItemRegistry ITEMS;
 
     protected EnderDeferredFluid(ResourceKey<FluidType> key) {
         super(key);
     }
 
-    public EnderDeferredFluid<T> createFluids(Consumer<BaseFlowingFluid.Properties> consumer, Supplier<? extends Item> bucket, Supplier<? extends LiquidBlock> block) {
-        this.block = BLOCKS.register(getId().getPath(), block);
-        this.bucket = ITEMS.register(getId().getPath(), bucket);
+    public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer, Supplier<? extends BucketItem> bucket, Supplier<? extends LiquidBlock> block) {
+        this.block = BLOCKS.registerLiquidBlock(getId().getPath(), (r) -> block.get());
+        this.bucket = ITEMS.registerBucket(getId().getPath(), bucket);
         consumer.accept(properties);
         this.flowingFluid = fluid.register("fluid_" + getId().getPath() + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
         this.sourceFluid = fluid.register("fluid_" + getId().getPath() + "_still", () -> new BaseFlowingFluid.Source(properties));
         return this;
     }
 
-    public EnderDeferredFluid<T> createFluids(Consumer<BaseFlowingFluid.Properties> consumer) {
-        return this.createFluids(consumer, () -> new BucketItem(this.sourceFluid, new Item.Properties().stacksTo(1)),
+    public EnderDeferredFluid<T> createSimpleFluid(Consumer<BaseFlowingFluid.Properties> consumer) {
+        return this.createFluid(consumer, () -> new BucketItem(this.sourceFluid, new Item.Properties().stacksTo(1)),
             () -> new LiquidBlock(this.flowingFluid, BlockBehaviour.Properties.copy(Blocks.WATER)));
+    }
+
+    public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer) {
+        consumer.accept(properties);
+        return this;
+    }
+
+    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> withBlock(Supplier<? extends LiquidBlock> supplier) {
+        this.block = BLOCKS.registerLiquidBlock(getId().getNamespace(), supplier).setFluid(this);
+        return this.block;
+    }
+
+    public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem> withBucket(Supplier<? extends BucketItem> supplier) {
+        this.bucket = ITEMS.registerBucket(getId().getNamespace(), supplier).setFluid(this);
+        return this.bucket;
     }
 
     public BaseFlowingFluid.Source getSource() {
@@ -63,20 +78,10 @@ public class EnderDeferredFluid<T extends FluidType> extends EnderDeferredObject
         return flowingFluid.get();
     }
 
-    public void setRegistries(EnderRegistry<Fluid> fluid, DeferredRegister.Blocks blocks, DeferredRegister.Items items) {
+    public void setRegistries(DeferredRegister<Fluid> fluid, EnderBlockRegistry blocks, EnderItemRegistry items) {
         this.fluid = fluid;
         this.BLOCKS = blocks;
         this.ITEMS = items;
-    }
-
-    @SafeVarargs
-    public final EnderDeferredFluid<T> addItemTags(TagKey<Item>... tags) {
-        ItemTags = Set.of(tags);
-        return this;
-    }
-
-    public Set<TagKey<Item>> getItemTags() {
-        return ItemTags;
     }
 
     @SafeVarargs
@@ -85,31 +90,17 @@ public class EnderDeferredFluid<T extends FluidType> extends EnderDeferredObject
         return this;
     }
 
-    public Set<TagKey<Fluid>> getFluidTags() {
+    public Set<TagKey<Fluid>> getTags() {
         return FluidTags;
     }
 
-    public EnderDeferredFluid<T> setTab(ResourceKey<CreativeModeTab> tab) {
-        this.tab = tab;
+    public EnderDeferredFluid<T> setTranslation(String translation) {
+        this.translation = translation;
         return this;
-    }
-
-    public ResourceKey<CreativeModeTab> getTab() {
-        return tab;
-    }
-
-    public EnderDeferredFluid<T> setModelProvider(BiConsumer<EnderItemModelProvider, BucketItem> modelProvider) {
-        this.modelProvider = modelProvider;
-        return this;
-    }
-
-    public BiConsumer<EnderItemModelProvider, ? extends BucketItem> getModelProvider() {
-        return modelProvider;
     }
 
     @Override
-    public EnderDeferredFluid<T> setTranslation(String translation) {
-        super.setTranslation(translation);
-        return this;
+    public Pair<String, String> getTranslation() {
+        return new Pair<>(this.get().getDescriptionId(), translation);
     }
 }

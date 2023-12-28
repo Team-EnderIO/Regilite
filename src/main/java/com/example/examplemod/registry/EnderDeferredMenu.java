@@ -6,11 +6,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.apache.commons.lang3.StringUtils;
+import oshi.util.tuples.Pair;
 
 import java.util.function.Supplier;
 
-public class EnderDeferredMenu<T extends AbstractContainerMenu> extends EnderDeferredObject<MenuType<? extends AbstractContainerMenu>, MenuType<T>> {
+public class EnderDeferredMenu<T extends AbstractContainerMenu> extends DeferredHolder<MenuType<? extends AbstractContainerMenu>, MenuType<T>> implements ITranslatable{
 
+    protected String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
     private Supplier<MenuScreens.ScreenConstructor<T, ? extends AbstractContainerScreen<T>>> screenConstructor;
 
     protected EnderDeferredMenu(ResourceKey<MenuType<? extends AbstractContainerMenu>> key) {
@@ -26,13 +29,17 @@ public class EnderDeferredMenu<T extends AbstractContainerMenu> extends EnderDef
         return screenConstructor;
     }
 
-    @Override
     public EnderDeferredMenu<T> setTranslation(String translation) {
         this.translation = translation;
         return this;
     }
 
-    public static <T extends AbstractContainerMenu> EnderDeferredMenu<T> createMenu(EnderDeferredObject<MenuType<?>, MenuType<T>> holder) {
+    @Override
+    public Pair<String, String> getTranslation() {
+        return new Pair<>(this.get().toString(), translation);
+    }
+
+    public static <T extends AbstractContainerMenu> EnderDeferredMenu<T> createMenu(DeferredHolder<MenuType<?>, MenuType<T>> holder) {
         return new EnderDeferredMenu<>(holder.getKey());
     }
 }

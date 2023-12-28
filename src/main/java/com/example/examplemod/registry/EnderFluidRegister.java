@@ -14,17 +14,17 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderFluidRegister extends EnderRegistry<FluidType>{
-    private final EnderRegistry<Fluid> FLUID;
-    private final DeferredRegister.Blocks BLOCKS;
-    private final DeferredRegister.Items ITEMS;
+public class EnderFluidRegister extends DeferredRegister<FluidType>{
+    private final DeferredRegister<Fluid> FLUID;
+    private final EnderBlockRegistry BLOCKS;
+    private final EnderItemRegistry ITEMS;
 
 
     protected EnderFluidRegister(String namespace) {
         super(NeoForgeRegistries.FLUID_TYPES.key(), namespace);
-        FLUID = EnderRegistry.createRegistry(BuiltInRegistries.FLUID, namespace);
-        BLOCKS = DeferredRegister.Blocks.createBlocks(namespace);
-        ITEMS = DeferredRegister.Items.createItems(namespace);
+        FLUID = DeferredRegister.create(BuiltInRegistries.FLUID, namespace);
+        BLOCKS = EnderBlockRegistry.createRegistry(namespace);
+        ITEMS = EnderItemRegistry.createRegistry(namespace);
 
     }
 

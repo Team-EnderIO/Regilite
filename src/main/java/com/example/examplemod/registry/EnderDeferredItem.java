@@ -7,15 +7,15 @@ import net.minecraft.data.models.ModelProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.apache.commons.lang3.StringUtils;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -43,8 +43,9 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
         return this;
     }
 
-    public String getTranslation() {
-        return translation;
+    @Override
+    public Pair<String, String> getTranslation() {
+        return new Pair<>(this.get().getDescriptionId(), translation);
     }
 
     @SafeVarargs
@@ -106,5 +107,29 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
      */
     public static <T extends Item> EnderDeferredItem<T> createItem(ResourceKey<Item> key) {
         return new EnderDeferredItem<>(key);
+    }
+
+    public static class EnderDeferredBucketItem<T extends BucketItem> extends EnderDeferredItem<T> {
+
+        private EnderDeferredFluid<? extends FluidType> fluid;
+
+        protected EnderDeferredBucketItem(ResourceKey<Item> key) {
+            super(key);
+        }
+
+        public EnderDeferredBucketItem<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {
+            this.fluid = fluid;
+            return this;
+        }
+
+        public EnderDeferredFluid<? extends FluidType> finishBucket() {
+            return fluid;
+        }
+
+        public static <I extends BucketItem> EnderDeferredBucketItem<I> createLiquidBlock(ResourceKey<Item> key) {
+            return new EnderDeferredBucketItem<>(key);
+        }
+
+
     }
 }

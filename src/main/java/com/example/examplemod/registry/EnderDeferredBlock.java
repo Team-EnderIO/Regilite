@@ -8,10 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.apache.commons.lang3.StringUtils;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -40,8 +43,8 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
     }
 
     @Override
-    public String getTranslation() {
-        return translation;
+    public Pair<String, String> getTranslation() {
+        return new Pair<>(this.get().getDescriptionId(), translation);
     }
 
     @SafeVarargs
@@ -103,5 +106,26 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
 
     public static <T extends Block> EnderDeferredBlock<T> createBlock(ResourceKey<Block> key) {
         return new EnderDeferredBlock<>(key);
+    }
+
+    public static class EnderDeferredLiquidBlock<T extends LiquidBlock> extends EnderDeferredBlock<T> {
+        private EnderDeferredFluid<? extends FluidType> fluid;
+
+        protected EnderDeferredLiquidBlock(ResourceKey<Block> key) {
+            super(key);
+        }
+
+        public EnderDeferredLiquidBlock<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {
+            this.fluid = fluid;
+            return this;
+        }
+
+        public EnderDeferredFluid<? extends FluidType> finishLiquidBlock() {
+            return fluid;
+        }
+
+        public static <B extends LiquidBlock> EnderDeferredLiquidBlock<B> createLiquidBlock(ResourceKey<Block> key) {
+            return new EnderDeferredBlock.EnderDeferredLiquidBlock<>(key);
+        }
     }
 }
