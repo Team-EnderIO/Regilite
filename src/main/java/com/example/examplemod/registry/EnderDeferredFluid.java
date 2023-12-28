@@ -57,6 +57,8 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
 
     public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer) {
         consumer.accept(properties);
+        this.flowingFluid = fluid.register("fluid_" + getId().getPath() + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
+        this.sourceFluid = fluid.register("fluid_" + getId().getPath() + "_still", () -> new BaseFlowingFluid.Source(properties));
         return this;
     }
 
