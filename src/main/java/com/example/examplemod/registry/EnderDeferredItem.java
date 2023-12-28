@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implements ITranslatable{
+public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implements ITranslatable, ITagagble<Item>{
     protected String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
@@ -53,7 +53,7 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
         return this;
     }
 
-    public Set<TagKey<Item>> getItemTags() {
+    public Set<TagKey<Item>> getTags() {
         return ItemTags;
     }
 

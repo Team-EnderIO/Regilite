@@ -19,7 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implements ITranslatable{
+public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implements ITranslatable, ITagagble<Block>{
     private String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
     private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
@@ -50,7 +50,7 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
         return this;
     }
 
-    public Set<TagKey<Block>> getBlockTags() {
+    public Set<TagKey<Block>> getTags() {
         return blockTags;
     }
 

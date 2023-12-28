@@ -56,7 +56,7 @@ public class ExampleMod
     // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
     public static final EnderDeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
-            .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK)
+            .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .setBlockStateProvider(BlockStateProvider::simpleBlock)
             .setLootTable(EnderBlockLootProvider::dropSelf)
             .createBlockItem()

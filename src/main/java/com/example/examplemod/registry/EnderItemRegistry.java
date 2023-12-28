@@ -193,7 +193,8 @@ public class EnderItemRegistry extends DeferredRegister.Items {
     private void onGatherData() {
         EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
         provider.addItems(this.getEntries());
-        provider.addServerSubProvider((packOutput, existingFileHelper) -> new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
+        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
+        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {

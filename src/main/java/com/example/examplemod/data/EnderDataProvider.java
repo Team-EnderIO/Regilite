@@ -1,6 +1,7 @@
 package com.example.examplemod.data;
 
 import com.example.examplemod.ExampleMod;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -11,6 +12,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.apache.commons.lang3.function.TriFunction;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.*;
@@ -24,7 +26,7 @@ public class EnderDataProvider implements DataProvider {
     private final List<DeferredHolder<Block, ? extends Block>> BLOCKS = new ArrayList<>();
     private final List<DeferredHolder<Item, ? extends Item>> ITEMS = new ArrayList<>();
     private final List<DataProvider> subProviders = new ArrayList<>();
-    private final List<BiFunction<PackOutput, ExistingFileHelper, DataProvider>> serverSubProviderConsumers = new ArrayList<>();
+    private final List<TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider>> serverSubProviderConsumers = new ArrayList<>();
     private static final Map<String, EnderDataProvider> INSTANCES = new HashMap<>();
 
     protected EnderDataProvider(String modid) {
@@ -49,7 +51,7 @@ public class EnderDataProvider implements DataProvider {
         ITEMS.addAll(items);
     }
 
-    public void addServerSubProvider(BiFunction<PackOutput, ExistingFileHelper, DataProvider> function) {
+    public void addServerSubProvider(TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider> function) {
         serverSubProviderConsumers.add(function);
     }
 
@@ -71,8 +73,8 @@ public class EnderDataProvider implements DataProvider {
     static void onGatherData(GatherDataEvent event) {
         for (EnderDataProvider provider : INSTANCES.values()) {
             if (event.includeServer()) {
-                for (BiFunction<PackOutput, ExistingFileHelper, DataProvider> function : provider.serverSubProviderConsumers) {
-                    provider.subProviders.add(function.apply(event.getGenerator().getPackOutput(), event.getExistingFileHelper()));
+                for (TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider> function : provider.serverSubProviderConsumers) {
+                    provider.subProviders.add(function.apply(event.getGenerator().getPackOutput(), event.getExistingFileHelper(), event.getLookupProvider()));
                 }
             }
             EnderLangProvider enUs = new EnderLangProvider(event.getGenerator().getPackOutput(), provider.modid, "en_us");
