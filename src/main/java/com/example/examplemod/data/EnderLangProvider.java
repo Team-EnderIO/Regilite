@@ -1,35 +1,28 @@
 package com.example.examplemod.data;
 
-import com.example.examplemod.registry.*;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class EnderLangProvider extends LanguageProvider {
-    private final List<DeferredHolder<?, ?>> entries = new ArrayList<>();
+    private final Map<Supplier<String>, String> langEntries = new HashMap<>();
 
     public EnderLangProvider(PackOutput output, String modid, String locale) {
         super(output, modid, locale);
     }
 
-    public void add(List<DeferredHolder<?, ?>> entries) {
-        this.entries.addAll(entries);
+    public void add(Map<Supplier<String>, String> entries) {
+        this.langEntries.putAll(entries);
     }
 
     @Override
     protected void addTranslations() {
-        for (DeferredHolder<?, ?> entry : entries) {
-            Pair<String, String> translation = ((ITranslatable) entry).getTranslation();
-            if (!translation.getB().isEmpty())
-                this.add(translation.getA(), translation.getB());
+        for (Map.Entry<Supplier<String>, String> entry : langEntries.entrySet()) {
+            if (!entry.getValue().isEmpty())
+                this.add(entry.getKey().get(), entry.getValue());
         }
     }
 }

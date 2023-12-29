@@ -15,12 +15,12 @@ public class EnderDeferredBlockItem<T extends BlockItem, U extends Block> extend
     private EnderDeferredBlock<U> block;
     protected EnderDeferredBlockItem(ResourceKey<Item> key) {
         super(key);
+        this.setTranslation("");
     }
 
     public EnderDeferredBlockItem(ResourceKey<Item> itemResourceKey, EnderDeferredBlock<U> block) {
         this(itemResourceKey);
         this.block = block;
-        this.translation = "";
     }
 
     public static <U extends Block,T extends BlockItem> EnderDeferredBlockItem<T,U> createBlockItem(ResourceKey<Item> itemResourceKey, EnderDeferredBlock<U> block) {
@@ -51,7 +51,7 @@ public class EnderDeferredBlockItem<T extends BlockItem, U extends Block> extend
 
     @Override
     public EnderDeferredBlockItem<T,U> setTranslation(String translation) {
-        this.translation = translation;
+        super.setTranslation(translation);
         return this;
     }
 

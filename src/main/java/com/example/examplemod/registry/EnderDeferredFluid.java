@@ -1,5 +1,6 @@
 package com.example.examplemod.registry;
 
+import com.example.examplemod.data.EnderDataProvider;
 import com.example.examplemod.data.EnderItemModelProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -25,8 +26,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITranslatable, ITagagble<Fluid>{
-    protected String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
+public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid>{
+    private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Fluid>> FluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
@@ -39,6 +40,7 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
 
     protected EnderDeferredFluid(ResourceKey<FluidType> key) {
         super(key);
+        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
     }
 
     public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer, Supplier<? extends BucketItem> bucket, Supplier<? extends LiquidBlock> block) {
@@ -97,12 +99,7 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
     }
 
     public EnderDeferredFluid<T> setTranslation(String translation) {
-        this.translation = translation;
+        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
         return this;
-    }
-
-    @Override
-    public Pair<String, String> getTranslation() {
-        return new Pair<>(this.get().getDescriptionId(), translation);
     }
 }

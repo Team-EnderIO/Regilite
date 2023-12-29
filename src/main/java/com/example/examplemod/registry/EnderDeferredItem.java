@@ -1,5 +1,6 @@
 package com.example.examplemod.registry;
 
+import com.example.examplemod.data.EnderDataProvider;
 import com.example.examplemod.data.EnderItemModelProvider;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.registries.Registries;
@@ -26,8 +27,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implements ITranslatable, ITagagble<Item>{
-    protected String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
+public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implements ITagagble<Item>{
+    private final Supplier<String> supplier = () -> get().getDescriptionId();
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
@@ -36,16 +37,12 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
 
     protected EnderDeferredItem(ResourceKey<Item> key) {
         super(key);
+        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
     }
 
     public EnderDeferredItem<T> setTranslation(String translation) {
-        this.translation = translation;
+        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
         return this;
-    }
-
-    @Override
-    public Pair<String, String> getTranslation() {
-        return new Pair<>(this.get().getDescriptionId(), translation);
     }
 
     @SafeVarargs

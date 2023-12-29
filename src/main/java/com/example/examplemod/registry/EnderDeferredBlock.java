@@ -1,6 +1,7 @@
 package com.example.examplemod.registry;
 
 import com.example.examplemod.data.EnderBlockLootProvider;
+import com.example.examplemod.data.EnderDataProvider;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -22,8 +23,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implements ITranslatable, ITagagble<Block>{
-    private String translation = StringUtils.capitalize(getId().getPath().replace('_', ' '));
+public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implements ITagagble<Block>{
+    private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
     private BiConsumer<EnderBlockLootProvider, T>  lootTable = EnderBlockLootProvider::dropSelf;
@@ -35,16 +36,12 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
     private EnderItemRegistry registry;
     protected EnderDeferredBlock(ResourceKey<Block> key) {
         super(key);
+        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
     }
 
     public EnderDeferredBlock<T> setTranslation(String translation) {
-        this.translation = translation;
+        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
         return this;
-    }
-
-    @Override
-    public Pair<String, String> getTranslation() {
-        return new Pair<>(this.get().getDescriptionId(), translation);
     }
 
     @SafeVarargs

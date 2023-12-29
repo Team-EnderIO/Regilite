@@ -135,7 +135,6 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
 
     private void onGatherData() {
         EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
-        provider.addTranslations(this.getEntries());
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new LootTableProvider(packOutput, Collections.emptySet(),
