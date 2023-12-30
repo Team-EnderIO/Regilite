@@ -3,14 +3,19 @@ package com.example.examplemod.registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
-public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> {
+public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
+    protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
 
     /**
      * Creates a new DeferredHolder with a ResourceKey.
@@ -26,12 +31,23 @@ public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHol
         super(key);
     }
 
-    public static <T extends BlockEntity> EnderDeferredBlockEntity<T> createBlockEntity(DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> holder) {
-        return new EnderDeferredBlockEntity<>(holder.getKey());
+    public static <T extends BlockEntity> EnderDeferredBlockEntity<T> createBlockEntity(ResourceKey<BlockEntityType<? extends BlockEntity>> key) {
+        return new EnderDeferredBlockEntity<>(key);
     }
 
     @Nullable
     public T create(BlockPos pos, BlockState state) {
         return this.get().create(pos, state);
+    }
+
+    @Override
+    public Set<TagKey<BlockEntityType<?>>> getTags() {
+        return this.BlockEntityTags;
+    }
+
+    @SafeVarargs
+    public final EnderDeferredBlockEntity<T> addBlockEntityTagsTags(TagKey<BlockEntityType<?>>... tags) {
+        BlockEntityTags.addAll(Set.of(tags));
+        return this;
     }
 }
