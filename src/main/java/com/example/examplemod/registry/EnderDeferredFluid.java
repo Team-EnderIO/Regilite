@@ -71,12 +71,12 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
     }
 
     public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> withBlock(Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
-        this.block = BLOCKS.registerLiquidBlock(getId().getNamespace(), () -> supplier.apply(this.flowingFluid)).setFluid(this);
+        this.block = BLOCKS.registerLiquidBlock(getId().getPath(), () -> supplier.apply(this.flowingFluid)).setFluid(this);
         return this.block;
     }
 
     public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem> withBucket(Function<Supplier<BaseFlowingFluid.Source>, ? extends BucketItem> supplier) {
-        this.bucket = ITEMS.registerBucket(getId().getNamespace(), () -> supplier.apply(this.sourceFluid)).setFluid(this);
+        this.bucket = ITEMS.registerBucket(getId().getPath(), () -> supplier.apply(this.sourceFluid)).setFluid(this);
         return this.bucket;
     }
 

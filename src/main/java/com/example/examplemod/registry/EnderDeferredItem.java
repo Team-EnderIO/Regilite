@@ -113,6 +113,7 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
         protected EnderDeferredBucketItem(ResourceKey<Item> key) {
             super(key);
             this.modelProvider = EnderItemModelProvider::bucketItem;
+            setTranslation("");
         }
 
         public EnderDeferredBucketItem<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {
