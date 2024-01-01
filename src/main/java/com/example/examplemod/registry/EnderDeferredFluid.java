@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid>{
@@ -33,7 +35,7 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
     private EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> block;
     private EnderDeferredItem.EnderDeferredBucketItem<? extends Item> bucket;
-    private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, sourceFluid, flowingFluid).block(block).bucket(bucket);
+    private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, this::getSource, this::getFlowing).block(this::getBlock).bucket(this::getBucket);
     private DeferredRegister<Fluid> fluid;
     private EnderBlockRegistry BLOCKS;
     private EnderItemRegistry ITEMS;
@@ -41,6 +43,10 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
     protected EnderDeferredFluid(ResourceKey<FluidType> key) {
         super(key);
         EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
+    }
+
+    public static <I extends FluidType> EnderDeferredFluid<I> createHolder(ResourceKey<FluidType> fluidTypeResourceKey) {
+        return new EnderDeferredFluid<>(fluidTypeResourceKey);
     }
 
     public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer, Supplier<? extends BucketItem> bucket, Supplier<? extends LiquidBlock> block) {
@@ -64,13 +70,13 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
         return this;
     }
 
-    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> withBlock(Supplier<? extends LiquidBlock> supplier) {
-        this.block = BLOCKS.registerLiquidBlock(getId().getNamespace(), supplier).setFluid(this);
+    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> withBlock(Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
+        this.block = BLOCKS.registerLiquidBlock(getId().getNamespace(), () -> supplier.apply(this.flowingFluid)).setFluid(this);
         return this.block;
     }
 
-    public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem> withBucket(Supplier<? extends BucketItem> supplier) {
-        this.bucket = ITEMS.registerBucket(getId().getNamespace(), supplier).setFluid(this);
+    public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem> withBucket(Function<Supplier<BaseFlowingFluid.Source>, ? extends BucketItem> supplier) {
+        this.bucket = ITEMS.registerBucket(getId().getNamespace(), () -> supplier.apply(this.sourceFluid)).setFluid(this);
         return this.bucket;
     }
 
@@ -80,6 +86,14 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
 
     public BaseFlowingFluid.Flowing getFlowing() {
         return flowingFluid.get();
+    }
+
+    public BucketItem getBucket() {
+        return bucket.get();
+    }
+
+    public LiquidBlock getBlock() {
+        return block.get();
     }
 
     public void setRegistries(DeferredRegister<Fluid> fluid, EnderBlockRegistry blocks, EnderItemRegistry items) {

@@ -57,7 +57,7 @@ public class EnderFluidRegister extends DeferredRegister<FluidType>{
     }
 
     @Override
-    protected <I extends FluidType> DeferredHolder<FluidType, I> createHolder(ResourceKey<? extends Registry<FluidType>> registryKey, ResourceLocation key) {
-        return EnderDeferredFluid.create(ResourceKey.create(registryKey, key));
+    protected <I extends FluidType> EnderDeferredFluid<I> createHolder(ResourceKey<? extends Registry<FluidType>> registryKey, ResourceLocation key) {
+        return EnderDeferredFluid.createHolder(ResourceKey.create(registryKey, key));
     }
 }
