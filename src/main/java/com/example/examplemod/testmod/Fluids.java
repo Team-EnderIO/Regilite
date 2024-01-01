@@ -7,6 +7,7 @@ import com.example.examplemod.registry.EnderItemRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
@@ -22,7 +23,7 @@ public class Fluids {
 
     public static final EnderDeferredFluid<? extends FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
             .createFluid(properties -> {})
-            .withBlock(fluid -> new LiquidBlock(fluid, BlockBehaviour.Properties.of()))
+            .withBlock(fluid -> new LiquidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
             .finishLiquidBlock()
             .withBucket(fluid -> new BucketItem(fluid, new Item.Properties()))
             .finishBucket();

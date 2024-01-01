@@ -11,6 +11,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -110,6 +111,13 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
 
         protected EnderDeferredLiquidBlock(ResourceKey<Block> key) {
             super(key);
+            this.setLootTable(EnderBlockLootProvider::noDrop);
+            this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t)
+                    .partialState()
+                    .modelForState()
+                    .modelFile(prov.models().getExistingFile(new ResourceLocation("water")))
+                    .addModel()
+            );
         }
 
         public EnderDeferredLiquidBlock<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {

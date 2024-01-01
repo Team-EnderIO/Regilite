@@ -32,7 +32,7 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
-    protected BiConsumer<EnderItemModelProvider, Item> modelProvider = EnderItemModelProvider::basicItem;
+    protected BiConsumer<EnderItemModelProvider, T> modelProvider = EnderItemModelProvider::basicItem;
     protected Supplier<ItemColor> colorSupplier;
 
     protected EnderDeferredItem(ResourceKey<Item> key) {
@@ -74,12 +74,12 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
         return tab;
     }
 
-    public EnderDeferredItem<T> setModelProvider(BiConsumer<EnderItemModelProvider, Item> modelProvider) {
+    public EnderDeferredItem<T> setModelProvider(BiConsumer<EnderItemModelProvider, T> modelProvider) {
         this.modelProvider = modelProvider;
         return this;
     }
 
-    public BiConsumer<EnderItemModelProvider, Item> getModelProvider() {
+    public BiConsumer<EnderItemModelProvider, T> getModelProvider() {
         return modelProvider;
     }
 
@@ -112,6 +112,7 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
 
         protected EnderDeferredBucketItem(ResourceKey<Item> key) {
             super(key);
+            this.modelProvider = EnderItemModelProvider::bucketItem;
         }
 
         public EnderDeferredBucketItem<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {

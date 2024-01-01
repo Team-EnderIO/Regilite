@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "examplemod:block/examplemod"
+      "model": "minecraft:block/water"
     }
   }
 }

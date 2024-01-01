@@ -5,12 +5,15 @@ import com.example.examplemod.registry.EnderItemRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Objects;
@@ -27,7 +30,7 @@ public class EnderItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         for (DeferredHolder<Item, ? extends Item> item : registry.getEntries()) {
-            BiConsumer<EnderItemModelProvider, Item> modelProvider = ((EnderDeferredItem<? extends Item>) item).getModelProvider();
+            BiConsumer<EnderItemModelProvider, Item> modelProvider = (BiConsumer<EnderItemModelProvider, Item>) ((EnderDeferredItem<? extends Item>) item).getModelProvider();
             if (modelProvider != null) {
                 modelProvider.accept(this, item.get());
             }
@@ -54,6 +57,11 @@ public class EnderItemModelProvider extends ItemModelProvider {
         return Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
     }
 
-
+    public ItemModelBuilder bucketItem(BucketItem item) {
+        return withExistingParent(BuiltInRegistries.ITEM.getKey(item).toString(), new ResourceLocation(NeoForgeVersion.MOD_ID, "item/bucket"))
+                .customLoader(DynamicFluidContainerModelBuilder::begin)
+                .fluid(item.getFluid())
+                .end();
+    }
 }
 

@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -76,5 +77,9 @@ public class EnderBlockLootProvider extends BlockLootSubProvider {
     @Override
     public void add(Block p_250610_, LootTable.Builder p_249817_) {
         super.add(p_250610_, p_249817_);
+    }
+
+    public void noDrop(Block block) {
+        this.add(block, noDrop());
     }
 }

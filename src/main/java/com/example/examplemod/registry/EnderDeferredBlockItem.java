@@ -56,7 +56,7 @@ public class EnderDeferredBlockItem<T extends BlockItem, U extends Block> extend
     }
 
     @Override
-    public EnderDeferredBlockItem<T,U> setModelProvider(BiConsumer<EnderItemModelProvider, Item> modelProvider) {
+    public EnderDeferredBlockItem<T,U> setModelProvider(BiConsumer<EnderItemModelProvider, T> modelProvider) {
         this.modelProvider = modelProvider;
         return this;
     }
