@@ -17,17 +17,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EnderFluidRegister extends DeferredRegister<FluidType>{
-    private final DeferredRegister<Fluid> FLUID;
-    private final EnderBlockRegistry BLOCKS;
-    private final EnderItemRegistry ITEMS;
-
 
     protected EnderFluidRegister(String namespace) {
         super(NeoForgeRegistries.FLUID_TYPES.key(), namespace);
-        FLUID = DeferredRegister.create(BuiltInRegistries.FLUID, namespace);
-        BLOCKS = EnderBlockRegistry.createRegistry(namespace);
-        ITEMS = EnderItemRegistry.createRegistry(namespace);
-
     }
 
     public static EnderFluidRegister create(String modid) {
@@ -61,16 +53,12 @@ public class EnderFluidRegister extends DeferredRegister<FluidType>{
                 });
             }
         });
-        fluid.setRegistries(FLUID, BLOCKS, ITEMS);
         return fluid;
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        FLUID.register(bus);
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
     }
 
     @Override

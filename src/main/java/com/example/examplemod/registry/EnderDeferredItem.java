@@ -106,27 +106,23 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
         return new EnderDeferredItem<>(key);
     }
 
-    public static class EnderDeferredBucketItem<T extends BucketItem> extends EnderDeferredItem<T> {
+    public static class EnderDeferredBucketItem<T extends BucketItem, U extends FluidType> extends EnderDeferredItem<T> {
 
-        private EnderDeferredFluid<? extends FluidType> fluid;
+        private final EnderDeferredFluid<U> fluid;
 
-        protected EnderDeferredBucketItem(ResourceKey<Item> key) {
+        protected EnderDeferredBucketItem(ResourceKey<Item> key, EnderDeferredFluid<U> fluid) {
             super(key);
+            this.fluid = fluid;
             this.modelProvider = EnderItemModelProvider::bucketItem;
             setTranslation("");
         }
 
-        public EnderDeferredBucketItem<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {
-            this.fluid = fluid;
-            return this;
-        }
-
-        public EnderDeferredFluid<? extends FluidType> finishBucket() {
+        public EnderDeferredFluid<U> finishBucket() {
             return fluid;
         }
 
-        public static <I extends BucketItem> EnderDeferredBucketItem<I> createLiquidBlock(ResourceKey<Item> key) {
-            return new EnderDeferredBucketItem<>(key);
+        public static <I extends BucketItem, U extends FluidType> EnderDeferredBucketItem<I,U> createLiquidBlock(ResourceKey<Item> key, EnderDeferredFluid<U> fluid) {
+            return new EnderDeferredBucketItem<>(key, fluid);
         }
 
 

@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -151,16 +152,16 @@ public class EnderItemRegistry extends DeferredRegister.Items {
         return this.registerItem(name, Item::new, new Item.Properties());
     }
 
-    public <I extends BucketItem> EnderDeferredItem.EnderDeferredBucketItem<I> registerBucket(String name, Supplier<? extends I> supp) {
-        return this.registerBucket(name, key -> supp.get());
+    public <I extends BucketItem, U extends FluidType> EnderDeferredItem.EnderDeferredBucketItem<I, U> registerBucket(String name, Supplier<? extends I> supp, EnderDeferredFluid<U> fluid) {
+        return this.registerBucket(name, key -> supp.get(), fluid);
     }
 
-    public <I extends BucketItem> EnderDeferredItem.EnderDeferredBucketItem<I> registerBucket(String name, Function<ResourceLocation, ? extends I> func) {
+    public <I extends BucketItem, U extends FluidType> EnderDeferredItem.EnderDeferredBucketItem<I,U> registerBucket(String name, Function<ResourceLocation, ? extends I> func, EnderDeferredFluid<U> fluid) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        EnderDeferredItem.EnderDeferredBucketItem<I>  ret = createBucketHolder(getRegistryKey(), key);
+        EnderDeferredItem.EnderDeferredBucketItem<I,U>  ret = createBucketHolder(getRegistryKey(), key, fluid);
 
         if (((DeferredRegisterAccessor<Item>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
@@ -178,8 +179,8 @@ public class EnderItemRegistry extends DeferredRegister.Items {
         return EnderDeferredBlockItem.createBlockItem(ResourceKey.create(registryKey, key), block);
     }
 
-    protected <I extends BucketItem> EnderDeferredItem.EnderDeferredBucketItem<I> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
-        return EnderDeferredItem.EnderDeferredBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key));
+    protected <I extends BucketItem, U extends FluidType> EnderDeferredItem.EnderDeferredBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, EnderDeferredFluid<U> fluid) {
+        return EnderDeferredItem.EnderDeferredBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
     }
 
     public static EnderItemRegistry createRegistry(String modid) {
@@ -192,7 +193,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
         this.onGatherData();
         bus.addListener(this::addCreative);
         if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ColorEvents(null, this)::registerBlockColor);
+            bus.addListener(new ColorEvents.Items(this)::registerItemColor);
         }
 
     }

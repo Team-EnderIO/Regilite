@@ -21,11 +21,11 @@ public class Fluids {
     public static final EnderBlockRegistry BLOCKS = EnderBlockRegistry.createRegistry(ExampleMod.MODID);
     public static final EnderItemRegistry ITEMS = EnderItemRegistry.createRegistry(ExampleMod.MODID);
 
-    public static final EnderDeferredFluid<? extends FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
-            .createFluid(properties -> {})
-            .withBlock(fluid -> new LiquidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
+    public static final EnderDeferredFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
+            .createFluid(FLUIDS)
+            .withBlock(BLOCKS, fluid -> new LiquidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
             .finishLiquidBlock()
-            .withBucket(fluid -> new BucketItem(fluid, new Item.Properties()))
+            .withBucket(ITEMS, fluid -> new BucketItem(fluid, new Item.Properties().stacksTo(1)))
             .finishBucket();
 
     public static void register(IEventBus modEventBus) {
@@ -33,6 +33,5 @@ public class Fluids {
         FLUIDS.register(modEventBus);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
-
     }
 }

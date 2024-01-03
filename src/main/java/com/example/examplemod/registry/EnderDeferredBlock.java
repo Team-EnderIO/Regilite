@@ -33,8 +33,6 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
     private BiConsumer<BlockStateProvider, T> blockStateProvider = BlockStateProvider::simpleBlock;
     @Nullable
     private Supplier<BlockColor> colorSupplier;
-    @Nullable
-    private EnderItemRegistry registry;
     protected EnderDeferredBlock(ResourceKey<Block> key) {
         super(key);
         EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
@@ -85,16 +83,11 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
         return this;
     }
 
-    public EnderDeferredBlock<T> setRegistry(@Nullable EnderItemRegistry registry) {
-        this.registry = registry;
-        return this;
-    }
-
-    public EnderDeferredBlockItem<BlockItem, T> createBlockItem() {
+    public EnderDeferredBlockItem<BlockItem, T> createBlockItem(EnderItemRegistry registry) {
         return registry.registerBlockItem(this);
     }
 
-    public EnderDeferredBlockItem<BlockItem, T> createBlockItem(Function<T, ? extends BlockItem> function) {
+    public EnderDeferredBlockItem<BlockItem, T> createBlockItem(EnderItemRegistry registry, Function<T, ? extends BlockItem> function) {
         return registry.registerBlockItem(getId().getPath(), this, () -> function.apply(this.get()));
     }
 
@@ -106,11 +99,12 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
         return new EnderDeferredBlock<>(key);
     }
 
-    public static class EnderDeferredLiquidBlock<T extends LiquidBlock> extends EnderDeferredBlock<T> {
-        private EnderDeferredFluid<? extends FluidType> fluid;
+    public static class EnderDeferredLiquidBlock<T extends LiquidBlock, U extends FluidType> extends EnderDeferredBlock<T> {
+        private final EnderDeferredFluid<U> fluid;
 
-        protected EnderDeferredLiquidBlock(ResourceKey<Block> key) {
+        protected EnderDeferredLiquidBlock(ResourceKey<Block> key, EnderDeferredFluid<U> fluid) {
             super(key);
+            this.fluid = fluid;
             this.setLootTable(EnderBlockLootProvider::noDrop);
             this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t)
                     .partialState()
@@ -120,17 +114,12 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
             );
         }
 
-        public EnderDeferredLiquidBlock<T> setFluid(EnderDeferredFluid<? extends FluidType> fluid) {
-            this.fluid = fluid;
-            return this;
-        }
-
-        public EnderDeferredFluid<? extends FluidType> finishLiquidBlock() {
+        public EnderDeferredFluid<U> finishLiquidBlock() {
             return fluid;
         }
 
-        public static <B extends LiquidBlock> EnderDeferredLiquidBlock<B> createLiquidBlock(ResourceKey<Block> key) {
-            return new EnderDeferredBlock.EnderDeferredLiquidBlock<>(key);
+        public static <B extends LiquidBlock, U extends FluidType> EnderDeferredLiquidBlock<B, U> createLiquidBlock(ResourceKey<Block> key, EnderDeferredFluid<U> fluid) {
+            return new EnderDeferredBlock.EnderDeferredLiquidBlock<>(key, fluid);
         }
     }
 }

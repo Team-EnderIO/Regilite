@@ -33,12 +33,9 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
     private Set<TagKey<Fluid>> FluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
-    private EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> block;
-    private EnderDeferredItem.EnderDeferredBucketItem<? extends Item> bucket;
+    private EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock, T> block;
+    private EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem, T> bucket;
     private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, this::getSource, this::getFlowing).block(this::getBlock).bucket(this::getBucket);
-    private DeferredRegister<Fluid> fluid;
-    private EnderBlockRegistry BLOCKS;
-    private EnderItemRegistry ITEMS;
 
     protected EnderDeferredFluid(ResourceKey<FluidType> key) {
         super(key);
@@ -49,34 +46,25 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
         return new EnderDeferredFluid<>(fluidTypeResourceKey);
     }
 
-    public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer, Supplier<? extends BucketItem> bucket, Supplier<? extends LiquidBlock> block) {
-        this.block = BLOCKS.registerLiquidBlock(getId().getPath(), (r) -> block.get());
-        this.bucket = ITEMS.registerBucket(getId().getPath(), bucket);
+    public EnderDeferredFluid<T> createFluid(DeferredRegister<Fluid> register,Consumer<BaseFlowingFluid.Properties> consumer) {
         consumer.accept(properties);
-        this.flowingFluid = fluid.register("fluid_" + getId().getPath() + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
-        this.sourceFluid = fluid.register("fluid_" + getId().getPath() + "_still", () -> new BaseFlowingFluid.Source(properties));
+        this.flowingFluid = register.register("fluid_" + getId().getPath() + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
+        this.sourceFluid = register.register("fluid_" + getId().getPath() + "_still", () -> new BaseFlowingFluid.Source(properties));
         return this;
     }
-
-    public EnderDeferredFluid<T> createSimpleFluid(Consumer<BaseFlowingFluid.Properties> consumer) {
-        return this.createFluid(consumer, () -> new BucketItem(this.sourceFluid, new Item.Properties().stacksTo(1)),
-            () -> new LiquidBlock(this.flowingFluid, BlockBehaviour.Properties.copy(Blocks.WATER)));
+    public EnderDeferredFluid<T> createFluid(DeferredRegister<Fluid> register) {
+        return this.createFluid(register, properties1 -> {});
     }
 
-    public EnderDeferredFluid<T> createFluid(Consumer<BaseFlowingFluid.Properties> consumer) {
-        consumer.accept(properties);
-        this.flowingFluid = fluid.register("fluid_" + getId().getPath() + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
-        this.sourceFluid = fluid.register("fluid_" + getId().getPath() + "_still", () -> new BaseFlowingFluid.Source(properties));
-        return this;
-    }
 
-    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> withBlock(Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
-        this.block = BLOCKS.registerLiquidBlock(getId().getPath(), () -> supplier.apply(this.flowingFluid)).setFluid(this);
+
+    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock, T> withBlock(EnderBlockRegistry registry, Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
+        this.block = registry.registerLiquidBlock(getId().getPath(), () -> supplier.apply(this.flowingFluid), this);
         return this.block;
     }
 
-    public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem> withBucket(Function<Supplier<BaseFlowingFluid.Source>, ? extends BucketItem> supplier) {
-        this.bucket = ITEMS.registerBucket(getId().getPath(), () -> supplier.apply(this.sourceFluid)).setFluid(this);
+    public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem, T> withBucket(EnderItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, ? extends BucketItem> supplier) {
+        this.bucket = registry.registerBucket(getId().getPath(), () -> supplier.apply(this.sourceFluid), this);
         return this.bucket;
     }
 
@@ -94,12 +82,6 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
 
     public LiquidBlock getBlock() {
         return block.get();
-    }
-
-    public void setRegistries(DeferredRegister<Fluid> fluid, EnderBlockRegistry blocks, EnderItemRegistry items) {
-        this.fluid = fluid;
-        this.BLOCKS = blocks;
-        this.ITEMS = items;
     }
 
     @SafeVarargs

@@ -17,35 +17,35 @@ import java.util.function.Supplier;
 
 public class ColorEvents {
 
-    @Nullable
-    private final EnderBlockRegistry blocks;
-    @Nullable
-    private final EnderItemRegistry items;
+    public static class Items {
+        private final EnderItemRegistry items;
 
-    public ColorEvents(@Nullable EnderBlockRegistry blocks, @Nullable EnderItemRegistry items) {
-        this.blocks = blocks;
-        this.items = items;
-    }
-
-    public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
-        if (blocks == null) {
-            return;
+        public Items(EnderItemRegistry items) {
+            this.items = items;
         }
-        for (DeferredHolder<Block, ? extends Block> block : blocks.getEntries()) {
-            Supplier<BlockColor> colorSupplier = ((EnderDeferredBlock<Block>) block).getColorSupplier();
-            if (colorSupplier != null)
-                event.register(colorSupplier.get(), block.get());
+
+        public void registerItemColor(RegisterColorHandlersEvent.Item event) {
+            for (DeferredHolder<Item, ? extends Item> item : items.getEntries()) {
+                Supplier<ItemColor> colorSupplier = ((EnderDeferredItem<Item>) item).getColorSupplier();
+                if (colorSupplier != null)
+                    event.register(colorSupplier.get(), item.get());
+            }
         }
     }
 
-    public void registerItemColor(RegisterColorHandlersEvent.Item event) {
-        if (items == null) {
-            return;
+    public static class Blocks {
+        private final EnderBlockRegistry blocks;
+
+        public Blocks(EnderBlockRegistry blocks) {
+            this.blocks = blocks;
         }
-        for (DeferredHolder<Item, ? extends Item> item : items.getEntries()) {
-            Supplier<ItemColor> colorSupplier = ((EnderDeferredItem<Item>) item).getColorSupplier();
-            if (colorSupplier != null)
-                event.register(colorSupplier.get(), item.get());
+
+        public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
+            for (DeferredHolder<Block, ? extends Block> block : blocks.getEntries()) {
+                Supplier<BlockColor> colorSupplier = ((EnderDeferredBlock<Block>) block).getColorSupplier();
+                if (colorSupplier != null)
+                    event.register(colorSupplier.get(), block.get());
+            }
         }
     }
 }

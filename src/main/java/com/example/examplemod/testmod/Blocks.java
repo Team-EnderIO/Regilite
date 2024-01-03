@@ -25,7 +25,7 @@ public class Blocks {
             .setTranslation("Test Example Block")
             .setBlockStateProvider(BlockStateProvider::simpleBlock)
             .setLootTable(EnderBlockLootProvider::dropSelf)
-            .createBlockItem()
+            .createBlockItem(ITEMS)
             .addBlockItemTags(ItemTags.PLANKS)
             .setModelProvider(EnderItemModelProvider::basicItem)
             .setTab(CreativeModeTabs.BUILDING_BLOCKS)

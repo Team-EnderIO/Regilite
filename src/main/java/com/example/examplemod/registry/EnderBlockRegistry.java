@@ -14,6 +14,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -26,10 +27,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EnderBlockRegistry extends DeferredRegister.Blocks {
-    private final EnderItemRegistry ItemRegistry;
     protected EnderBlockRegistry(String namespace) {
         super(namespace);
-        ItemRegistry = new EnderItemRegistry(namespace);
     }
 
     /**
@@ -42,7 +41,7 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
     @SuppressWarnings("unchecked")
     @Override
     public <B extends Block> EnderDeferredBlock<B> register(String name, Function<ResourceLocation, ? extends B> func) {
-        return ((EnderDeferredBlock<B>) super.register(name, func)).setRegistry(ItemRegistry);
+        return ((EnderDeferredBlock<B>) super.register(name, func));
     }
 
     /**
@@ -82,14 +81,14 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
         return this.registerBlock(name, Block::new, props);
     }
 
-    public <B extends LiquidBlock> EnderDeferredBlock.EnderDeferredLiquidBlock<B> registerLiquidBlock(String name, Function<ResourceLocation, ? extends B> func) {
+    public <B extends LiquidBlock, U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> registerLiquidBlock(String name, Function<ResourceLocation, ? extends B> func, EnderDeferredFluid<U> fluid) {
         //if (seenRegisterEvent)
         //    throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        EnderDeferredBlock.EnderDeferredLiquidBlock<B> ret = createLiquidHolder(this.getRegistryKey(), key);
+        EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> ret = createLiquidHolder(this.getRegistryKey(), key, fluid);
 
         if (((DeferredRegisterAccessor<Block>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
@@ -98,12 +97,12 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
         return ret;
     }
 
-    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock> registerLiquidBlock(String namespace, Supplier<? extends LiquidBlock> supplier) {
-        return this.registerLiquidBlock(namespace, key -> supplier.get());
+    public <B extends LiquidBlock, U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> registerLiquidBlock(String namespace, Supplier<? extends B> supplier, EnderDeferredFluid<U> fluid) {
+        return this.registerLiquidBlock(namespace, key -> supplier.get(), fluid);
     }
 
-    public EnderDeferredBlock.EnderDeferredLiquidBlock<LiquidBlock> registerLiquidBlock(String name, BlockBehaviour.Properties props, Supplier<FlowingFluid> fluid) {
-        return this.registerLiquidBlock(name, (rl) -> new LiquidBlock(fluid, props));
+    public <U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<LiquidBlock, U> registerLiquidBlock(String name, BlockBehaviour.Properties props, Supplier<FlowingFluid> fluidSupp, EnderDeferredFluid<U> fluid) {
+        return this.registerLiquidBlock(name, (rl) -> new LiquidBlock(fluidSupp, props), fluid);
     }
 
     @Override
@@ -111,12 +110,8 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
         return EnderDeferredBlock.createBlock(ResourceKey.create(registryKey, key));
     }
 
-    private <B extends LiquidBlock> EnderDeferredBlock.EnderDeferredLiquidBlock<B> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key) {
-        return EnderDeferredBlock.EnderDeferredLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key));
-    }
-
-    public EnderItemRegistry getItemRegistry() {
-        return ItemRegistry;
+    private <B extends LiquidBlock, U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key, EnderDeferredFluid<U> fluid) {
+        return EnderDeferredBlock.EnderDeferredLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
     }
 
     public static EnderBlockRegistry createRegistry(String modid) {
@@ -126,10 +121,9 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        ItemRegistry.register(bus);
         this.onGatherData();
         if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ColorEvents(this, getItemRegistry())::registerBlockColor);
+            bus.addListener(new ColorEvents.Blocks(this)::registerBlockColor);
         }
     }
 

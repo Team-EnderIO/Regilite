@@ -3,6 +3,7 @@ package com.example.examplemod.registry;
 import com.example.examplemod.data.EnderDataProvider;
 import com.example.examplemod.data.EnderItemModelProvider;
 import com.example.examplemod.data.EnderTagProvider;
+import com.example.examplemod.events.BlockEntityRendererEvents;
 import com.example.examplemod.events.ColorEvents;
 import com.example.examplemod.mixin.DeferredRegisterAccessor;
 import com.mojang.datafixers.types.Func;
@@ -70,6 +71,9 @@ public class EnderBlockEntityRegistry extends DeferredRegister<BlockEntityType<?
     public void register(IEventBus bus) {
         super.register(bus);
         this.onGatherData();
+        if (FMLEnvironment.dist.isClient()) {
+            bus.addListener(new BlockEntityRendererEvents(this)::registerBER);
+        }
     }
 
     private void onGatherData() {

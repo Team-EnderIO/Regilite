@@ -1,5 +1,7 @@
 package com.example.examplemod.registry;
 
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,9 +15,12 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
+    protected Supplier<BlockEntityRendererProvider<T>> renderer;
 
     /**
      * Creates a new DeferredHolder with a ResourceKey.
@@ -49,5 +54,14 @@ public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHol
     public final EnderDeferredBlockEntity<T> addBlockEntityTagsTags(TagKey<BlockEntityType<?>>... tags) {
         BlockEntityTags.addAll(Set.of(tags));
         return this;
+    }
+
+    public EnderDeferredBlockEntity<T> setRenderer(Supplier<BlockEntityRendererProvider<T>> renderer) {
+        this.renderer = renderer;
+        return this;
+    }
+
+    public Supplier<BlockEntityRendererProvider<T>> getRenderer() {
+        return renderer;
     }
 }
