@@ -1,7 +1,0 @@
-{
-  "block.examplemod.example_block": "Test Example Block",
-  "block.examplemod.example_fluid": "Example fluid",
-  "fluid_type.examplemod.example_fluid": "Example fluid",
-  "item.examplemod.example_item": "Test Example Item",
-  "itemGroup.examplemod.example_tab": "Example"
-}
