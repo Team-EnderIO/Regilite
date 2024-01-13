@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class Fluids {
     private static final EnderFluidRegister FLUIDTYPES = EnderFluidRegister.create(ExampleMod.MODID);
-    private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID.key(),ExampleMod.MODID);
+    private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID.key(), ExampleMod.MODID);
     public static final EnderBlockRegistry BLOCKS = EnderBlockRegistry.createRegistry(ExampleMod.MODID);
     public static final EnderItemRegistry ITEMS = EnderItemRegistry.createRegistry(ExampleMod.MODID);
 

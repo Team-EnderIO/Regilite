@@ -11,7 +11,7 @@ be changed using the `setTranslation` method.
 
 Besides the translation of objects like blocks and items, we also provide helpers for adding automatic translations for `Components`.
 
-### Blocks
+### com.testmod.Blocks
 Besides the block itself, there are also functions to automatically register the following:
 - Loot tables
 - Blockstates and model
@@ -19,9 +19,9 @@ Besides the block itself, there are also functions to automatically register the
 - Block Tags
 - Translation
 - Block item 
-  - See `Items`
+  - See `com.testmod.Items`
 
-### Items
+### com.testmod.Items
 Besides the item itself, there are also functions to automatically register the following:
 - Item model
 - Item color (tint)
