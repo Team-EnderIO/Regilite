@@ -192,7 +192,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        this.onGatherData();
+        this.onGatherData(bus);
         bus.addListener(this::addCreative);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ColorEvents.Items(this)::registerItemColor);
@@ -200,17 +200,19 @@ public class EnderItemRegistry extends DeferredRegister.Items {
 
     }
 
-    private void onGatherData() {
-        EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
+    private void onGatherData(IEventBus bus) {
+        EnderDataProvider provider = EnderDataProvider.register(getNamespace(), bus);
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         for (DeferredHolder<Item, ? extends Item> item : this.getEntries()) {
-            Consumer<CreativeModeTab.Output> outputConsumer = ((EnderDeferredItem<Item>) item).getTab().get(event.getTabKey());
-            if (outputConsumer != null) {
-                outputConsumer.accept(event);
+            if (item instanceof EnderDeferredItem) {
+                Consumer<CreativeModeTab.Output> outputConsumer = ((EnderDeferredItem<Item>) item).getTab().get(event.getTabKey());
+                if (outputConsumer != null) {
+                    outputConsumer.accept(event);
+                }
             }
         }
     }

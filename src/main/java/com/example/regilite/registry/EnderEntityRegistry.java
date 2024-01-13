@@ -55,11 +55,11 @@ public class EnderEntityRegistry extends DeferredRegister<EntityType<?>> {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        onGatherData();
+        onGatherData(bus);
     }
 
-    private void  onGatherData() {
-        EnderDataProvider provider = EnderDataProvider.getInstance(getNamespace());
+    private void  onGatherData(IEventBus bus) {
+        EnderDataProvider provider = EnderDataProvider.register(getNamespace(), bus);
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
     }
 }
