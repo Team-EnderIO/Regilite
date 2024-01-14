@@ -1,5 +1,6 @@
-package com.example.regilite.registry;
+package com.example.regilite.holder;
 
+import com.example.regilite.registry.ITagagble;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -15,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
+public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
     protected Supplier<BlockEntityRendererProvider<T>> renderer;
 
@@ -29,12 +30,12 @@ public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHol
      * @see #create(ResourceLocation, ResourceLocation)
      * @see #create(ResourceKey)
      */
-    protected EnderDeferredBlockEntity(ResourceKey<BlockEntityType<? extends BlockEntity>> key) {
+    protected RegiliteBlockEntity(ResourceKey<BlockEntityType<? extends BlockEntity>> key) {
         super(key);
     }
 
-    public static <T extends BlockEntity> EnderDeferredBlockEntity<T> createBlockEntity(ResourceKey<BlockEntityType<? extends BlockEntity>> key) {
-        return new EnderDeferredBlockEntity<>(key);
+    public static <T extends BlockEntity> RegiliteBlockEntity<T> createBlockEntity(ResourceKey<BlockEntityType<? extends BlockEntity>> key) {
+        return new RegiliteBlockEntity<>(key);
     }
 
     @Nullable
@@ -48,12 +49,12 @@ public class EnderDeferredBlockEntity<T extends BlockEntity> extends DeferredHol
     }
 
     @SafeVarargs
-    public final EnderDeferredBlockEntity<T> addBlockEntityTagsTags(TagKey<BlockEntityType<?>>... tags) {
+    public final RegiliteBlockEntity<T> addBlockEntityTagsTags(TagKey<BlockEntityType<?>>... tags) {
         BlockEntityTags.addAll(Set.of(tags));
         return this;
     }
 
-    public EnderDeferredBlockEntity<T> setRenderer(Supplier<BlockEntityRendererProvider<T>> renderer) {
+    public RegiliteBlockEntity<T> setRenderer(Supplier<BlockEntityRendererProvider<T>> renderer) {
         this.renderer = renderer;
         return this;
     }

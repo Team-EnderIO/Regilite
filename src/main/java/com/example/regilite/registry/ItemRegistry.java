@@ -1,9 +1,13 @@
 package com.example.regilite.registry;
 
-import com.example.regilite.data.EnderDataProvider;
-import com.example.regilite.data.EnderItemModelProvider;
-import com.example.regilite.data.EnderTagProvider;
+import com.example.regilite.data.RegiliteDataProvider;
+import com.example.regilite.data.RegiliteItemModelProvider;
+import com.example.regilite.data.RegiliteTagProvider;
 import com.example.regilite.events.ColorEvents;
+import com.example.regilite.holder.RegiliteBlock;
+import com.example.regilite.holder.RegiliteBlockItem;
+import com.example.regilite.holder.RegiliteFluid;
+import com.example.regilite.holder.RegiliteItem;
 import com.example.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -26,8 +30,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderItemRegistry extends DeferredRegister.Items {
-    protected EnderItemRegistry(String namespace) {
+public class ItemRegistry extends DeferredRegister.Items {
+    protected ItemRegistry(String namespace) {
         super(namespace);
     }
 
@@ -41,8 +45,8 @@ public class EnderItemRegistry extends DeferredRegister.Items {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <I extends Item> EnderDeferredItem<I> register(String name, Function<ResourceLocation, ? extends I> func) {
-        return (EnderDeferredItem<I>) super.register(name, func);
+    public <I extends Item> RegiliteItem<I> register(String name, Function<ResourceLocation, ? extends I> func) {
+        return (RegiliteItem<I>) super.register(name, func);
     }
 
     /**
@@ -54,18 +58,18 @@ public class EnderItemRegistry extends DeferredRegister.Items {
      * @see #register(String, Function)
      */
     @Override
-    public <I extends Item> EnderDeferredItem<I> register(String name, Supplier<? extends I> sup) {
+    public <I extends Item> RegiliteItem<I> register(String name, Supplier<? extends I> sup) {
         return this.register(name, key -> sup.get());
     }
 
-    private <I extends BlockItem, U extends Block> EnderDeferredBlockItem<I,U> registerBlockItem(String name, Function<ResourceLocation, I> func, EnderDeferredBlock<U> block) {
+    private <I extends BlockItem, U extends Block> RegiliteBlockItem<I,U> registerBlockItem(String name, Function<ResourceLocation, I> func, RegiliteBlock<U> block) {
         //if (seenRegisterEvent)
         //throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        EnderDeferredBlockItem<I, U> ret = createBlockItemHolder(getRegistryKey(), key, block);
+        RegiliteBlockItem<I, U> ret = createBlockItemHolder(getRegistryKey(), key, block);
 
         if (((DeferredRegisterAccessor<Item>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
@@ -74,24 +78,24 @@ public class EnderItemRegistry extends DeferredRegister.Items {
         return ret;
     }
 
-    public <I extends BlockItem, U extends Block> EnderDeferredBlockItem<I, U> registerBlockItem(String name, EnderDeferredBlock<U> block, Supplier<I> sup) {
+    public <I extends BlockItem, U extends Block> RegiliteBlockItem<I, U> registerBlockItem(String name, RegiliteBlock<U> block, Supplier<I> sup) {
         return this.registerBlockItem(name, key -> sup.get(), block);
     }
 
 
-    public <U extends Block> EnderDeferredBlockItem<BlockItem, U> registerBlockItem(String name, EnderDeferredBlock<U> block, Item.Properties properties) {
+    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(String name, RegiliteBlock<U> block, Item.Properties properties) {
         return this.registerBlockItem(name, key -> new BlockItem(block.get(), properties), block);
     }
 
-    public <U extends Block> EnderDeferredBlockItem<BlockItem, U> registerBlockItem(String name, EnderDeferredBlock<U> block) {
+    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(String name, RegiliteBlock<U> block) {
         return this.registerBlockItem(name, block, new Item.Properties());
     }
 
-    public <U extends Block> EnderDeferredBlockItem<BlockItem, U> registerBlockItem(EnderDeferredBlock<U> block, Item.Properties properties) {
+    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(RegiliteBlock<U> block, Item.Properties properties) {
         return this.registerBlockItem(block.unwrapKey().orElseThrow().location().getPath(), block, properties);
     }
 
-    public <U extends Block> EnderDeferredBlockItem<BlockItem, U> registerBlockItem(EnderDeferredBlock<U> block) {
+    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(RegiliteBlock<U> block) {
         return this.registerBlockItem(block, new Item.Properties());
     }
 
@@ -106,7 +110,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
      * @see #registerItem(String, Item.Properties)
      * @see #registerItem(String)
      */
-    public <I extends Item> EnderDeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> func, Item.Properties props) {
+    public <I extends Item> RegiliteItem<I> registerItem(String name, Function<Item.Properties, ? extends I> func, Item.Properties props) {
         return this.register(name, () -> func.apply(props));
     }
 
@@ -121,7 +125,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
      * @see #registerItem(String, Item.Properties)
      * @see #registerItem(String)
      */
-    public <I extends Item> EnderDeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> func) {
+    public <I extends Item> RegiliteItem<I> registerItem(String name, Function<Item.Properties, ? extends I> func) {
         return this.registerItem(name, func, new Item.Properties());
     }
 
@@ -136,7 +140,7 @@ public class EnderItemRegistry extends DeferredRegister.Items {
      * @see #registerItem(String, Function)
      * @see #registerItem(String)
      */
-    public EnderDeferredItem<Item> registerItem(String name, Item.Properties props) {
+    public RegiliteItem<Item> registerItem(String name, Item.Properties props) {
         return this.registerItem(name, Item::new, props);
     }
 
@@ -150,20 +154,20 @@ public class EnderItemRegistry extends DeferredRegister.Items {
      * @see #registerItem(String, Function)
      * @see #registerItem(String, Item.Properties)
      */
-    public EnderDeferredItem<Item> registerItem(String name) {
+    public RegiliteItem<Item> registerItem(String name) {
         return this.registerItem(name, Item::new, new Item.Properties());
     }
 
-    public <I extends BucketItem, U extends FluidType> EnderDeferredItem.EnderDeferredBucketItem<I, U> registerBucket(String name, Supplier<? extends I> supp, EnderDeferredFluid<U> fluid) {
+    public <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> registerBucket(String name, Supplier<? extends I> supp, RegiliteFluid<U> fluid) {
         return this.registerBucket(name, key -> supp.get(), fluid);
     }
 
-    public <I extends BucketItem, U extends FluidType> EnderDeferredItem.EnderDeferredBucketItem<I,U> registerBucket(String name, Function<ResourceLocation, ? extends I> func, EnderDeferredFluid<U> fluid) {
+    public <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I,U> registerBucket(String name, Function<ResourceLocation, ? extends I> func, RegiliteFluid<U> fluid) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        EnderDeferredItem.EnderDeferredBucketItem<I,U>  ret = createBucketHolder(getRegistryKey(), key, fluid);
+        RegiliteItem.RegiliteBucketItem<I,U> ret = createBucketHolder(getRegistryKey(), key, fluid);
 
         if (((DeferredRegisterAccessor<Item>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
@@ -173,20 +177,20 @@ public class EnderItemRegistry extends DeferredRegister.Items {
     }
 
     @Override
-    protected <I extends Item> EnderDeferredItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
-        return EnderDeferredItem.createItem(ResourceKey.create(registryKey, key));
+    protected <I extends Item> RegiliteItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
+        return RegiliteItem.createItem(ResourceKey.create(registryKey, key));
     }
 
-    protected <I extends BlockItem, U extends Block> EnderDeferredBlockItem<I, U> createBlockItemHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, EnderDeferredBlock<U> block) {
-        return EnderDeferredBlockItem.createBlockItem(ResourceKey.create(registryKey, key), block);
+    protected <I extends BlockItem, U extends Block> RegiliteBlockItem<I, U> createBlockItemHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteBlock<U> block) {
+        return RegiliteBlockItem.createBlockItem(ResourceKey.create(registryKey, key), block);
     }
 
-    protected <I extends BucketItem, U extends FluidType> EnderDeferredItem.EnderDeferredBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, EnderDeferredFluid<U> fluid) {
-        return EnderDeferredItem.EnderDeferredBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
+    protected <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
+        return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
     }
 
-    public static EnderItemRegistry createRegistry(String modid) {
-        return new EnderItemRegistry(modid);
+    public static ItemRegistry createRegistry(String modid) {
+        return new ItemRegistry(modid);
     }
 
     @Override
@@ -201,15 +205,15 @@ public class EnderItemRegistry extends DeferredRegister.Items {
     }
 
     private void onGatherData(IEventBus bus) {
-        EnderDataProvider provider = EnderDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
+        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
+        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
+        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         for (DeferredHolder<Item, ? extends Item> item : this.getEntries()) {
-            if (item instanceof EnderDeferredItem) {
-                Consumer<CreativeModeTab.Output> outputConsumer = ((EnderDeferredItem<Item>) item).getTab().get(event.getTabKey());
+            if (item instanceof RegiliteItem) {
+                Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>) item).getTab().get(event.getTabKey());
                 if (outputConsumer != null) {
                     outputConsumer.accept(event);
                 }

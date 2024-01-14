@@ -19,24 +19,24 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-public class EnderDataProvider implements DataProvider {
+public class RegiliteDataProvider implements DataProvider {
     private final String modid;
     private final Map<Supplier<String>, String> langEntries = new HashMap<>();
     private final List<DataProvider> subProviders = new ArrayList<>();
     private final List<TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider>> serverSubProviderConsumers = new ArrayList<>();
-    private static final Map<String, EnderDataProvider> INSTANCES = new HashMap<>();
+    private static final Map<String, RegiliteDataProvider> INSTANCES = new HashMap<>();
     private boolean registered = false;
 
-    protected EnderDataProvider(String modid) {
+    protected RegiliteDataProvider(String modid) {
         this.modid = modid;
     }
 
-    public static EnderDataProvider getInstance(String modid) {
-        return INSTANCES.computeIfAbsent(modid, EnderDataProvider::new);
+    public static RegiliteDataProvider getInstance(String modid) {
+        return INSTANCES.computeIfAbsent(modid, RegiliteDataProvider::new);
     }
 
-    public static EnderDataProvider register(String modid, IEventBus modbus) {
-        EnderDataProvider provider = INSTANCES.computeIfAbsent(modid, EnderDataProvider::new);
+    public static RegiliteDataProvider register(String modid, IEventBus modbus) {
+        RegiliteDataProvider provider = INSTANCES.computeIfAbsent(modid, RegiliteDataProvider::new);
         if (!provider.registered) {
             modbus.addListener(provider::onGatherData);
             provider.registered = true;
@@ -91,7 +91,7 @@ public class EnderDataProvider implements DataProvider {
                 this.subProviders.add(function.apply(event.getGenerator().getPackOutput(), event.getExistingFileHelper(), event.getLookupProvider()));
             }
         }
-        EnderLangProvider enUs = new EnderLangProvider(event.getGenerator().getPackOutput(), this.modid, "en_us");
+        RegiliteLangProvider enUs = new RegiliteLangProvider(event.getGenerator().getPackOutput(), this.modid, "en_us");
         enUs.add(this.langEntries);
         this.subProviders.add(enUs);
         event.getGenerator().addProvider(true, this);

@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class EnderLangProvider extends LanguageProvider {
+public class RegiliteLangProvider extends LanguageProvider {
     private final Map<Supplier<String>, String> langEntries = new HashMap<>();
 
-    public EnderLangProvider(PackOutput output, String modid, String locale) {
+    public RegiliteLangProvider(PackOutput output, String modid, String locale) {
         super(output, modid, locale);
     }
 

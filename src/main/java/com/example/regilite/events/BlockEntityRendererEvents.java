@@ -1,7 +1,7 @@
 package com.example.regilite.events;
 
-import com.example.regilite.registry.EnderBlockEntityRegistry;
-import com.example.regilite.registry.EnderDeferredBlockEntity;
+import com.example.regilite.registry.BlockEntityRegistry;
+import com.example.regilite.holder.RegiliteBlockEntity;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -12,18 +12,18 @@ import java.util.function.Supplier;
 
 public class BlockEntityRendererEvents {
 
-    private final EnderBlockEntityRegistry registry;
+    private final BlockEntityRegistry registry;
 
-    public BlockEntityRendererEvents(EnderBlockEntityRegistry registry) {
+    public BlockEntityRendererEvents(BlockEntityRegistry registry) {
         this.registry = registry;
     }
 
     private <T extends BlockEntity> void registerGenericBER(EntityRenderersEvent.RegisterRenderers event) {
         for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : registry.getEntries()) {
-            if (be instanceof EnderDeferredBlockEntity) {
-                Supplier<BlockEntityRendererProvider<T>> renderer = ((EnderDeferredBlockEntity<T>) be).getRenderer();
+            if (be instanceof RegiliteBlockEntity) {
+                Supplier<BlockEntityRendererProvider<T>> renderer = ((RegiliteBlockEntity<T>) be).getRenderer();
                 if (renderer != null)
-                    event.registerBlockEntityRenderer(((EnderDeferredBlockEntity<T>) be).get(), renderer.get());
+                    event.registerBlockEntityRenderer(((RegiliteBlockEntity<T>) be).get(), renderer.get());
 
             }
         }

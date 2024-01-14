@@ -1,8 +1,7 @@
 package com.example.regilite.data;
 
-import com.example.regilite.registry.EnderDeferredBlock;
-import com.example.regilite.registry.EnderDeferredItem;
-import com.example.regilite.registry.EnderItemRegistry;
+import com.example.regilite.holder.RegiliteItem;
+import com.example.regilite.registry.ItemRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -20,10 +19,10 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-public class EnderItemModelProvider extends ItemModelProvider {
-    private final EnderItemRegistry registry;
+public class RegiliteItemModelProvider extends ItemModelProvider {
+    private final ItemRegistry registry;
 
-    public EnderItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper, EnderItemRegistry itemRegistry) {
+    public RegiliteItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper, ItemRegistry itemRegistry) {
         super(output, modid, existingFileHelper);
         this.registry = itemRegistry;
     }
@@ -31,8 +30,8 @@ public class EnderItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         for (DeferredHolder<Item, ? extends Item> item : registry.getEntries()) {
-            if (item instanceof EnderDeferredItem) {
-                BiConsumer<EnderItemModelProvider, Item> modelProvider = (BiConsumer<EnderItemModelProvider, Item>) ((EnderDeferredItem<? extends Item>) item).getModelProvider();
+            if (item instanceof RegiliteItem) {
+                BiConsumer<RegiliteItemModelProvider, Item> modelProvider = (BiConsumer<RegiliteItemModelProvider, Item>) ((RegiliteItem<? extends Item>) item).getModelProvider();
                 if (modelProvider != null) {
                     modelProvider.accept(this, item.get());
                 }

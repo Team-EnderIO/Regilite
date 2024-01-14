@@ -2,11 +2,11 @@ package com.example.examplemod;
 
 import com.example.examplemod.exampleclasses.ExampleBlock;
 import com.example.examplemod.exampleclasses.ExampleColors;
-import com.example.regilite.data.EnderBlockLootProvider;
-import com.example.regilite.data.EnderItemModelProvider;
-import com.example.regilite.registry.EnderBlockRegistry;
-import com.example.regilite.registry.EnderDeferredBlock;
-import com.example.regilite.registry.EnderItemRegistry;
+import com.example.regilite.data.RegiliteBlockLootProvider;
+import com.example.regilite.data.RegiliteItemModelProvider;
+import com.example.regilite.registry.BlockRegistry;
+import com.example.regilite.holder.RegiliteBlock;
+import com.example.regilite.registry.ItemRegistry;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -15,22 +15,20 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 
-import java.util.function.Supplier;
-
 public class Blocks {
-    public static final EnderBlockRegistry BLOCKS = EnderBlockRegistry.createRegistry(ExampleMod.MODID);
-    public static final EnderItemRegistry ITEMS = EnderItemRegistry.createRegistry(ExampleMod.MODID);
+    public static final BlockRegistry BLOCKS = BlockRegistry.createRegistry(ExampleMod.MODID);
+    public static final ItemRegistry ITEMS = ItemRegistry.createRegistry(ExampleMod.MODID);
 
-    public static final EnderDeferredBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
+    public static final RegiliteBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
             .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .setTranslation("Test Example Block")
             .setColorSupplier(ExampleColors.BLOCK)
             .setBlockStateProvider(BlockStateProvider::simpleBlock)
-            .setLootTable(EnderBlockLootProvider::dropSelf)
+            .setLootTable(RegiliteBlockLootProvider::dropSelf)
             .createBlockItem(ITEMS)
             .addBlockItemTags(ItemTags.PLANKS)
-            .setModelProvider(EnderItemModelProvider::basicItem)
+            .setModelProvider(RegiliteItemModelProvider::basicItem)
             .setTab(CreativeModeTabs.BUILDING_BLOCKS)
             .setTab(CreativeTabs.EXAMPLE_TAB.getKey())
             .finishBlockItem();

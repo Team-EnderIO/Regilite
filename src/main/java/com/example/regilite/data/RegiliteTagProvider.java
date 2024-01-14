@@ -16,10 +16,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public class EnderTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
+public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
     private final DeferredRegister<T> registry;
 
-    public EnderTagProvider(PackOutput output, ResourceKey<? extends Registry<T>> key, Function<T, ResourceKey<T>> func, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper, DeferredRegister<T> registry) {
+    public RegiliteTagProvider(PackOutput output, ResourceKey<? extends Registry<T>> key, Function<T, ResourceKey<T>> func, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper, DeferredRegister<T> registry) {
         super(output, key, lookupProvider, func, modId, existingFileHelper);
         this.registry = registry;
     }

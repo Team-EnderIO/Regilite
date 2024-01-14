@@ -1,5 +1,6 @@
 package com.example.regilite.registry;
 
+import com.example.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,28 +14,28 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderFluidRegister extends DeferredRegister<FluidType>{
+public class FluidRegister extends DeferredRegister<FluidType>{
 
-    protected EnderFluidRegister(String namespace) {
+    protected FluidRegister(String namespace) {
         super(NeoForgeRegistries.FLUID_TYPES.key(), namespace);
     }
 
-    public static EnderFluidRegister create(String modid) {
-        return new EnderFluidRegister(modid);
+    public static FluidRegister create(String modid) {
+        return new FluidRegister(modid);
     }
 
     @Override
-    public <I extends FluidType> EnderDeferredFluid<I> register(String name, Function<ResourceLocation, ? extends I> func) {
-        return (EnderDeferredFluid<I>) super.register(name, func);
+    public <I extends FluidType> RegiliteFluid<I> register(String name, Function<ResourceLocation, ? extends I> func) {
+        return (RegiliteFluid<I>) super.register(name, func);
     }
 
     @Override
-    public <I extends FluidType> EnderDeferredFluid<I> register(String name, Supplier<? extends I> sup) {
+    public <I extends FluidType> RegiliteFluid<I> register(String name, Supplier<? extends I> sup) {
         return this.register(name, key -> sup.get());
     }
 
-    public EnderDeferredFluid<FluidType> registerFluid(String name, FluidType.Properties type) {
-        EnderDeferredFluid<FluidType> fluid = this.register(name, () -> new FluidType(type) {
+    public RegiliteFluid<FluidType> registerFluid(String name, FluidType.Properties type) {
+        RegiliteFluid<FluidType> fluid = this.register(name, () -> new FluidType(type) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(new IClientFluidTypeExtensions() {
@@ -59,7 +60,7 @@ public class EnderFluidRegister extends DeferredRegister<FluidType>{
     }
 
     @Override
-    protected <I extends FluidType> EnderDeferredFluid<I> createHolder(ResourceKey<? extends Registry<FluidType>> registryKey, ResourceLocation key) {
-        return EnderDeferredFluid.createHolder(ResourceKey.create(registryKey, key));
+    protected <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<? extends Registry<FluidType>> registryKey, ResourceLocation key) {
+        return RegiliteFluid.createHolder(ResourceKey.create(registryKey, key));
     }
 }

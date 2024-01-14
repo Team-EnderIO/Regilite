@@ -1,6 +1,9 @@
-package com.example.regilite.registry;
+package com.example.regilite.holder;
 
-import com.example.regilite.data.EnderDataProvider;
+import com.example.regilite.data.RegiliteDataProvider;
+import com.example.regilite.registry.BlockRegistry;
+import com.example.regilite.registry.ItemRegistry;
+import com.example.regilite.registry.ITagagble;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
@@ -17,42 +20,42 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid> {
+public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Fluid>> FluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
-    private EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock, T> block;
-    private EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem, T> bucket;
+    private RegiliteBlock.RegiliteLiquidBlock<? extends LiquidBlock, T> block;
+    private RegiliteItem.RegiliteBucketItem<? extends BucketItem, T> bucket;
     private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, this::getSource, this::getFlowing).block(this::getBlock).bucket(this::getBucket);
 
-    protected EnderDeferredFluid(ResourceKey<FluidType> key) {
+    protected RegiliteFluid(ResourceKey<FluidType> key) {
         super(key);
-        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
+        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
     }
 
-    public static <I extends FluidType> EnderDeferredFluid<I> createHolder(ResourceKey<FluidType> fluidTypeResourceKey) {
-        return new EnderDeferredFluid<>(fluidTypeResourceKey);
+    public static <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<FluidType> fluidTypeResourceKey) {
+        return new RegiliteFluid<>(fluidTypeResourceKey);
     }
 
-    public EnderDeferredFluid<T> createFluid(DeferredRegister<Fluid> register,Consumer<BaseFlowingFluid.Properties> consumer) {
+    public RegiliteFluid<T> createFluid(DeferredRegister<Fluid> register, Consumer<BaseFlowingFluid.Properties> consumer) {
         consumer.accept(properties);
         this.flowingFluid = register.register("fluid_" + getId().getPath() + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
         this.sourceFluid = register.register("fluid_" + getId().getPath() + "_still", () -> new BaseFlowingFluid.Source(properties));
         return this;
     }
-    public EnderDeferredFluid<T> createFluid(DeferredRegister<Fluid> register) {
+    public RegiliteFluid<T> createFluid(DeferredRegister<Fluid> register) {
         return this.createFluid(register, properties1 -> {});
     }
 
 
 
-    public EnderDeferredBlock.EnderDeferredLiquidBlock<? extends LiquidBlock, T> withBlock(EnderBlockRegistry registry, Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
+    public RegiliteBlock.RegiliteLiquidBlock<? extends LiquidBlock, T> withBlock(BlockRegistry registry, Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
         this.block = registry.registerLiquidBlock(getId().getPath(), () -> supplier.apply(this.flowingFluid), this);
         return this.block;
     }
 
-    public EnderDeferredItem.EnderDeferredBucketItem<? extends BucketItem, T> withBucket(EnderItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, ? extends BucketItem> supplier) {
+    public RegiliteItem.RegiliteBucketItem<? extends BucketItem, T> withBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, ? extends BucketItem> supplier) {
         this.bucket = registry.registerBucket(getId().getPath(), () -> supplier.apply(this.sourceFluid), this);
         return this.bucket;
     }
@@ -74,7 +77,7 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
     }
 
     @SafeVarargs
-    public final EnderDeferredFluid<T> addFluidTags(TagKey<Fluid>... tags) {
+    public final RegiliteFluid<T> addFluidTags(TagKey<Fluid>... tags) {
         this.FluidTags = Set.of(tags);
         return this;
     }
@@ -83,8 +86,8 @@ public class EnderDeferredFluid<T extends FluidType> extends DeferredHolder<Flui
         return FluidTags;
     }
 
-    public EnderDeferredFluid<T> setTranslation(String translation) {
-        EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
+    public RegiliteFluid<T> setTranslation(String translation) {
+        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
         return this;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.examplemod;
 
-import com.example.regilite.data.EnderDataProvider;
+import com.example.regilite.data.RegiliteDataProvider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -24,7 +24,7 @@ public class CreativeTabs {
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> registerTab(String name, String translation, Consumer<CreativeModeTab.Builder> builder) {
         return CREATIVE_MODE_TABS.register(name, () -> {
             CreativeModeTab.Builder config = CreativeModeTab.builder()
-                    .title(EnderDataProvider.addTranslation("itemGroup", new ResourceLocation(CREATIVE_MODE_TABS.getNamespace(), name), translation));
+                    .title(RegiliteDataProvider.addTranslation("itemGroup", new ResourceLocation(CREATIVE_MODE_TABS.getNamespace(), name), translation));
             builder.accept(config);
             return config.build();
         });

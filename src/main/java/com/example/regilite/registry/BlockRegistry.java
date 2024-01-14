@@ -1,10 +1,12 @@
 package com.example.regilite.registry;
 
-import com.example.regilite.data.EnderBlockLootProvider;
-import com.example.regilite.data.EnderBlockStateProvider;
-import com.example.regilite.data.EnderDataProvider;
-import com.example.regilite.data.EnderTagProvider;
+import com.example.regilite.data.RegiliteBlockLootProvider;
+import com.example.regilite.data.RegiliteBlockStateProvider;
+import com.example.regilite.data.RegiliteDataProvider;
+import com.example.regilite.data.RegiliteTagProvider;
 import com.example.regilite.events.ColorEvents;
+import com.example.regilite.holder.RegiliteBlock;
+import com.example.regilite.holder.RegiliteFluid;
 import com.example.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.data.loot.LootTableProvider;
@@ -29,8 +31,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnderBlockRegistry extends DeferredRegister.Blocks {
-    protected EnderBlockRegistry(String namespace) {
+public class BlockRegistry extends DeferredRegister.Blocks {
+    protected BlockRegistry(String namespace) {
         super(namespace);
     }
 
@@ -43,8 +45,8 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <B extends Block> EnderDeferredBlock<B> register(String name, Function<ResourceLocation, ? extends B> func) {
-        return ((EnderDeferredBlock<B>) super.register(name, func));
+    public <B extends Block> RegiliteBlock<B> register(String name, Function<ResourceLocation, ? extends B> func) {
+        return ((RegiliteBlock<B>) super.register(name, func));
     }
 
     /**
@@ -55,7 +57,7 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
      * @return A {@link DeferredHolder} that will track updates from the registry for this block.
      */
     @Override
-    public <B extends Block> EnderDeferredBlock<B> register(String name, Supplier<? extends B> sup) {
+    public <B extends Block> RegiliteBlock<B> register(String name, Supplier<? extends B> sup) {
         return this.register(name, key -> sup.get());
     }
 
@@ -68,7 +70,7 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
      * @return A {@link DeferredHolder} that will track updates from the registry for this block.
      * @see #registerBlock(String, BlockBehaviour.Properties)
      */
-    public <B extends Block> EnderDeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, BlockBehaviour.Properties props) {
+    public <B extends Block> RegiliteBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, BlockBehaviour.Properties props) {
         return this.register(name, () -> func.apply(props));
     }
 
@@ -80,18 +82,18 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
      * @return A {@link DeferredHolder} that will track updates from the registry for this block.
      * @see #registerBlock(String, Function, BlockBehaviour.Properties)
      */
-    public EnderDeferredBlock<Block> registerBlock(String name, BlockBehaviour.Properties props) {
+    public RegiliteBlock<Block> registerBlock(String name, BlockBehaviour.Properties props) {
         return this.registerBlock(name, Block::new, props);
     }
 
-    public <B extends LiquidBlock, U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> registerLiquidBlock(String name, Function<ResourceLocation, ? extends B> func, EnderDeferredFluid<U> fluid) {
+    public <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> registerLiquidBlock(String name, Function<ResourceLocation, ? extends B> func, RegiliteFluid<U> fluid) {
         //if (seenRegisterEvent)
         //    throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> ret = createLiquidHolder(this.getRegistryKey(), key, fluid);
+        RegiliteBlock.RegiliteLiquidBlock<B, U> ret = createLiquidHolder(this.getRegistryKey(), key, fluid);
 
         if (((DeferredRegisterAccessor<Block>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
@@ -100,25 +102,25 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
         return ret;
     }
 
-    public <B extends LiquidBlock, U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> registerLiquidBlock(String namespace, Supplier<? extends B> supplier, EnderDeferredFluid<U> fluid) {
+    public <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> registerLiquidBlock(String namespace, Supplier<? extends B> supplier, RegiliteFluid<U> fluid) {
         return this.registerLiquidBlock(namespace, key -> supplier.get(), fluid);
     }
 
-    public <U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<LiquidBlock, U> registerLiquidBlock(String name, BlockBehaviour.Properties props, Supplier<FlowingFluid> fluidSupp, EnderDeferredFluid<U> fluid) {
+    public <U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<LiquidBlock, U> registerLiquidBlock(String name, BlockBehaviour.Properties props, Supplier<FlowingFluid> fluidSupp, RegiliteFluid<U> fluid) {
         return this.registerLiquidBlock(name, (rl) -> new LiquidBlock(fluidSupp, props), fluid);
     }
 
     @Override
     protected <I extends Block> DeferredBlock<I> createHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key) {
-        return EnderDeferredBlock.createBlock(ResourceKey.create(registryKey, key));
+        return RegiliteBlock.createBlock(ResourceKey.create(registryKey, key));
     }
 
-    private <B extends LiquidBlock, U extends FluidType> EnderDeferredBlock.EnderDeferredLiquidBlock<B, U> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key, EnderDeferredFluid<U> fluid) {
-        return EnderDeferredBlock.EnderDeferredLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
+    private <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
+        return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
     }
 
-    public static EnderBlockRegistry createRegistry(String modid) {
-        return new EnderBlockRegistry(modid);
+    public static BlockRegistry createRegistry(String modid) {
+        return new BlockRegistry(modid);
     }
 
     @Override
@@ -131,10 +133,10 @@ public class EnderBlockRegistry extends DeferredRegister.Blocks {
     }
 
     private void onGatherData(IEventBus bus) {
-        EnderDataProvider provider = EnderDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new EnderBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
+        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
+        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
+        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
         provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new LootTableProvider(packOutput, Collections.emptySet(),
-            List.of(new LootTableProvider.SubProviderEntry(() -> new EnderBlockLootProvider(Set.of(), this), LootContextParamSets.BLOCK))));
+            List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), this), LootContextParamSets.BLOCK))));
     }
 }

@@ -1,7 +1,7 @@
 package com.example.regilite.data;
 
-import com.example.regilite.registry.EnderBlockRegistry;
-import com.example.regilite.registry.EnderDeferredBlock;
+import com.example.regilite.registry.BlockRegistry;
+import com.example.regilite.holder.RegiliteBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -17,11 +17,11 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class EnderBlockLootProvider extends BlockLootSubProvider {
+public class RegiliteBlockLootProvider extends BlockLootSubProvider {
 
-    private final EnderBlockRegistry registry;
+    private final BlockRegistry registry;
 
-    public EnderBlockLootProvider(Set<Item> explosionResistant, EnderBlockRegistry registry) {
+    public RegiliteBlockLootProvider(Set<Item> explosionResistant, BlockRegistry registry) {
         super(explosionResistant, FeatureFlags.REGISTRY.allFlags());
         this.registry = registry;
     }
@@ -29,8 +29,8 @@ public class EnderBlockLootProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         for (DeferredHolder<Block, ? extends Block> block : registry.getEntries()) {
-            if (block instanceof EnderDeferredBlock) {
-                BiConsumer<EnderBlockLootProvider, Block> lootTable = ((EnderDeferredBlock<Block>) block).getLootTable();
+            if (block instanceof RegiliteBlock) {
+                BiConsumer<RegiliteBlockLootProvider, Block> lootTable = ((RegiliteBlock<Block>) block).getLootTable();
                 if (lootTable != null) {
                     lootTable.accept(this, block.get());
                 }
