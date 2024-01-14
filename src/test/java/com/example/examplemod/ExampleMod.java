@@ -18,5 +18,6 @@ public class ExampleMod
         CreativeTabs.register(modEventBus);
         Fluids.register(modEventBus);
         BlockEntities.register(modEventBus);
+        Menus.register(modEventBus);
     }
 }

@@ -23,10 +23,10 @@ public class ScreenEvents {
     public <T extends AbstractContainerMenu> void genericScreenEvent(FMLClientSetupEvent event) {
         for (DeferredHolder<MenuType<?>, ? extends MenuType<?>> menu : registry.getEntries()) {
             if (menu instanceof EnderDeferredMenu) {
-                Supplier<? extends MenuScreens.ScreenConstructor<T, ? extends AbstractContainerScreen<T>>> screen = ((EnderDeferredMenu<T>) menu).getScreenConstructor();
+                IScreenConstructor<T, ? extends AbstractContainerScreen<T>> screen = ((EnderDeferredMenu<T>) menu).getScreenConstructor();
                 if (screen != null) {
                     event.enqueueWork(
-                            () -> MenuScreens.register(((EnderDeferredMenu<T>) menu).get(), screen.get())
+                            () -> MenuScreens.register(((EnderDeferredMenu<T>) menu).get(), screen::create)
                     );
                 }
             }

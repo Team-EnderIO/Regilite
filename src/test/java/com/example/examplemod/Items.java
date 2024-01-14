@@ -1,5 +1,6 @@
 package com.example.examplemod;
 
+import com.example.examplemod.exampleclasses.ExampleColors;
 import com.example.regilite.registry.EnderDeferredItem;
 import com.example.regilite.registry.EnderItemRegistry;
 import net.minecraft.tags.ItemTags;
@@ -14,6 +15,7 @@ public class Items {
                     .alwaysEat().nutrition(1).saturationMod(2f).build()))
             .addItemTags(ItemTags.WOOL)
             .setTranslation("Test Example Item")
+            .setColorSupplier(ExampleColors.ITEM)
             .setTab(null);
 
     public static void register(IEventBus modEventBus) {

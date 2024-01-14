@@ -2,6 +2,7 @@ package com.example.regilite.registry;
 
 import com.example.regilite.data.EnderDataProvider;
 import com.example.regilite.data.EnderItemModelProvider;
+import com.example.regilite.events.IItemColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -31,7 +32,7 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
     protected BiConsumer<EnderItemModelProvider, T> modelProvider = EnderItemModelProvider::basicItem;
-    protected Supplier<ItemColor> colorSupplier;
+    protected IItemColor colorSupplier;
 
     protected EnderDeferredItem(ResourceKey<Item> key) {
         super(key);
@@ -81,11 +82,11 @@ public class EnderDeferredItem<T extends Item> extends DeferredItem<T> implement
         return modelProvider;
     }
 
-    public Supplier<ItemColor> getColorSupplier() {
+    public IItemColor getColorSupplier() {
         return colorSupplier;
     }
 
-    public EnderDeferredItem<T> setColorSupplier(Supplier<ItemColor> colorSupplier) {
+    public EnderDeferredItem<T> setColorSupplier(IItemColor colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }

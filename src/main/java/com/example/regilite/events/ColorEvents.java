@@ -22,9 +22,9 @@ public class ColorEvents {
         public void registerItemColor(RegisterColorHandlersEvent.Item event) {
             for (DeferredHolder<Item, ? extends Item> item : items.getEntries()) {
                 if (item instanceof EnderDeferredItem) {
-                    Supplier<ItemColor> colorSupplier = ((EnderDeferredItem<Item>) item).getColorSupplier();
+                    IItemColor colorSupplier = ((EnderDeferredItem<Item>) item).getColorSupplier();
                     if (colorSupplier != null)
-                        event.register(colorSupplier.get(), item.get());
+                        event.register(colorSupplier::getColor, item.get());
                 }
             }
         }
@@ -40,9 +40,9 @@ public class ColorEvents {
         public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
             for (DeferredHolder<Block, ? extends Block> block : blocks.getEntries()) {
                 if (block instanceof EnderDeferredBlock) {
-                    Supplier<BlockColor> colorSupplier = ((EnderDeferredBlock<Block>) block).getColorSupplier();
+                    IBlockColor colorSupplier = ((EnderDeferredBlock<Block>) block).getColorSupplier();
                     if (colorSupplier != null)
-                        event.register(colorSupplier.get(), block.get());
+                        event.register(colorSupplier::getColor, block.get());
                 }
             }
         }

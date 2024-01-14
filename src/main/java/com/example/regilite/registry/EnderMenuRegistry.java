@@ -1,5 +1,6 @@
 package com.example.regilite.registry;
 
+import com.example.regilite.events.IScreenConstructor;
 import com.example.regilite.events.ScreenEvents;
 import com.example.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -13,6 +14,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Objects;
@@ -46,12 +48,16 @@ public class EnderMenuRegistry extends DeferredRegister<MenuType<?>> {
         return registerMenu(name, key -> sup.get());
     }
 
-    public <I extends AbstractContainerMenu> EnderDeferredMenu<I> registerMenu(String name, MenuType.MenuSupplier<I> sup) {
+    public <I extends AbstractContainerMenu> EnderDeferredMenu<I> registerMenu(String name, IContainerFactory<I> sup) {
         return registerMenu(name, () -> new MenuType<>(sup, FeatureFlags.DEFAULT_FLAGS));
     }
 
-    public <I extends AbstractContainerMenu> EnderDeferredMenu<I> registerMenu(String name, MenuType.MenuSupplier<I> sup, Supplier<MenuScreens.ScreenConstructor<I, ? extends AbstractContainerScreen<I>>> screen) {
+    public <I extends AbstractContainerMenu> EnderDeferredMenu<I> registerMenu(String name, IContainerFactory<I> sup, IScreenConstructor<I, ? extends AbstractContainerScreen<I>> screen) {
         return registerMenu(name, sup).setScreenConstructor(screen);
+    }
+
+    public static EnderMenuRegistry createRegistry(String modid) {
+        return new EnderMenuRegistry(modid);
     }
 
     @Override

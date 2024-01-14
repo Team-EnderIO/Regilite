@@ -85,7 +85,6 @@ public class EnderDataProvider implements DataProvider {
         return "Ender IO Data (" + modid + ")";
     }
 
-
     void onGatherData(GatherDataEvent event) {
         if (event.includeServer()) {
             for (TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider> function : this.serverSubProviderConsumers) {

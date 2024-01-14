@@ -2,6 +2,7 @@ package com.example.regilite.registry;
 
 import com.example.regilite.data.EnderBlockLootProvider;
 import com.example.regilite.data.EnderDataProvider;
+import com.example.regilite.events.IBlockColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -29,7 +30,7 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
     @Nullable
     private BiConsumer<BlockStateProvider, T> blockStateProvider = BlockStateProvider::simpleBlock;
     @Nullable
-    private Supplier<BlockColor> colorSupplier;
+    private IBlockColor colorSupplier;
     protected EnderDeferredBlock(ResourceKey<Block> key) {
         super(key);
         EnderDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
@@ -71,11 +72,11 @@ public class EnderDeferredBlock<T extends Block> extends DeferredBlock<T> implem
     }
 
     @Nullable
-    public Supplier<BlockColor> getColorSupplier() {
+    public IBlockColor getColorSupplier() {
         return colorSupplier;
     }
 
-    public EnderDeferredBlock<T> setColorSupplier(@Nullable Supplier<BlockColor> colorSupplier) {
+    public EnderDeferredBlock<T> setColorSupplier(@Nullable IBlockColor colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }
