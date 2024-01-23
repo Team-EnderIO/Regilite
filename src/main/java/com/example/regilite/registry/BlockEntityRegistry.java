@@ -35,7 +35,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        RegiliteBlockEntity<T> ret = createBlockEntityHolder(getRegistryKey(), key);
+        RegiliteBlockEntity<T> ret = RegiliteBlockEntity.createBlockEntity(ResourceKey.create(getRegistryKey(), key));
 
         if (((DeferredRegisterAccessor<BlockEntityType<?>>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);

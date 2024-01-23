@@ -28,7 +28,7 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        RegiliteEntity<T> ret = createEntityHolder(getRegistryKey(), key);
+        RegiliteEntity<T> ret = RegiliteEntity.createEntity(ResourceKey.create(getRegistryKey(), key));
 
         if (((DeferredRegisterAccessor<EntityType<?>>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
@@ -43,10 +43,6 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
 
     public <T extends Entity> RegiliteEntity<T> registerEntity(String name, Supplier<EntityType<T>> supplier) {
         return this.registerEntity(name, key -> supplier.get());
-    }
-
-    protected <T extends Entity> RegiliteEntity<T> createEntityHolder(ResourceKey<? extends Registry<EntityType<?>>> registryKey, ResourceLocation key) {
-        return RegiliteEntity.createEntity(ResourceKey.create(registryKey, key));
     }
 
     public static EntityRegistry create(String modid) {

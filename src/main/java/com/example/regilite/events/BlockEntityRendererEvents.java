@@ -18,13 +18,17 @@ public class BlockEntityRendererEvents {
         this.registry = registry;
     }
 
+    // TODO: These casts should be checked thoroughly.
+    @SuppressWarnings("unchecked")
     private <T extends BlockEntity> void registerGenericBER(EntityRenderersEvent.RegisterRenderers event) {
         for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : registry.getEntries()) {
-            if (be instanceof RegiliteBlockEntity) {
-                Supplier<BlockEntityRendererProvider<T>> renderer = ((RegiliteBlockEntity<T>) be).getRenderer();
-                if (renderer != null)
-                    event.registerBlockEntityRenderer(((RegiliteBlockEntity<T>) be).get(), renderer.get());
-
+            //noinspection rawtypes
+            if (be instanceof RegiliteBlockEntity regiliteBlockEntity) {
+                Supplier<BlockEntityRendererProvider<T>> renderer = regiliteBlockEntity.getRenderer();
+                if (renderer != null) {
+                    var blockEntityType = (BlockEntityType<T>)be.get();
+                    event.registerBlockEntityRenderer(blockEntityType, renderer.get());
+                }
             }
         }
     }
