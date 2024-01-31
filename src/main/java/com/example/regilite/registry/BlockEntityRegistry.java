@@ -55,7 +55,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     }
 
     protected <T extends BlockEntity> RegiliteBlockEntity<T> createBlockEntityHolder(ResourceKey<? extends Registry<BlockEntityType<?>>> registryKey, ResourceLocation key) {
-        return new RegiliteBlockEntity<>(ResourceKey.create(registryKey, key));
+        return RegiliteBlockEntity.createBlockEntity(ResourceKey.create(registryKey, key));
     }
 
     public static <T extends BlockEntity> BlockEntityRegistry create(String modid) {

@@ -46,7 +46,7 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
     }
 
     protected <T extends Entity> RegiliteEntity<T> createEntityHolder(ResourceKey<? extends Registry<EntityType<?>>> registryKey, ResourceLocation key) {
-        return new RegiliteEntity<>(ResourceKey.create(registryKey, key));
+        return RegiliteEntity.createEntity(ResourceKey.create(registryKey, key));
     }
 
     public static EntityRegistry create(String modid) {

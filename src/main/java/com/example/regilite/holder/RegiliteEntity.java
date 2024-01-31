@@ -27,7 +27,7 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
         return null;
     }
 
-    public static <T extends Entity> RegiliteEntity<T> createBlockEntity(ResourceKey<EntityType<? extends Entity>> key) {
+    public static <T extends Entity> RegiliteEntity<T> createEntity(ResourceKey<EntityType<? extends Entity>> key) {
         return new RegiliteEntity<>(key);
     }
 
