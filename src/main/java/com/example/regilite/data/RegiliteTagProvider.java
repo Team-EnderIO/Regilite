@@ -1,6 +1,6 @@
 package com.example.regilite.data;
 
-import com.example.regilite.registry.ITagagble;
+import com.example.regilite.registry.ITaggable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.PackOutput;
@@ -27,8 +27,8 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
     @Override
     protected void addTags(HolderLookup.Provider p_256380_) {
         for (DeferredHolder<T, ? extends T> entry : registry.getEntries()) {
-            if (entry instanceof ITagagble) {
-                Set<TagKey<T>> tag = ((ITagagble<T>) entry).getTags();
+            if (entry instanceof ITaggable) {
+                Set<TagKey<T>> tag = ((ITaggable<?, T>) entry).getTags();
                 tag.forEach(t -> tag(t).add(entry.get()));
             }
         }

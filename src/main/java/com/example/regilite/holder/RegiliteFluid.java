@@ -3,7 +3,7 @@ package com.example.regilite.holder;
 import com.example.regilite.data.RegiliteDataProvider;
 import com.example.regilite.registry.BlockRegistry;
 import com.example.regilite.registry.ItemRegistry;
-import com.example.regilite.registry.ITagagble;
+import com.example.regilite.registry.ITaggable;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid> {
+public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements RegiliteType<Fluid>, ITaggable<RegiliteFluid<T>, Fluid> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Fluid>> FluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
@@ -77,7 +77,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     @SafeVarargs
-    public final RegiliteFluid<T> addFluidTags(TagKey<Fluid>... tags) {
+    @Override
+    public final RegiliteFluid<T> addTags(TagKey<Fluid>... tags) {
         this.FluidTags = Set.of(tags);
         return this;
     }

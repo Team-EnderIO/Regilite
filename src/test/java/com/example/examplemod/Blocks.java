@@ -21,7 +21,7 @@ public class Blocks {
 
     public static final RegiliteBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
-            .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
+            .addTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .setTranslation("Test Example Block")
             .setColorSupplier(ExampleColors.BLOCK)
             .setBlockStateProvider(BlockStateProvider::simpleBlock)

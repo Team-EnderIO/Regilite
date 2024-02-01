@@ -3,7 +3,7 @@ package com.example.regilite.holder;
 import com.example.regilite.data.RegiliteDataProvider;
 import com.example.regilite.data.RegiliteItemModelProvider;
 import com.example.regilite.events.IItemColor;
-import com.example.regilite.registry.ITagagble;
+import com.example.regilite.registry.ITaggable;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITagagble<Item> {
+public class RegiliteItem<T extends Item> extends DeferredItem<T> implements RegiliteType<Item>, ITaggable<RegiliteItem<T>, Item> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
@@ -45,7 +45,8 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     }
 
     @SafeVarargs
-    public final RegiliteItem<T> addItemTags(TagKey<Item>... tags) {
+    @Override
+    public final RegiliteItem<T> addTags(TagKey<Item>... tags) {
         ItemTags.addAll(Set.of(tags));
         return this;
     }
@@ -138,7 +139,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
 
         @SafeVarargs
         public final RegiliteBucketItem<T,U> addBucketItemTags(TagKey<Item>... tags) {
-            super.addItemTags(tags);
+            super.addTags(tags);
             return this;
         }
 

@@ -4,7 +4,7 @@ import com.example.regilite.data.RegiliteBlockLootProvider;
 import com.example.regilite.data.RegiliteDataProvider;
 import com.example.regilite.events.IBlockColor;
 import com.example.regilite.registry.ItemRegistry;
-import com.example.regilite.registry.ITagagble;
+import com.example.regilite.registry.ITaggable;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements ITagagble<Block> {
+public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements RegiliteType<Block>, ITaggable<RegiliteBlock<T>, Block> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
@@ -43,7 +43,8 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     }
 
     @SafeVarargs
-    public final RegiliteBlock<T> addBlockTags(TagKey<Block>... tags) {
+    @Override
+    public final RegiliteBlock<T> addTags(TagKey<Block>... tags) {
         blockTags = Set.of(tags);
         return this;
     }

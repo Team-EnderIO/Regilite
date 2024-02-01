@@ -1,6 +1,6 @@
 package com.example.regilite.holder;
 
-import com.example.regilite.registry.ITagagble;
+import com.example.regilite.registry.ITaggable;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
+public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements RegiliteType<BlockEntityType<?>>, ITaggable<RegiliteBlockEntity<T>, BlockEntityType<?>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
     protected Supplier<BlockEntityRendererProvider<T>> renderer;
 
@@ -43,15 +43,16 @@ public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<B
         return this.get().create(pos, state);
     }
 
+    @SafeVarargs
+    @Override
+    public final RegiliteBlockEntity<T> addTags(TagKey<BlockEntityType<?>>... tags) {
+        BlockEntityTags.addAll(Set.of(tags));
+        return this;
+    }
+
     @Override
     public Set<TagKey<BlockEntityType<?>>> getTags() {
         return this.BlockEntityTags;
-    }
-
-    @SafeVarargs
-    public final RegiliteBlockEntity<T> addBlockEntityTagsTags(TagKey<BlockEntityType<?>>... tags) {
-        BlockEntityTags.addAll(Set.of(tags));
-        return this;
     }
 
     public RegiliteBlockEntity<T> setRenderer(Supplier<BlockEntityRendererProvider<T>> renderer) {

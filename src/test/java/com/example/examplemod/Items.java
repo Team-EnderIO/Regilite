@@ -13,7 +13,7 @@ public class Items {
 
     public static final RegiliteItem<Item> EXAMPLE_ITEM = ITEMS.registerItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
                     .alwaysEat().nutrition(1).saturationMod(2f).build()))
-            .addItemTags(ItemTags.WOOL)
+            .addTags(ItemTags.WOOL)
             .setTranslation("Test Example Item")
             .setColorSupplier(ExampleColors.ITEM)
             .setTab(null);
