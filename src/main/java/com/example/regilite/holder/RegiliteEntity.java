@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<? extends Entity>, EntityType<T>> implements RegiliteType<EntityType<?>>, ITaggable<RegiliteEntity<?>, EntityType<?>> {
+public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<? extends Entity>, EntityType<T>> implements IRegiliteType<EntityType<?>>, ITaggable<RegiliteEntity<?>, EntityType<?>> {
     private final Set<TagKey<EntityType<?>>> entityTags = new HashSet<>();
     private final Supplier<String> supplier = () -> get().getDescriptionId();
 

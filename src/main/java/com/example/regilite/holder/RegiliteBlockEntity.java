@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements RegiliteType<BlockEntityType<?>>, ITaggable<RegiliteBlockEntity<T>, BlockEntityType<?>> {
+public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements IRegiliteType<BlockEntityType<?>>, ITaggable<RegiliteBlockEntity<T>, BlockEntityType<?>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
     protected Supplier<BlockEntityRendererProvider<T>> renderer;
 

@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements RegiliteType<Fluid>, ITaggable<RegiliteFluid<T>, Fluid> {
+public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements IRegiliteType<Fluid>, ITaggable<RegiliteFluid<T>, Fluid> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Fluid>> FluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;

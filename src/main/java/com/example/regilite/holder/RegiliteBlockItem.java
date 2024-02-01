@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class RegiliteBlockItem<T extends BlockItem, U extends Block> extends RegiliteItem<T> {
+public class RegiliteBlockItem<T extends BlockItem, U extends Block> extends RegiliteItem<T> implements IRegiliteType<Item> {
     private RegiliteBlock<U> block;
     protected RegiliteBlockItem(ResourceKey<Item> key) {
         super(key);

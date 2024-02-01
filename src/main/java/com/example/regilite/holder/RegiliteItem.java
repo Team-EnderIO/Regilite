@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegiliteItem<T extends Item> extends DeferredItem<T> implements RegiliteType<Item>, ITaggable<RegiliteItem<T>, Item> {
+public class RegiliteItem<T extends Item> extends DeferredItem<T> implements IRegiliteType<Item>, ITaggable<RegiliteItem<T>, Item> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();

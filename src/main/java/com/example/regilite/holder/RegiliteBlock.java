@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements RegiliteType<Block>, ITaggable<RegiliteBlock<T>, Block> {
+public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements IRegiliteType<Block>, ITaggable<RegiliteBlock<T>, Block> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
