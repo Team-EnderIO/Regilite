@@ -7,7 +7,6 @@ import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
 import com.enderio.regilite.events.ColorEvents;
 import com.enderio.regilite.holder.RegiliteFluid;
-import com.enderio.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
@@ -95,7 +94,8 @@ public class BlockRegistry extends DeferredRegister.Blocks {
 
         RegiliteBlock.RegiliteLiquidBlock<B, U> ret = createLiquidHolder(this.getRegistryKey(), key, fluid);
 
-        if (((DeferredRegisterAccessor<Block>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+        var entries = DeferredRegistryReflect.getEntries(this);
+        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 

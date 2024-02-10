@@ -4,7 +4,6 @@ import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
 import com.enderio.regilite.holder.RegiliteBlockEntity;
-import com.enderio.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +36,8 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
 
         RegiliteBlockEntity<T> ret = RegiliteBlockEntity.createBlockEntity(ResourceKey.create(getRegistryKey(), key));
 
-        if (((DeferredRegisterAccessor<BlockEntityType<?>>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+        var entries = DeferredRegistryReflect.getEntries(this);
+        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 

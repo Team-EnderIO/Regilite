@@ -3,7 +3,6 @@ package com.enderio.regilite.registry;
 import com.enderio.regilite.events.IScreenConstructor;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.holder.RegiliteMenu;
-import com.enderio.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,7 +36,8 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
 
         RegiliteMenu<I> ret = createMenuHolder(this.getRegistryKey(), key);
 
-        if (((DeferredRegisterAccessor<MenuType<? extends AbstractContainerMenu>>) this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+        var entries = DeferredRegistryReflect.getEntries(this);
+        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 

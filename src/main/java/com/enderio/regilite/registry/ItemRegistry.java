@@ -8,7 +8,6 @@ import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteBlockItem;
 import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.holder.RegiliteItem;
-import com.enderio.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -71,7 +70,8 @@ public class ItemRegistry extends DeferredRegister.Items {
 
         RegiliteBlockItem<I, U> ret = createBlockItemHolder(getRegistryKey(), key, block);
 
-        if (((DeferredRegisterAccessor<Item>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+        var entries = DeferredRegistryReflect.getEntries(this);
+        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 
@@ -169,7 +169,8 @@ public class ItemRegistry extends DeferredRegister.Items {
 
         RegiliteItem.RegiliteBucketItem<I,U> ret = createBucketHolder(getRegistryKey(), key, fluid);
 
-        if (((DeferredRegisterAccessor<Item>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+        var entries = DeferredRegistryReflect.getEntries(this);
+        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 

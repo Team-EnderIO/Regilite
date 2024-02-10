@@ -3,7 +3,6 @@ package com.enderio.regilite.registry;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
 import com.enderio.regilite.holder.RegiliteEntity;
-import com.enderio.regilite.mixin.DeferredRegisterAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +28,8 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
 
         RegiliteEntity<T> ret = RegiliteEntity.createEntity(ResourceKey.create(getRegistryKey(), key));
 
-        if (((DeferredRegisterAccessor<EntityType<?>>)this).getEntries().putIfAbsent(ret, () -> func.apply(key)) != null) {
+        var entries = DeferredRegistryReflect.getEntries(this);
+        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 
