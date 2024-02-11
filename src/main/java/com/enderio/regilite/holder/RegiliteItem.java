@@ -1,5 +1,6 @@
 package com.enderio.regilite.holder;
 
+import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
@@ -31,7 +32,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
-    protected BiConsumer<RegiliteItemModelProvider, T> modelProvider = RegiliteItemModelProvider::basicItem;
+    protected BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider = (prov, ctx) -> prov.basicItem(ctx.get());
     protected IItemColor colorSupplier;
 
     protected RegiliteItem(ResourceKey<Item> key) {
@@ -73,12 +74,12 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return tab;
     }
 
-    public RegiliteItem<T> setModelProvider(BiConsumer<RegiliteItemModelProvider, T> modelProvider) {
+    public RegiliteItem<T> setModelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
         this.modelProvider = modelProvider;
         return this;
     }
 
-    public BiConsumer<RegiliteItemModelProvider, T> getModelProvider() {
+    public BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> getModelProvider() {
         return modelProvider;
     }
 
@@ -112,7 +113,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         protected RegiliteBucketItem(ResourceKey<Item> key, RegiliteFluid<U> fluid) {
             super(key);
             this.fluid = fluid;
-            this.modelProvider = RegiliteItemModelProvider::bucketItem;
+            this.modelProvider = (prov, ctx) -> prov.bucketItem(ctx.get());
             setTranslation("");
         }
 
@@ -131,7 +132,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         }
 
         @Override
-        public RegiliteBucketItem<T, U> setModelProvider(BiConsumer<RegiliteItemModelProvider, T> modelProvider) {
+        public RegiliteBucketItem<T, U> setModelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
             super.setModelProvider(modelProvider);
             return this;
         }

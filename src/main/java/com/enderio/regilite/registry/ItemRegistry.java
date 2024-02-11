@@ -5,7 +5,6 @@ import com.enderio.regilite.data.RegiliteItemModelProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
 import com.enderio.regilite.events.ColorEvents;
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.holder.RegiliteBlockItem;
 import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.holder.RegiliteItem;
 import net.minecraft.core.Registry;
@@ -61,41 +60,41 @@ public class ItemRegistry extends DeferredRegister.Items {
         return this.register(name, key -> sup.get());
     }
 
-    private <I extends BlockItem, U extends Block> RegiliteBlockItem<I,U> registerBlockItem(String name, Function<ResourceLocation, I> func, RegiliteBlock<U> block) {
+    private <I extends BlockItem, U extends Block> RegiliteItem<I> registerBlockItem(String name, Function<ResourceLocation, I> func, RegiliteBlock<U> block) {
         //if (seenRegisterEvent)
         //throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
         final ResourceLocation key = new ResourceLocation(getNamespace(), name);
 
-        RegiliteBlockItem<I, U> ret = createBlockItemHolder(getRegistryKey(), key, block);
+        RegiliteItem<I> ret = createHolder(getRegistryKey(), key);
 
         var entries = DeferredRegistryReflect.getEntries(this);
         if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 
-        return ret;
+        return ret.setTranslation("");
     }
 
-    public <I extends BlockItem, U extends Block> RegiliteBlockItem<I, U> registerBlockItem(String name, RegiliteBlock<U> block, Supplier<I> sup) {
+    public <I extends BlockItem, U extends Block> RegiliteItem<I> registerBlockItem(String name, RegiliteBlock<U> block, Supplier<I> sup) {
         return this.registerBlockItem(name, key -> sup.get(), block);
     }
 
 
-    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(String name, RegiliteBlock<U> block, Item.Properties properties) {
+    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(String name, RegiliteBlock<U> block, Item.Properties properties) {
         return this.registerBlockItem(name, key -> new BlockItem(block.get(), properties), block);
     }
 
-    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(String name, RegiliteBlock<U> block) {
+    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(String name, RegiliteBlock<U> block) {
         return this.registerBlockItem(name, block, new Item.Properties());
     }
 
-    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(RegiliteBlock<U> block, Item.Properties properties) {
+    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(RegiliteBlock<U> block, Item.Properties properties) {
         return this.registerBlockItem(block.unwrapKey().orElseThrow().location().getPath(), block, properties);
     }
 
-    public <U extends Block> RegiliteBlockItem<BlockItem, U> registerBlockItem(RegiliteBlock<U> block) {
+    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(RegiliteBlock<U> block) {
         return this.registerBlockItem(block, new Item.Properties());
     }
 
@@ -180,10 +179,6 @@ public class ItemRegistry extends DeferredRegister.Items {
     @Override
     protected <I extends Item> RegiliteItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
         return RegiliteItem.createItem(ResourceKey.create(registryKey, key));
-    }
-
-    protected <I extends BlockItem, U extends Block> RegiliteBlockItem<I, U> createBlockItemHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteBlock<U> block) {
-        return RegiliteBlockItem.createBlockItem(ResourceKey.create(registryKey, key), block);
     }
 
     protected <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {

@@ -24,14 +24,13 @@ public class Blocks {
             .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .setTranslation("Test Example Block")
             .setColorSupplier(ExampleColors.BLOCK)
-            .setBlockStateProvider(BlockStateProvider::simpleBlock)
+            .setBlockStateProvider((prov, ctx) -> prov.simpleBlock(ctx.get()))
             .setLootTable(RegiliteBlockLootProvider::dropSelf)
-            .createBlockItem(ITEMS)
-            .addBlockItemTags(ItemTags.PLANKS)
-            .setModelProvider(RegiliteItemModelProvider::basicItem)
-            .setTab(CreativeModeTabs.BUILDING_BLOCKS)
-            .setTab(CreativeTabs.EXAMPLE_TAB.getKey())
-            .finishBlockItem();
+            .createBlockItem(ITEMS, item -> item
+                    .addItemTags(ItemTags.PLANKS)
+                    .setModelProvider((prov, ctx) -> prov.basicItem(ctx.get()))
+                    .setTab(CreativeModeTabs.BUILDING_BLOCKS)
+                    .setTab(CreativeTabs.EXAMPLE_TAB.getKey()));
 
     public static void register(IEventBus modEventBus) {
         BLOCKS.register(modEventBus);

@@ -22,9 +22,10 @@ public class RegiliteBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         for (DeferredHolder<Block, ? extends Block> block : registry.getEntries()) {
             if (block instanceof RegiliteBlock) {
-                BiConsumer<BlockStateProvider, Block> blockstate = ((RegiliteBlock<Block>) block).getBlockStateProvider();
+                BiConsumer<BlockStateProvider, DataGenContext<Block, Block>> blockstate = ((RegiliteBlock<Block>) block).getBlockStateProvider();
                 if (blockstate != null) {
-                    blockstate.accept(this, block.get());
+                    String name = block.getKey().location().getPath();
+                    blockstate.accept(this, new DataGenContext<>(name, block::get));
                 }
             }
         }

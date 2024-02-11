@@ -1,5 +1,6 @@
 package com.enderio.regilite.holder;
 
+import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.data.RegiliteBlockLootProvider;
@@ -20,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -27,9 +29,9 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
-    private BiConsumer<RegiliteBlockLootProvider, T>  lootTable = RegiliteBlockLootProvider::dropSelf;
+    private BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
     @Nullable
-    private BiConsumer<BlockStateProvider, T> blockStateProvider = BlockStateProvider::simpleBlock;
+    private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
     @Nullable
     private IBlockColor colorSupplier;
     protected RegiliteBlock(ResourceKey<Block> key) {
@@ -62,13 +64,13 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         return lootTable;
     }
 
-    public RegiliteBlock<T> setBlockStateProvider(BiConsumer<BlockStateProvider, T> blockStateProvider) {
+    public RegiliteBlock<T> setBlockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
         this.blockStateProvider = blockStateProvider;
         return this;
     }
 
     @Nullable
-    public BiConsumer<BlockStateProvider, T> getBlockStateProvider() {
+    public BiConsumer<BlockStateProvider, DataGenContext<Block, T>> getBlockStateProvider() {
         return blockStateProvider;
     }
 
@@ -82,12 +84,17 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         return this;
     }
 
-    public RegiliteBlockItem<BlockItem, T> createBlockItem(ItemRegistry registry) {
-        return registry.registerBlockItem(this);
+    public RegiliteBlock<T> createBlockItem(ItemRegistry registry, Consumer<RegiliteItem<BlockItem>> itemConfigure) {
+        var item = registry.registerBlockItem(this);
+        itemConfigure.accept(item);
+        return this;
     }
 
-    public RegiliteBlockItem<BlockItem, T> createBlockItem(ItemRegistry registry, Function<T, ? extends BlockItem> function) {
-        return registry.registerBlockItem(getId().getPath(), this, () -> function.apply(this.get()));
+    public RegiliteBlock<T> createBlockItem(ItemRegistry registry, Function<T, ? extends BlockItem> function,
+                                            Consumer<RegiliteItem<? extends BlockItem>> itemConfigure) {
+        var item = registry.registerBlockItem(getId().getPath(), this, () -> function.apply(this.get()));
+        itemConfigure.accept(item);
+        return this;
     }
 
     public static <T extends Block> RegiliteBlock<T> createBlock(ResourceLocation key) {
@@ -105,7 +112,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
             super(key);
             this.fluid = fluid;
             this.setLootTable(RegiliteBlockLootProvider::noDrop);
-            this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t)
+            this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t.get())
                     .partialState()
                     .modelForState()
                     .modelFile(prov.models().getExistingFile(new ResourceLocation("water")))
@@ -128,7 +135,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         }
 
         @Override
-        public RegiliteLiquidBlock<T,U> setBlockStateProvider(BiConsumer<BlockStateProvider, T> blockStateProvider) {
+        public RegiliteLiquidBlock<T,U> setBlockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
             super.setBlockStateProvider(blockStateProvider);
             return this;
         }

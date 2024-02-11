@@ -31,9 +31,10 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         for (DeferredHolder<Item, ? extends Item> item : registry.getEntries()) {
             if (item instanceof RegiliteItem) {
-                BiConsumer<RegiliteItemModelProvider, Item> modelProvider = (BiConsumer<RegiliteItemModelProvider, Item>) ((RegiliteItem<? extends Item>) item).getModelProvider();
+                var modelProvider = ((RegiliteItem<Item>) item).getModelProvider();
                 if (modelProvider != null) {
-                    modelProvider.accept(this, item.get());
+                    String name = item.getKey().location().getPath();
+                    modelProvider.accept(this, new DataGenContext<>(name, () -> item.get()));
                 }
             }
 
