@@ -30,6 +30,10 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
     protected void generate() {
         for (DeferredHolder<Block, ? extends Block> block : registry.getEntries()) {
             if (block instanceof RegiliteBlock) {
+                if (block.get().getLootTable() == BuiltInLootTables.EMPTY) {
+                    continue;
+                }
+
                 BiConsumer<RegiliteBlockLootProvider, Block> lootTable = ((RegiliteBlock<Block>) block).getLootTable();
                 if (lootTable != null) {
                     lootTable.accept(this, block.get());

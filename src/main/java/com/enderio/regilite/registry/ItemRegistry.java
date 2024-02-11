@@ -74,7 +74,9 @@ public class ItemRegistry extends DeferredRegister.Items {
             throw new IllegalArgumentException("Duplicate registration " + name);
         }
 
-        return ret.setTranslation("");
+        return ret
+                .setTranslation("")
+                .setModelProvider((prov, ctx) -> prov.basicBlock(ctx.get()));
     }
 
     public <I extends BlockItem, U extends Block> RegiliteItem<I> registerBlockItem(String name, RegiliteBlock<U> block, Supplier<I> sup) {

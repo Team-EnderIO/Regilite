@@ -5,6 +5,7 @@ import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
 import com.enderio.regilite.events.IItemColor;
+import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,10 +20,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -37,7 +35,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
 
     protected RegiliteItem(ResourceKey<Item> key) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
+        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public RegiliteItem<T> setTranslation(String translation) {
@@ -47,7 +45,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
 
     @SafeVarargs
     public final RegiliteItem<T> addItemTags(TagKey<Item>... tags) {
-        ItemTags.addAll(Set.of(tags));
+        ItemTags.addAll(new HashSet<>(List.of(tags)));
         return this;
     }
 
@@ -114,7 +112,6 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
             super(key);
             this.fluid = fluid;
             this.modelProvider = (prov, ctx) -> prov.bucketItem(ctx.get());
-            setTranslation("");
         }
 
         public RegiliteFluid<U> finishBucket() {

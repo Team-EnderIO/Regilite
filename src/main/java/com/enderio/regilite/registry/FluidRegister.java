@@ -1,10 +1,13 @@
 package com.enderio.regilite.registry;
 
+import com.enderio.regilite.events.BlockEntityRendererEvents;
+import com.enderio.regilite.events.FluidRenderTypeEvents;
 import com.enderio.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -57,6 +60,9 @@ public class FluidRegister extends DeferredRegister<FluidType>{
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
+        if (FMLEnvironment.dist.isClient()) {
+            bus.addListener(new FluidRenderTypeEvents(this)::registerRenderTypes);
+        }
     }
 
     @Override

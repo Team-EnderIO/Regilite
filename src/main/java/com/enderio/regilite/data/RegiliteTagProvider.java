@@ -29,7 +29,10 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
         for (DeferredHolder<T, ? extends T> entry : registry.getEntries()) {
             if (entry instanceof ITagagble) {
                 Set<TagKey<T>> tag = ((ITagagble<T>) entry).getTags();
-                tag.forEach(t -> tag(t).add(entry.get()));
+
+                if (tag != null) {
+                    tag.forEach(t -> tag(t).add(entry.get()));
+                }
             }
         }
     }

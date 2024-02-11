@@ -2,6 +2,7 @@ package com.enderio.regilite.holder;
 
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteDataProvider;
+import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +20,7 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
 
     protected RegiliteEntity(ResourceKey<EntityType<? extends Entity>> key) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
+        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     @Override

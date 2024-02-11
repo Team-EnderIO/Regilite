@@ -6,6 +6,7 @@ import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.data.RegiliteBlockLootProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.events.IBlockColor;
+import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +20,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -36,7 +39,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     private IBlockColor colorSupplier;
     protected RegiliteBlock(ResourceKey<Block> key) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, StringUtils.capitalize(getId().getPath().replace('_', ' ')));
+        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public RegiliteBlock<T> setTranslation(String translation) {
@@ -46,7 +49,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
 
     @SafeVarargs
     public final RegiliteBlock<T> addBlockTags(TagKey<Block>... tags) {
-        blockTags = Set.of(tags);
+        blockTags = new HashSet<>(List.of(tags));
         return this;
     }
 

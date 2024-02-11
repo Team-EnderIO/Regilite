@@ -1,5 +1,6 @@
 package com.enderio.regilite.data;
 
+import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteItem;
 import com.enderio.regilite.registry.ItemRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -41,24 +42,27 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
         }
     }
 
+    // TODO: These could do a better job by somehow getting the block model and ensuring it's right,
+    //       eg. https://github.com/tterrag1098/Registrate/blob/1.20/src/main/java/com/tterrag/registrate/builders/BlockBuilder.java#L208
+
     public ItemModelBuilder basicBlock(Item item) {
         return basicBlock(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
     }
 
     public ItemModelBuilder basicBlock(ResourceLocation item) {
         return getBuilder(item.toString())
-            .parent(new ModelFile.UncheckedModelFile("item/generated"))
-            .texture("layer0", new ResourceLocation(item.getNamespace(), "block/" + item.getPath()));
+            .parent(new ModelFile.UncheckedModelFile(new ResourceLocation(item.getNamespace(), "block/" + item.getPath())));
     }
 
     public ItemModelBuilder basicItem(Item item, ResourceLocation texture) {
         return getBuilder(BuiltInRegistries.ITEM.getKey(item).toString())
             .parent(new ModelFile.UncheckedModelFile("item/generated"))
-            .texture("layer0", new ResourceLocation(texture.getNamespace(), "item/" + texture.getPath()));
+            .texture("layer0", texture);
     }
 
     public ResourceLocation itemTexture(ItemLike item) {
-        return Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
+        var itemLocation = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
+        return new ResourceLocation(itemLocation.getNamespace(), "item/" + itemLocation.getPath());
     }
 
     public ItemModelBuilder bucketItem(BucketItem item) {
