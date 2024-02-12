@@ -34,8 +34,7 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
             if (item instanceof RegiliteItem) {
                 var modelProvider = ((RegiliteItem<Item>) item).getModelProvider();
                 if (modelProvider != null) {
-                    String name = item.getKey().location().getPath();
-                    modelProvider.accept(this, new DataGenContext<>(name, () -> item.get()));
+                    modelProvider.accept(this, new DataGenContext<>(item.getKey().location(), item::get));
                 }
             }
 

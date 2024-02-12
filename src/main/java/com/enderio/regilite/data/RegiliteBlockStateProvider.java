@@ -24,8 +24,7 @@ public class RegiliteBlockStateProvider extends BlockStateProvider {
             if (block instanceof RegiliteBlock) {
                 BiConsumer<BlockStateProvider, DataGenContext<Block, Block>> blockstate = ((RegiliteBlock<Block>) block).getBlockStateProvider();
                 if (blockstate != null) {
-                    String name = block.getKey().location().getPath();
-                    blockstate.accept(this, new DataGenContext<>(name, block::get));
+                    blockstate.accept(this, new DataGenContext<>(block.getKey().location(), block::get));
                 }
             }
         }
