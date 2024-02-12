@@ -2,6 +2,8 @@ package com.enderio.regilite.registry;
 
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
+import com.enderio.regilite.events.BlockEntityRendererEvents;
+import com.enderio.regilite.events.EntityRendererEvents;
 import com.enderio.regilite.holder.RegiliteEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -10,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Objects;
@@ -52,6 +55,9 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
     public void register(IEventBus bus) {
         super.register(bus);
         onGatherData(bus);
+        if (FMLEnvironment.dist.isClient()) {
+            bus.addListener(new EntityRendererEvents(this)::registerER);
+        }
     }
 
     private void  onGatherData(IEventBus bus) {
