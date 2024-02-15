@@ -4,8 +4,8 @@ import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
-import com.enderio.regilite.events.IItemColor;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -31,7 +30,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
     protected BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider = (prov, ctx) -> prov.basicItem(ctx.get());
-    protected IItemColor colorSupplier;
+    protected Supplier<ItemColor> colorSupplier;
 
     protected RegiliteItem(ResourceKey<Item> key) {
         super(key);
@@ -81,11 +80,11 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return modelProvider;
     }
 
-    public IItemColor getColorSupplier() {
+    public Supplier<ItemColor> getColorSupplier() {
         return colorSupplier;
     }
 
-    public RegiliteItem<T> setColorSupplier(IItemColor colorSupplier) {
+    public RegiliteItem<T> setColorSupplier(Supplier<ItemColor> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }

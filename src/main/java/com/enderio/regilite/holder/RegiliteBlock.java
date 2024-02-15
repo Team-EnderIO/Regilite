@@ -5,8 +5,8 @@ import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.data.RegiliteBlockLootProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.events.IBlockColor;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -36,7 +35,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     @Nullable
     private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
     @Nullable
-    private IBlockColor colorSupplier;
+    private Supplier<BlockColor> colorSupplier;
     protected RegiliteBlock(ResourceKey<Block> key) {
         super(key);
         RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
@@ -78,11 +77,11 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     }
 
     @Nullable
-    public IBlockColor getColorSupplier() {
+    public Supplier<BlockColor> getColorSupplier() {
         return colorSupplier;
     }
 
-    public RegiliteBlock<T> setColorSupplier(@Nullable IBlockColor colorSupplier) {
+    public RegiliteBlock<T> setColorSupplier(@Nullable Supplier<BlockColor> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }
@@ -144,7 +143,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         }
 
         @Override
-        public RegiliteLiquidBlock<T,U> setColorSupplier(@org.jetbrains.annotations.Nullable IBlockColor colorSupplier) {
+        public RegiliteLiquidBlock<T,U> setColorSupplier(@Nullable Supplier<BlockColor> colorSupplier) {
             super.setColorSupplier(colorSupplier);
             return this;
         }
