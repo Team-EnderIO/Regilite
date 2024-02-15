@@ -2,10 +2,12 @@ package com.enderio.regilite.events;
 
 import com.enderio.regilite.holder.RegiliteEntity;
 import com.enderio.regilite.registry.EntityRegistry;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.common.util.NonNullFunction;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
@@ -24,10 +26,10 @@ public class EntityRendererEvents {
         for (DeferredHolder<EntityType<?>, ? extends EntityType<?>> e : registry.getEntries()) {
             //noinspection rawtypes
             if (e instanceof RegiliteEntity regiliteEntity) {
-                Supplier<Supplier<EntityRendererProvider<T>>> renderer = regiliteEntity.getRenderer();
+                Supplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer = regiliteEntity.getRenderer();
                 if (renderer != null) {
                     var entityType = (EntityType<T>)e.get();
-                    event.registerEntityRenderer(entityType, renderer.get().get());
+                    event.registerEntityRenderer(entityType, (c) -> renderer.get().apply(c));
                 }
             }
         }

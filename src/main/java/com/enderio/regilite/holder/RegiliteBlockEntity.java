@@ -1,6 +1,7 @@
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.registry.ITagagble;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -9,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.NonNullFunction;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
@@ -18,7 +20,7 @@ import java.util.function.Supplier;
 
 public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
-    protected Supplier<BlockEntityRendererProvider<T>> renderer;
+    protected Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer;
 
     /**
      * Creates a new DeferredHolder with a ResourceKey.
@@ -54,12 +56,12 @@ public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<B
         return this;
     }
 
-    public RegiliteBlockEntity<T> setRenderer(Supplier<BlockEntityRendererProvider<T>> renderer) {
+    public RegiliteBlockEntity<T> setRenderer(Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
         this.renderer = renderer;
         return this;
     }
 
-    public Supplier<BlockEntityRendererProvider<T>> getRenderer() {
+    public Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> getRenderer() {
         return renderer;
     }
 }
