@@ -59,6 +59,15 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
             .texture("layer0", texture);
     }
 
+    public ItemModelBuilder handheld(Item item) {
+        return handheld(item, itemTexture(item));
+    }
+
+    public ItemModelBuilder handheld(Item item, ResourceLocation texture) {
+        return withExistingParent(BuiltInRegistries.ITEM.getKey(item).toString(), "item/handheld")
+                .texture("layer0", texture);
+    }
+
     public ResourceLocation itemTexture(ItemLike item) {
         var itemLocation = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
         return new ResourceLocation(itemLocation.getNamespace(), "item/" + itemLocation.getPath());
