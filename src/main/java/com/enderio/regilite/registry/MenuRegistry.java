@@ -52,7 +52,7 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
         return registerMenu(name, () -> new MenuType<>(sup, FeatureFlags.DEFAULT_FLAGS));
     }
 
-    public <I extends AbstractContainerMenu> RegiliteMenu<I> registerMenu(String name, IContainerFactory<I> sup, IScreenConstructor<I, ? extends AbstractContainerScreen<I>> screen) {
+    public <I extends AbstractContainerMenu> RegiliteMenu<I> registerMenu(String name, IContainerFactory<I> sup, Supplier<IScreenConstructor<I, ? extends AbstractContainerScreen<I>>> screen) {
         return registerMenu(name, sup).setScreenConstructor(screen);
     }
 
