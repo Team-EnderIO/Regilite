@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class ExampleBlock extends Block implements EntityBlock {
@@ -33,7 +32,7 @@ public class ExampleBlock extends Block implements EntityBlock {
         if (be instanceof ExampleBlockentity exampleBlockentity) {
             MenuProvider menuprovider = this.getMenuProvider(p_60503_, p_60504_, p_60505_);
             if (menuprovider != null && p_60506_ instanceof ServerPlayer serverPlayer) {
-                NetworkHooks.openScreen(serverPlayer, menuprovider, buf -> buf.writeBlockPos(p_60505_));
+                serverPlayer.openMenu(menuprovider, buf -> buf.writeBlockPos(p_60505_));
             }
         }
         return super.use(p_60503_, p_60504_, p_60505_, p_60506_, p_60507_, p_60508_);
