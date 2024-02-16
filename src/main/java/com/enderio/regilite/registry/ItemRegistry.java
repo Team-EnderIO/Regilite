@@ -4,6 +4,7 @@ import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
 import com.enderio.regilite.events.ColorEvents;
+import com.enderio.regilite.events.ItemCapabilityEvents;
 import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.holder.RegiliteItem;
@@ -198,8 +199,8 @@ public class ItemRegistry extends DeferredRegister.Items {
         bus.addListener(this::addCreative);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ColorEvents.Items(this)::registerItemColor);
+            bus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
         }
-
     }
 
     private void onGatherData(IEventBus bus) {

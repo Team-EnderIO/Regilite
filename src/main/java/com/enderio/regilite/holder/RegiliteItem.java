@@ -10,13 +10,17 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -31,6 +35,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     @Nullable
     protected BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider = (prov, ctx) -> prov.basicItem(ctx.get());
     protected Supplier<Supplier<ItemColor>> colorSupplier;
+    protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList;
 
     protected RegiliteItem(ResourceKey<Item> key) {
         super(key);
@@ -87,6 +92,33 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     public RegiliteItem<T> setColorSupplier(Supplier<Supplier<ItemColor>> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
+    }
+
+    public <TCap, TContext> RegiliteItem<T> addCapability(ItemCapability<TCap, TContext> capability, ICapabilityProvider<ItemStack, TContext, TCap> provider) {
+        attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
+        return this;
+    }
+
+    // Allows wrapping common holder builder methods into other methods and applying them.
+    public RegiliteItem<T> apply(Consumer<RegiliteItem<T>> applicator) {
+        applicator.accept(this);
+        return this;
+    }
+
+    @ApiStatus.Internal
+    public void registerCapabilityProviders(RegisterCapabilitiesEvent event) {
+        for (AttachedCapability<T, ?, ?> capabilityProvider : attachedCapabilityList) {
+            capabilityProvider.registerProvider(event, value());
+        }
+    }
+
+    protected record AttachedCapability<T extends Item, TCap, TContext>(
+            ItemCapability<TCap, TContext> capability,
+            ICapabilityProvider<ItemStack, TContext, TCap> provider) {
+
+        private void registerProvider(RegisterCapabilitiesEvent event, Item item) {
+            event.registerItem(capability, provider, item);
+        }
     }
 
     public static <T extends Item> RegiliteItem<T> createItem(ResourceLocation key) {

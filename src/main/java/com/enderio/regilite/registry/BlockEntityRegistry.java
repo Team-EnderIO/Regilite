@@ -2,6 +2,7 @@ package com.enderio.regilite.registry;
 
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
+import com.enderio.regilite.events.BlockEntityCapabilityEvents;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
 import com.enderio.regilite.holder.RegiliteBlockEntity;
 import net.minecraft.core.Registry;
@@ -68,6 +69,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
         this.onGatherData(bus);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new BlockEntityRendererEvents(this)::registerBER);
+            bus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
         }
     }
 
