@@ -23,7 +23,7 @@ public class Blocks {
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
             .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .setTranslation("Test Example Block")
-            .setColorSupplier(() -> ExampleColors.BLOCK)
+            .setColorSupplier(() -> () -> ExampleColors.BLOCK)
             .setBlockStateProvider((prov, ctx) -> prov.simpleBlock(ctx.get()))
             .setLootTable(RegiliteBlockLootProvider::dropSelf)
             .createBlockItem(ITEMS, item -> item

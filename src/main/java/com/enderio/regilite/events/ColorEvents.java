@@ -25,9 +25,9 @@ public class ColorEvents {
         public void registerItemColor(RegisterColorHandlersEvent.Item event) {
             for (DeferredHolder<Item, ? extends Item> item : items.getEntries()) {
                 if (item instanceof RegiliteItem) {
-                    Supplier<ItemColor> colorSupplier = ((RegiliteItem<Item>) item).getColorSupplier();
+                    var colorSupplier = ((RegiliteItem<Item>) item).getColorSupplier();
                     if (colorSupplier != null)
-                        event.register(colorSupplier.get(), item.get());
+                        event.register(colorSupplier.get().get(), item.get());
                 }
             }
         }
@@ -43,9 +43,9 @@ public class ColorEvents {
         public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
             for (DeferredHolder<Block, ? extends Block> block : blocks.getEntries()) {
                 if (block instanceof RegiliteBlock) {
-                    Supplier<BlockColor> colorSupplier = ((RegiliteBlock<Block>) block).getColorSupplier();
+                    var colorSupplier = ((RegiliteBlock<Block>) block).getColorSupplier();
                     if (colorSupplier != null)
-                        event.register(colorSupplier.get(), block.get());
+                        event.register(colorSupplier.get().get(), block.get());
                 }
             }
         }

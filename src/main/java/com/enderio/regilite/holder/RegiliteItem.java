@@ -30,7 +30,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
     protected BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider = (prov, ctx) -> prov.basicItem(ctx.get());
-    protected Supplier<ItemColor> colorSupplier;
+    protected Supplier<Supplier<ItemColor>> colorSupplier;
 
     protected RegiliteItem(ResourceKey<Item> key) {
         super(key);
@@ -80,11 +80,11 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return modelProvider;
     }
 
-    public Supplier<ItemColor> getColorSupplier() {
+    public Supplier<Supplier<ItemColor>> getColorSupplier() {
         return colorSupplier;
     }
 
-    public RegiliteItem<T> setColorSupplier(Supplier<ItemColor> colorSupplier) {
+    public RegiliteItem<T> setColorSupplier(Supplier<Supplier<ItemColor>> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }

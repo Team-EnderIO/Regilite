@@ -35,7 +35,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     @Nullable
     private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
     @Nullable
-    private Supplier<BlockColor> colorSupplier;
+    private Supplier<Supplier<BlockColor>> colorSupplier;
     protected RegiliteBlock(ResourceKey<Block> key) {
         super(key);
         RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
@@ -77,11 +77,11 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     }
 
     @Nullable
-    public Supplier<BlockColor> getColorSupplier() {
+    public Supplier<Supplier<BlockColor>> getColorSupplier() {
         return colorSupplier;
     }
 
-    public RegiliteBlock<T> setColorSupplier(@Nullable Supplier<BlockColor> colorSupplier) {
+    public RegiliteBlock<T> setColorSupplier(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }
@@ -143,7 +143,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         }
 
         @Override
-        public RegiliteLiquidBlock<T,U> setColorSupplier(@Nullable Supplier<BlockColor> colorSupplier) {
+        public RegiliteLiquidBlock<T,U> setColorSupplier(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
             super.setColorSupplier(colorSupplier);
             return this;
         }

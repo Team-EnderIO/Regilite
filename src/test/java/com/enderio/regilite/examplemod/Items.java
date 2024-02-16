@@ -15,7 +15,7 @@ public class Items {
                     .alwaysEat().nutrition(1).saturationMod(2f).build()))
             .addItemTags(ItemTags.WOOL)
             .setTranslation("Test Example Item")
-            .setColorSupplier(() -> ExampleColors.ITEM)
+            .setColorSupplier(() -> () -> ExampleColors.ITEM)
             .setTab(null);
 
     public static void register(IEventBus modEventBus) {
