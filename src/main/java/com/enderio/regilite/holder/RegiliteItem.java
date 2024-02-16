@@ -35,7 +35,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     @Nullable
     protected BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider = (prov, ctx) -> prov.basicItem(ctx.get());
     protected Supplier<Supplier<ItemColor>> colorSupplier;
-    protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList;
+    protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
     protected RegiliteItem(ResourceKey<Item> key) {
         super(key);

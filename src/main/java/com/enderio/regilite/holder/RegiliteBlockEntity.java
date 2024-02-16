@@ -19,6 +19,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<B
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
     protected Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer;
 
-    protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList;
+    protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
     /**
      * Creates a new DeferredHolder with a ResourceKey.
