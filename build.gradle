@@ -140,6 +140,8 @@ tasks.withType(ProcessResources).configureEach {
     }
 }
 
+java.withSourcesJar()
+
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {
