@@ -14,16 +14,14 @@ import java.util.function.Supplier;
 
 public class EntityRendererEvents {
 
-    private final EntityRegistry registry;
+    public EntityRendererEvents() {
 
-    public EntityRendererEvents(EntityRegistry registry) {
-        this.registry = registry;
     }
 
     // TODO: These casts should be checked thoroughly.
     @SuppressWarnings("unchecked")
     private <T extends Entity> void registerGenericER(EntityRenderersEvent.RegisterRenderers event) {
-        for (DeferredHolder<EntityType<?>, ? extends EntityType<?>> e : registry.getEntries()) {
+        for (DeferredHolder<EntityType<?>, ? extends EntityType<?>> e : EntityRegistry.getRegistered()) {
             //noinspection rawtypes
             if (e instanceof RegiliteEntity regiliteEntity) {
                 Supplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer = regiliteEntity.getRenderer();

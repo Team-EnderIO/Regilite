@@ -132,9 +132,6 @@ public class BlockRegistry extends DeferredRegister.Blocks {
     public void register(IEventBus bus) {
         super.register(bus);
         registered.addAll(this.getEntries());
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ColorEvents.Blocks(this)::registerBlockColor);
-        }
     }
 
     public static List<DeferredHolder<Block, ? extends Block>> getRegistered() {

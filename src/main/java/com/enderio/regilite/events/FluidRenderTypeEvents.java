@@ -7,14 +7,12 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class FluidRenderTypeEvents {
-    private final FluidRegister registry;
 
-    public FluidRenderTypeEvents(FluidRegister registry) {
-        this.registry = registry;
+    public FluidRenderTypeEvents() {
     }
 
     public void registerRenderTypes(FMLClientSetupEvent clientSetupEvent) {
-        for (var fluid : registry.getEntries()) {
+        for (var fluid : FluidRegister.getRegistered()) {
             if (fluid instanceof RegiliteFluid<? extends FluidType> regiliteFluid) {
                 var renderType = regiliteFluid.getRenderType().get();
                 if (renderType != null) {

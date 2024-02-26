@@ -66,9 +66,6 @@ public class FluidRegister extends DeferredRegister<FluidType>{
     public void register(IEventBus bus) {
         super.register(bus);
         registered.addAll(this.getEntries());
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new FluidRenderTypeEvents(this)::registerRenderTypes);
-        }
     }
 
     @Override

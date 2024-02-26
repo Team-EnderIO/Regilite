@@ -1,5 +1,6 @@
 package com.enderio.regilite.examplemod;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -12,6 +13,7 @@ public class ExampleMod
 {
     public static final String MODID = "examplemod";
     private static final Logger LOGGER = LogUtils.getLogger();
+    public final Regilite regilite = new Regilite(MODID);
 
     public ExampleMod(IEventBus modEventBus) {
         Blocks.register(modEventBus);
@@ -20,6 +22,6 @@ public class ExampleMod
         Fluids.register(modEventBus);
         BlockEntities.register(modEventBus);
         Menus.register(modEventBus);
-        RegiliteDataProvider.register(MODID, modEventBus);
+        regilite.register(modEventBus);
     }
 }

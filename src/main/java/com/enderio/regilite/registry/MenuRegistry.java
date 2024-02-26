@@ -70,9 +70,6 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
     public void register(IEventBus bus) {
         super.register(bus);
         registered.addAll(this.getEntries());
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ScreenEvents(this)::screenEvent);
-        }
     }
 
     public static List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> getRegistered() {

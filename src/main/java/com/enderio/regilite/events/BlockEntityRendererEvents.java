@@ -14,16 +14,14 @@ import java.util.function.Supplier;
 
 public class BlockEntityRendererEvents {
 
-    private final BlockEntityRegistry registry;
+    public BlockEntityRendererEvents() {
 
-    public BlockEntityRendererEvents(BlockEntityRegistry registry) {
-        this.registry = registry;
     }
 
     // TODO: These casts should be checked thoroughly.
     @SuppressWarnings("unchecked")
     private <T extends BlockEntity> void registerGenericBER(EntityRenderersEvent.RegisterRenderers event) {
-        for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : registry.getEntries()) {
+        for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : BlockEntityRegistry.getRegistered()) {
             //noinspection rawtypes
             if (be instanceof RegiliteBlockEntity regiliteBlockEntity) {
                 Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer = regiliteBlockEntity.getRenderer();

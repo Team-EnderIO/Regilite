@@ -201,15 +201,10 @@ public class ItemRegistry extends DeferredRegister.Items {
     public void register(IEventBus bus) {
         super.register(bus);
         registered.addAll(this.getEntries());
-        bus.addListener(this::addCreative);
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ColorEvents.Items(this)::registerItemColor);
-            bus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
-        }
     }
 
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        for (DeferredHolder<Item, ? extends Item> item : this.getEntries()) {
+    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
+        for (DeferredHolder<Item, ? extends Item> item : getRegistered()) {
             if (item instanceof RegiliteItem) {
                 Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>) item).getTab().get(event.getTabKey());
                 if (outputConsumer != null) {

@@ -12,14 +12,13 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public class ColorEvents {
 
     public static class Items {
-        private final ItemRegistry items;
 
-        public Items(ItemRegistry items) {
-            this.items = items;
+        public Items() {
+
         }
 
         public void registerItemColor(RegisterColorHandlersEvent.Item event) {
-            for (DeferredHolder<Item, ? extends Item> item : items.getEntries()) {
+            for (DeferredHolder<Item, ? extends Item> item : ItemRegistry.getRegistered()) {
                 if (item instanceof RegiliteItem) {
                     var colorSupplier = ((RegiliteItem<Item>) item).getColorSupplier();
                     if (colorSupplier != null)
@@ -30,14 +29,13 @@ public class ColorEvents {
     }
 
     public static class Blocks {
-        private final BlockRegistry blocks;
 
-        public Blocks(BlockRegistry blocks) {
-            this.blocks = blocks;
+        public Blocks() {
+
         }
 
         public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
-            for (DeferredHolder<Block, ? extends Block> block : blocks.getEntries()) {
+            for (DeferredHolder<Block, ? extends Block> block : BlockRegistry.getRegistered()) {
                 if (block instanceof RegiliteBlock) {
                     var colorSupplier = ((RegiliteBlock<Block>) block).getColorSupplier();
                     if (colorSupplier != null)

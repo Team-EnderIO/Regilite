@@ -11,14 +11,12 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ScreenEvents {
 
-    private final MenuRegistry registry;
+    public ScreenEvents() {
 
-    public ScreenEvents(MenuRegistry registry) {
-        this.registry = registry;
     }
 
     public <T extends AbstractContainerMenu> void genericScreenEvent(FMLClientSetupEvent event) {
-        for (DeferredHolder<MenuType<?>, ? extends MenuType<?>> menu : registry.getEntries()) {
+        for (DeferredHolder<MenuType<?>, ? extends MenuType<?>> menu : MenuRegistry.getRegistered()) {
             if (menu instanceof RegiliteMenu) {
                 IScreenConstructor<T, ? extends AbstractContainerScreen<T>> screen = ((RegiliteMenu<T>) menu).getScreenConstructor();
                 if (screen != null) {

@@ -61,9 +61,6 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
     public void register(IEventBus bus) {
         super.register(bus);
         registered.addAll(this.getEntries());
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new EntityRendererEvents(this)::registerER);
-        }
     }
 
     public static List<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> getRegistered() {

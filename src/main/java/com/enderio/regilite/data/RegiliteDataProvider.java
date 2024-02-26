@@ -83,10 +83,6 @@ public class RegiliteDataProvider implements DataProvider {
         return getInstance(location.getNamespace()).addTranslation(prefix + "." + location.toLanguageKey(), translation);
     }
 
-    public void addServerSubProvider(TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider> function) {
-        serverSubProviderConsumers.add(function);
-    }
-
     @Override
     public CompletableFuture<?> run(CachedOutput pOutput) {
         List<CompletableFuture<?>> list = new ArrayList<>();

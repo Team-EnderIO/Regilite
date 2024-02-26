@@ -73,10 +73,6 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     public void register(IEventBus bus) {
         super.register(bus);
         registered.addAll(this.getEntries());
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new BlockEntityRendererEvents(this)::registerBER);
-            bus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
-        }
     }
 
     public static List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> getRegistered() {
