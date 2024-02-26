@@ -1,5 +1,6 @@
 package com.enderio.regilite.examplemod;
 
+import com.enderio.regilite.data.RegiliteDataProvider;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -19,5 +20,6 @@ public class ExampleMod
         Fluids.register(modEventBus);
         BlockEntities.register(modEventBus);
         Menus.register(modEventBus);
+        RegiliteDataProvider.register(MODID, modEventBus);
     }
 }

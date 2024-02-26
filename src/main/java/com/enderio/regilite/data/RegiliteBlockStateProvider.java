@@ -8,19 +8,20 @@ import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class RegiliteBlockStateProvider extends BlockStateProvider {
-    private final BlockRegistry registry;
+    private final List<DeferredHolder<Block, ? extends Block>> registered;
 
-    public RegiliteBlockStateProvider(PackOutput output, String modid, ExistingFileHelper exFileHelper, BlockRegistry registry) {
+    public RegiliteBlockStateProvider(PackOutput output, String modid, ExistingFileHelper exFileHelper, List<DeferredHolder<Block, ? extends Block>> registered) {
         super(output, modid, exFileHelper);
-        this.registry = registry;
+        this.registered = registered;
     }
 
     @Override
     protected void registerStatesAndModels() {
-        for (DeferredHolder<Block, ? extends Block> block : registry.getEntries()) {
+        for (DeferredHolder<Block, ? extends Block> block : registered) {
             if (block instanceof RegiliteBlock) {
                 BiConsumer<BlockStateProvider, DataGenContext<Block, Block>> blockstate = ((RegiliteBlock<Block>) block).getBlockStateProvider();
                 if (blockstate != null) {

@@ -14,14 +14,20 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
+
+    private static List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> registered = new ArrayList<>();
+
     protected BlockEntityRegistry(String namespace) {
         super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), namespace);
     }
@@ -66,15 +72,14 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        this.onGatherData(bus);
+        registered.addAll(this.getEntries());
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new BlockEntityRendererEvents(this)::registerBER);
             bus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
         }
     }
 
-    private void onGatherData(IEventBus bus) {
-        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
+    public static List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> getRegistered() {
+        return registered;
     }
 }

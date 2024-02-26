@@ -13,14 +13,20 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.IContainerFactory;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MenuRegistry extends DeferredRegister<MenuType<?>> {
+    private static List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> registered = new ArrayList<>();
+
     protected MenuRegistry(String namespace) {
         super(BuiltInRegistries.MENU.key(), namespace);
     }
@@ -63,8 +69,13 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
+        registered.addAll(this.getEntries());
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ScreenEvents(this)::screenEvent);
         }
+    }
+
+    public static List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> getRegistered() {
+        return registered;
     }
 }

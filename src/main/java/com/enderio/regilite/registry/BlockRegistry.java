@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -23,6 +24,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BlockRegistry extends DeferredRegister.Blocks {
+
+    private static List<DeferredHolder<Block, ? extends Block>> registered = new ArrayList<>();
+
     protected BlockRegistry(String namespace) {
         super(namespace);
     }
@@ -126,17 +131,13 @@ public class BlockRegistry extends DeferredRegister.Blocks {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        this.onGatherData(bus);
+        registered.addAll(this.getEntries());
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ColorEvents.Blocks(this)::registerBlockColor);
         }
     }
 
-    private void onGatherData(IEventBus bus) {
-        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new LootTableProvider(packOutput, Collections.emptySet(),
-            List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), this), LootContextParamSets.BLOCK))));
+    public static List<DeferredHolder<Block, ? extends Block>> getRegistered() {
+        return registered;
     }
 }

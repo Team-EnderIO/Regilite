@@ -11,6 +11,7 @@ import com.enderio.regilite.holder.RegiliteItem;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -24,12 +25,16 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ItemRegistry extends DeferredRegister.Items {
+    private static List<DeferredHolder<Item, ? extends Item>> registered = new ArrayList<>();
+
     protected ItemRegistry(String namespace) {
         super(namespace);
     }
@@ -195,18 +200,12 @@ public class ItemRegistry extends DeferredRegister.Items {
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        this.onGatherData(bus);
+        registered.addAll(this.getEntries());
         bus.addListener(this::addCreative);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(new ColorEvents.Items(this)::registerItemColor);
             bus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
         }
-    }
-
-    private void onGatherData(IEventBus bus) {
-        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -218,5 +217,9 @@ public class ItemRegistry extends DeferredRegister.Items {
                 }
             }
         }
+    }
+
+    public static List<DeferredHolder<Item, ? extends Item>> getRegistered() {
+        return registered;
     }
 }
