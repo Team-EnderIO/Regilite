@@ -1,5 +1,6 @@
 package com.enderio.regilite.registry;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.events.IScreenConstructor;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.holder.RegiliteMenu;
@@ -25,10 +26,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MenuRegistry extends DeferredRegister<MenuType<?>> {
-    private static List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> registered = new ArrayList<>();
 
-    protected MenuRegistry(String namespace) {
-        super(BuiltInRegistries.MENU.key(), namespace);
+    private final Regilite regilite;
+
+    protected MenuRegistry(Regilite regilite) {
+        super(BuiltInRegistries.MENU.key(), regilite.getModid());
+        this.regilite = regilite;
     }
 
     protected <I extends AbstractContainerMenu> RegiliteMenu<I> createMenuHolder(ResourceKey<? extends Registry<MenuType<? extends AbstractContainerMenu>>> registryKey, ResourceLocation key) {
@@ -62,17 +65,13 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
         return registerMenu(name, sup).setScreenConstructor(screen);
     }
 
-    public static MenuRegistry createRegistry(String modid) {
-        return new MenuRegistry(modid);
+    public static MenuRegistry createRegistry(Regilite regilite) {
+        return new MenuRegistry(regilite);
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        registered.addAll(this.getEntries());
-    }
-
-    public static List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> getRegistered() {
-        return registered;
+        regilite.addMenus(this.getEntries());
     }
 }

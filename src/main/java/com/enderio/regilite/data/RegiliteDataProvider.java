@@ -1,5 +1,6 @@
 package com.enderio.regilite.data;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.registry.EntityRegistry;
@@ -39,35 +40,15 @@ public class RegiliteDataProvider implements DataProvider {
     private final String modid;
     private final Map<Supplier<String>, String> langEntries = new HashMap<>();
     private final List<DataProvider> subProviders = new ArrayList<>();
-    private final List<TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider>> serverSubProviderConsumers = new ArrayList<>();
-    private static final Map<String, RegiliteDataProvider> INSTANCES = new HashMap<>();
-    private boolean registered = false;
+    private final Regilite regilite;
 
-    protected RegiliteDataProvider(String modid) {
-        this.modid = modid;
+    public RegiliteDataProvider(Regilite regilite) {
+        this.modid = regilite.getModid();
+        this.regilite = regilite;
     }
 
-    public static RegiliteDataProvider getInstance(String modid) {
-        return INSTANCES.computeIfAbsent(modid, RegiliteDataProvider::new);
-    }
-
-    public static RegiliteDataProvider register(String modid, IEventBus modbus) {
-        RegiliteDataProvider provider = INSTANCES.computeIfAbsent(modid, RegiliteDataProvider::new);
-        if (!provider.registered) {
-            modbus.addListener(provider::onGatherData);
-            provider.registered = true;
-        }
-        return provider;
-    }
-
-    public void addSubProvider(boolean include, DataProvider provider) {
-        if (include) {
-            subProviders.add(provider);
-        }
-    }
-
-    public <T> void addTranslations(Map<Supplier<String>, String> entries) {
-        this.langEntries.putAll(entries);
+    public void register(IEventBus modbus) {
+        modbus.addListener(this::onGatherData);
     }
 
     public MutableComponent addTranslation(String key, String translation) {
@@ -79,9 +60,6 @@ public class RegiliteDataProvider implements DataProvider {
         this.langEntries.put(key, translation);
     }
 
-    public static MutableComponent addTranslation(String prefix, ResourceLocation location, String translation) {
-        return getInstance(location.getNamespace()).addTranslation(prefix + "." + location.toLanguageKey(), translation);
-    }
 
     @Override
     public CompletableFuture<?> run(CachedOutput pOutput) {
@@ -102,25 +80,20 @@ public class RegiliteDataProvider implements DataProvider {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        if (event.includeServer()) {
-            for (TriFunction<PackOutput, ExistingFileHelper, CompletableFuture<HolderLookup.Provider>, DataProvider> function : this.serverSubProviderConsumers) {
-                this.subProviders.add(function.apply(packOutput, existingFileHelper, lookupProvider));
-            }
-        }
         RegiliteLangProvider enUs = new RegiliteLangProvider(packOutput, this.modid, "en_us");
         enUs.add(this.langEntries);
         this.subProviders.add(enUs);
 
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, BlockRegistry.getRegistered()));
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ITEM, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, ItemRegistry.getRegistered()));
-        this.subProviders.add(new RegiliteTagProvider.FluidTagProvider(packOutput, Registries.FLUID, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, FluidRegister.getRegistered()));
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK_ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, BlockEntityRegistry.getRegistered()));
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, EntityRegistry.getRegistered()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getBlock()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ITEM, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getItems()));
+        this.subProviders.add(new RegiliteTagProvider.FluidTagProvider(packOutput, Registries.FLUID, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getFluids()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK_ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getBlockEntities()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getEntities()));
 
-        this.subProviders.add(new RegiliteBlockStateProvider(packOutput, modid, existingFileHelper, BlockRegistry.getRegistered()));
-        this.subProviders.add(new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), BlockRegistry.getRegistered()), LootContextParamSets.BLOCK))));
+        this.subProviders.add(new RegiliteBlockStateProvider(packOutput, modid, existingFileHelper, regilite.getBlock()));
+        this.subProviders.add(new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), regilite.getBlock()), LootContextParamSets.BLOCK))));
 
-        this.subProviders.add(new RegiliteItemModelProvider(packOutput, modid, existingFileHelper, ItemRegistry.getRegistered()));
+        this.subProviders.add(new RegiliteItemModelProvider(packOutput, modid, existingFileHelper, regilite.getItems()));
         event.getGenerator().addProvider(true, this);
     }
 }

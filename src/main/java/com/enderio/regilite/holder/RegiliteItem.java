@@ -1,5 +1,6 @@
 package com.enderio.regilite.holder;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteDataProvider;
@@ -30,6 +31,7 @@ import java.util.function.Supplier;
 
 public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITagagble<Item> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
+    private final Regilite regilite;
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
@@ -37,13 +39,14 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
     protected Supplier<Supplier<ItemColor>> colorSupplier;
     protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
-    protected RegiliteItem(ResourceKey<Item> key) {
+    protected RegiliteItem(ResourceKey<Item> key, Regilite regilite) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
+        this.regilite = regilite;
+        regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public RegiliteItem<T> setTranslation(String translation) {
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
+        regilite.addTranslation(supplier, translation);
         return this;
     }
 
@@ -121,26 +124,22 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         }
     }
 
-    public static <T extends Item> RegiliteItem<T> createItem(ResourceLocation key) {
-        return createItem(ResourceKey.create(Registries.ITEM, key));
-    }
-
     /**
      * Creates a new {@link DeferredHolder} targeting the specified {@link Item}.
      *
      * @param <T> The type of the target {@link Item}.
      * @param key The resource key of the target {@link Item}.
      */
-    public static <T extends Item> RegiliteItem<T> createItem(ResourceKey<Item> key) {
-        return new RegiliteItem<>(key);
+    public static <T extends Item> RegiliteItem<T> createItem(ResourceKey<Item> key, Regilite regilite) {
+        return new RegiliteItem<>(key, regilite);
     }
 
     public static class RegiliteBucketItem<T extends BucketItem, U extends FluidType> extends RegiliteItem<T> {
 
         private final RegiliteFluid<U> fluid;
 
-        protected RegiliteBucketItem(ResourceKey<Item> key, RegiliteFluid<U> fluid) {
-            super(key);
+        protected RegiliteBucketItem(ResourceKey<Item> key, RegiliteFluid<U> fluid, Regilite regilite) {
+            super(key, regilite);
             this.fluid = fluid;
             this.modelProvider = (prov, ctx) -> prov.bucketItem(ctx.get());
         }
@@ -149,8 +148,8 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
             return fluid;
         }
 
-        public static <I extends BucketItem, U extends FluidType> RegiliteBucketItem<I,U> createLiquidBlock(ResourceKey<Item> key, RegiliteFluid<U> fluid) {
-            return new RegiliteBucketItem<>(key, fluid);
+        public static <I extends BucketItem, U extends FluidType> RegiliteBucketItem<I,U> createLiquidBlock(ResourceKey<Item> key, RegiliteFluid<U> fluid, Regilite regilite) {
+            return new RegiliteBucketItem<>(key, fluid, regilite);
         }
 
         @Override

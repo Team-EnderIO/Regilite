@@ -1,5 +1,6 @@
 package com.enderio.regilite.holder;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
 
 public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
+    private final Regilite regilite;
     private Set<TagKey<Fluid>> FluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
@@ -33,13 +35,14 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, this::getSource, this::getFlowing).block(this::getBlock).bucket(this::getBucket);
     private Supplier<Supplier<RenderType>> renderTypeSupplier = () -> null;
 
-    protected RegiliteFluid(ResourceKey<FluidType> key) {
+    protected RegiliteFluid(ResourceKey<FluidType> key, Regilite regilite) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
+        this.regilite = regilite;
+        regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
-    public static <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<FluidType> fluidTypeResourceKey) {
-        return new RegiliteFluid<>(fluidTypeResourceKey);
+    public static <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<FluidType> fluidTypeResourceKey, Regilite regilite) {
+        return new RegiliteFluid<>(fluidTypeResourceKey, regilite);
     }
 
     public RegiliteFluid<T> createFluid(DeferredRegister<Fluid> register, Consumer<BaseFlowingFluid.Properties> consumer) {
@@ -91,7 +94,7 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public RegiliteFluid<T> setTranslation(String translation) {
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
+        regilite.addTranslation(supplier, translation);
         return this;
     }
 

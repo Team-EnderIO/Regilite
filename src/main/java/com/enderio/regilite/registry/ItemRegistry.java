@@ -1,5 +1,6 @@
 package com.enderio.regilite.registry;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
 import com.enderio.regilite.data.RegiliteTagProvider;
@@ -33,10 +34,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ItemRegistry extends DeferredRegister.Items {
-    private static List<DeferredHolder<Item, ? extends Item>> registered = new ArrayList<>();
 
-    protected ItemRegistry(String namespace) {
-        super(namespace);
+    private final Regilite regilite;
+
+    protected ItemRegistry(Regilite regilite) {
+        super(regilite.getModid());
+        this.regilite = regilite;
     }
 
     /**
@@ -186,35 +189,20 @@ public class ItemRegistry extends DeferredRegister.Items {
 
     @Override
     protected <I extends Item> RegiliteItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
-        return RegiliteItem.createItem(ResourceKey.create(registryKey, key));
+        return RegiliteItem.createItem(ResourceKey.create(registryKey, key), regilite);
     }
 
     protected <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
-        return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
+        return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
-    public static ItemRegistry createRegistry(String modid) {
-        return new ItemRegistry(modid);
+    public static ItemRegistry createRegistry(Regilite regilite) {
+        return new ItemRegistry(regilite);
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        registered.addAll(this.getEntries());
-    }
-
-    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
-        for (DeferredHolder<Item, ? extends Item> item : getRegistered()) {
-            if (item instanceof RegiliteItem) {
-                Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>) item).getTab().get(event.getTabKey());
-                if (outputConsumer != null) {
-                    outputConsumer.accept(event);
-                }
-            }
-        }
-    }
-
-    public static List<DeferredHolder<Item, ? extends Item>> getRegistered() {
-        return registered;
+        regilite.addItems(this.getEntries());
     }
 }

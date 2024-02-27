@@ -17,10 +17,10 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class Fluids {
-    private static final FluidRegister FLUIDTYPES = FluidRegister.create(ExampleMod.MODID);
+    private static final FluidRegister FLUIDTYPES = FluidRegister.create(ExampleMod.getRegilite());
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID.key(), ExampleMod.MODID);
-    public static final BlockRegistry BLOCKS = BlockRegistry.createRegistry(ExampleMod.MODID);
-    public static final ItemRegistry ITEMS = ItemRegistry.createRegistry(ExampleMod.MODID);
+    public static final BlockRegistry BLOCKS = BlockRegistry.createRegistry(ExampleMod.getRegilite());
+    public static final ItemRegistry ITEMS = ItemRegistry.createRegistry(ExampleMod.getRegilite());
 
     public static final RegiliteFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
             .createFluid(FLUIDS)

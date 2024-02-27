@@ -1,5 +1,6 @@
 package com.enderio.regilite.events;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteEntity;
 import com.enderio.regilite.registry.EntityRegistry;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -14,14 +15,16 @@ import java.util.function.Supplier;
 
 public class EntityRendererEvents {
 
-    public EntityRendererEvents() {
+    private final Regilite regilite;
 
+    public EntityRendererEvents(Regilite regilite) {
+        this.regilite = regilite;
     }
 
     // TODO: These casts should be checked thoroughly.
     @SuppressWarnings("unchecked")
     private <T extends Entity> void registerGenericER(EntityRenderersEvent.RegisterRenderers event) {
-        for (DeferredHolder<EntityType<?>, ? extends EntityType<?>> e : EntityRegistry.getRegistered()) {
+        for (DeferredHolder<EntityType<?>, ? extends EntityType<?>> e : regilite.getEntities()) {
             //noinspection rawtypes
             if (e instanceof RegiliteEntity regiliteEntity) {
                 Supplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer = regiliteEntity.getRenderer();

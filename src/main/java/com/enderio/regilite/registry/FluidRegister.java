@@ -1,5 +1,6 @@
 package com.enderio.regilite.registry;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
 import com.enderio.regilite.events.FluidRenderTypeEvents;
 import com.enderio.regilite.holder.RegiliteFluid;
@@ -22,14 +23,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FluidRegister extends DeferredRegister<FluidType>{
-    private static List<DeferredHolder<FluidType, ? extends FluidType>> registered = new ArrayList<>();
 
-    protected FluidRegister(String namespace) {
-        super(NeoForgeRegistries.FLUID_TYPES.key(), namespace);
+    private final Regilite regilite;
+
+    protected FluidRegister(Regilite regilite) {
+        super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.getModid());
+        this.regilite = regilite;
     }
 
-    public static FluidRegister create(String modid) {
-        return new FluidRegister(modid);
+    public static FluidRegister create(Regilite regilite) {
+        return new FluidRegister(regilite);
     }
 
     @Override
@@ -65,15 +68,11 @@ public class FluidRegister extends DeferredRegister<FluidType>{
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        registered.addAll(this.getEntries());
+        regilite.addFluids(this.getEntries());
     }
 
     @Override
     protected <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<? extends Registry<FluidType>> registryKey, ResourceLocation key) {
-        return RegiliteFluid.createHolder(ResourceKey.create(registryKey, key));
-    }
-
-    public static List<DeferredHolder<FluidType, ? extends FluidType>> getRegistered() {
-        return registered;
+        return RegiliteFluid.createHolder(ResourceKey.create(registryKey, key), regilite);
     }
 }

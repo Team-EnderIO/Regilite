@@ -1,5 +1,6 @@
 package com.enderio.regilite.holder;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
@@ -21,11 +22,13 @@ import java.util.function.Supplier;
 public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<? extends Entity>, EntityType<T>> implements ITagagble<EntityType<?>> {
     private final Set<TagKey<EntityType<?>>> entityTags = new HashSet<>();
     private final Supplier<String> supplier = () -> get().getDescriptionId();
+    private final Regilite regilite;
     private Supplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer = null;
 
-    protected RegiliteEntity(ResourceKey<EntityType<? extends Entity>> key) {
+    protected RegiliteEntity(ResourceKey<EntityType<? extends Entity>> key, Regilite regilite) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
+        this.regilite = regilite;
+        regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     @Override
@@ -33,8 +36,8 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
         return null;
     }
 
-    public static <T extends Entity> RegiliteEntity<T> createEntity(ResourceKey<EntityType<? extends Entity>> key) {
-        return new RegiliteEntity<>(key);
+    public static <T extends Entity> RegiliteEntity<T> createEntity(ResourceKey<EntityType<? extends Entity>> key, Regilite regilite) {
+        return new RegiliteEntity<>(key, regilite);
     }
 
     @SafeVarargs
@@ -44,7 +47,7 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
     }
 
     public RegiliteEntity<T> setTranslation(String translation) {
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
+        regilite.addTranslation(supplier, translation);
         return this;
     }
 

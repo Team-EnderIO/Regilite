@@ -1,5 +1,6 @@
 package com.enderio.regilite.holder;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
@@ -29,6 +30,7 @@ import java.util.function.Supplier;
 
 public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements ITagagble<Block> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
+    private final Regilite regilite;
     private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
     private BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
@@ -36,13 +38,14 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
     @Nullable
     private Supplier<Supplier<BlockColor>> colorSupplier;
-    protected RegiliteBlock(ResourceKey<Block> key) {
+    protected RegiliteBlock(ResourceKey<Block> key, Regilite regilite) {
         super(key);
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
+        this.regilite = regilite;
+        regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public RegiliteBlock<T> setTranslation(String translation) {
-        RegiliteDataProvider.getInstance(getId().getNamespace()).addTranslation(supplier, translation);
+        regilite.addTranslation(supplier, translation);
         return this;
     }
 
@@ -99,19 +102,15 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         return this;
     }
 
-    public static <T extends Block> RegiliteBlock<T> createBlock(ResourceLocation key) {
-        return createBlock(ResourceKey.create(Registries.BLOCK, key));
-    }
-
-    public static <T extends Block> RegiliteBlock<T> createBlock(ResourceKey<Block> key) {
-        return new RegiliteBlock<>(key);
+    public static <T extends Block> RegiliteBlock<T> createBlock(ResourceKey<Block> key, Regilite regilite) {
+        return new RegiliteBlock<>(key, regilite);
     }
 
     public static class RegiliteLiquidBlock<T extends LiquidBlock, U extends FluidType> extends RegiliteBlock<T> {
         private final RegiliteFluid<U> fluid;
 
-        protected RegiliteLiquidBlock(ResourceKey<Block> key, RegiliteFluid<U> fluid) {
-            super(key);
+        protected RegiliteLiquidBlock(ResourceKey<Block> key, RegiliteFluid<U> fluid, Regilite regilite) {
+            super(key, regilite);
             this.fluid = fluid;
             this.setLootTable(RegiliteBlockLootProvider::noDrop);
             this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t.get())
@@ -126,8 +125,8 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
             return fluid;
         }
 
-        public static <B extends LiquidBlock, U extends FluidType> RegiliteLiquidBlock<B, U> createLiquidBlock(ResourceKey<Block> key, RegiliteFluid<U> fluid) {
-            return new RegiliteLiquidBlock<>(key, fluid);
+        public static <B extends LiquidBlock, U extends FluidType> RegiliteLiquidBlock<B, U> createLiquidBlock(ResourceKey<Block> key, RegiliteFluid<U> fluid, Regilite regilite) {
+            return new RegiliteLiquidBlock<>(key, fluid, regilite);
         }
 
         @Override

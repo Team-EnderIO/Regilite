@@ -1,5 +1,6 @@
 package com.enderio.regilite.registry;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.data.RegiliteBlockLootProvider;
 import com.enderio.regilite.data.RegiliteBlockStateProvider;
@@ -34,10 +35,11 @@ import java.util.function.Supplier;
 
 public class BlockRegistry extends DeferredRegister.Blocks {
 
-    private static List<DeferredHolder<Block, ? extends Block>> registered = new ArrayList<>();
+    private final Regilite regilite;
 
-    protected BlockRegistry(String namespace) {
-        super(namespace);
+    protected BlockRegistry(Regilite regilite) {
+        super(regilite.getModid());
+        this.regilite = regilite;
     }
 
     /**
@@ -117,24 +119,20 @@ public class BlockRegistry extends DeferredRegister.Blocks {
 
     @Override
     protected <I extends Block> DeferredBlock<I> createHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key) {
-        return RegiliteBlock.createBlock(ResourceKey.create(registryKey, key));
+        return RegiliteBlock.createBlock(ResourceKey.create(registryKey, key), regilite);
     }
 
     private <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
-        return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
+        return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
-    public static BlockRegistry createRegistry(String modid) {
-        return new BlockRegistry(modid);
+    public static BlockRegistry createRegistry(Regilite regilite) {
+        return new BlockRegistry(regilite);
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        registered.addAll(this.getEntries());
-    }
-
-    public static List<DeferredHolder<Block, ? extends Block>> getRegistered() {
-        return registered;
+        regilite.addBlocks(this.getEntries());
     }
 }

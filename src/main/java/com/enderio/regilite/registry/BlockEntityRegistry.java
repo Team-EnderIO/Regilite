@@ -1,9 +1,6 @@
 package com.enderio.regilite.registry;
 
-import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.data.RegiliteTagProvider;
-import com.enderio.regilite.events.BlockEntityCapabilityEvents;
-import com.enderio.regilite.events.BlockEntityRendererEvents;
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlockEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,11 +10,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -26,10 +21,11 @@ import java.util.function.Supplier;
 
 public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
 
-    private static List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> registered = new ArrayList<>();
+    private final Regilite regilite;
 
-    protected BlockEntityRegistry(String namespace) {
-        super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), namespace);
+    protected BlockEntityRegistry(Regilite regilite) {
+        super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), regilite.getModid());
+        this.regilite = regilite;
     }
 
     public <T extends BlockEntity> RegiliteBlockEntity<T> registerBlockEntity(String name, BlockEntityType.BlockEntitySupplier<T> sup, Block... blocks) {
@@ -65,17 +61,13 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
         return RegiliteBlockEntity.createBlockEntity(ResourceKey.create(registryKey, key));
     }
 
-    public static <T extends BlockEntity> BlockEntityRegistry create(String modid) {
-        return new BlockEntityRegistry(modid);
+    public static <T extends BlockEntity> BlockEntityRegistry create(Regilite regilite) {
+        return new BlockEntityRegistry(regilite);
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        registered.addAll(this.getEntries());
-    }
-
-    public static List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> getRegistered() {
-        return registered;
+        regilite.addBlockEntities(this.getEntries());
     }
 }

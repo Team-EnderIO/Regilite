@@ -16,8 +16,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 
 public class Blocks {
-    public static final BlockRegistry BLOCKS = BlockRegistry.createRegistry(ExampleMod.MODID);
-    public static final ItemRegistry ITEMS = ItemRegistry.createRegistry(ExampleMod.MODID);
+    public static final BlockRegistry BLOCKS = BlockRegistry.createRegistry(ExampleMod.getRegilite());
+    public static final ItemRegistry ITEMS = ItemRegistry.createRegistry(ExampleMod.getRegilite());
 
     public static final RegiliteBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
