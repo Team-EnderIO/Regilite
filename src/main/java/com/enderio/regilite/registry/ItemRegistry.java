@@ -1,35 +1,22 @@
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.data.RegiliteItemModelProvider;
-import com.enderio.regilite.data.RegiliteTagProvider;
-import com.enderio.regilite.events.ColorEvents;
-import com.enderio.regilite.events.ItemCapabilityEvents;
 import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.holder.RegiliteItem;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -196,7 +183,7 @@ public class ItemRegistry extends DeferredRegister.Items {
         return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
-    public static ItemRegistry createRegistry(Regilite regilite) {
+    public static ItemRegistry create(Regilite regilite) {
         return new ItemRegistry(regilite);
     }
 

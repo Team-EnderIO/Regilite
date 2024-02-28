@@ -1,38 +1,31 @@
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.events.BlockEntityRendererEvents;
-import com.enderio.regilite.events.FluidRenderTypeEvents;
 import com.enderio.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FluidRegister extends DeferredRegister<FluidType>{
+public class FluidRegistry extends DeferredRegister<FluidType>{
 
     private final Regilite regilite;
 
-    protected FluidRegister(Regilite regilite) {
+    protected FluidRegistry(Regilite regilite) {
         super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.getModid());
         this.regilite = regilite;
     }
 
-    public static FluidRegister create(Regilite regilite) {
-        return new FluidRegister(regilite);
+    public static FluidRegistry create(Regilite regilite) {
+        return new FluidRegistry(regilite);
     }
 
     @Override

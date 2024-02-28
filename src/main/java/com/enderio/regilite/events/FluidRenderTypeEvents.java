@@ -2,7 +2,6 @@ package com.enderio.regilite.events;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteFluid;
-import com.enderio.regilite.registry.FluidRegister;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.fluids.FluidType;

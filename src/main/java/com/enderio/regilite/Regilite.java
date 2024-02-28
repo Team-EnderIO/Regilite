@@ -9,6 +9,12 @@ import com.enderio.regilite.events.FluidRenderTypeEvents;
 import com.enderio.regilite.events.ItemCapabilityEvents;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.holder.RegiliteItem;
+import com.enderio.regilite.registry.BlockEntityRegistry;
+import com.enderio.regilite.registry.BlockRegistry;
+import com.enderio.regilite.registry.EntityRegistry;
+import com.enderio.regilite.registry.FluidRegistry;
+import com.enderio.regilite.registry.ItemRegistry;
+import com.enderio.regilite.registry.MenuRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -70,6 +76,30 @@ public class Regilite {
 
     public String getModid() {
         return modid;
+    }
+
+    public BlockRegistry blockRegistry() {
+        return BlockRegistry.create(this);
+    }
+
+    public BlockEntityRegistry blockEntityRegistry() {
+        return BlockEntityRegistry.create(this);
+    }
+
+    public EntityRegistry entityRegistry() {
+        return EntityRegistry.create(this);
+    }
+
+    public FluidRegistry fluidRegistry() {
+        return FluidRegistry.create(this);
+    }
+
+    public ItemRegistry itemRegistry() {
+        return ItemRegistry.create(this);
+    }
+
+    public MenuRegistry menuRegistry() {
+        return MenuRegistry.create(this);
     }
 
     public List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> getBlockEntities() {

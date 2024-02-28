@@ -2,34 +2,21 @@ package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.data.RegiliteBlockLootProvider;
-import com.enderio.regilite.data.RegiliteBlockStateProvider;
-import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.data.RegiliteTagProvider;
-import com.enderio.regilite.events.ColorEvents;
 import com.enderio.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -126,7 +113,7 @@ public class BlockRegistry extends DeferredRegister.Blocks {
         return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
-    public static BlockRegistry createRegistry(Regilite regilite) {
+    public static BlockRegistry create(Regilite regilite) {
         return new BlockRegistry(regilite);
     }
 

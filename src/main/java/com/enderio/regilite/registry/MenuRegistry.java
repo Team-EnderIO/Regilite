@@ -2,7 +2,6 @@ package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.events.IScreenConstructor;
-import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.holder.RegiliteMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Registry;
@@ -13,14 +12,9 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.IContainerFactory;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -65,7 +59,7 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
         return registerMenu(name, sup).setScreenConstructor(screen);
     }
 
-    public static MenuRegistry createRegistry(Regilite regilite) {
+    public static MenuRegistry create(Regilite regilite) {
         return new MenuRegistry(regilite);
     }
 
