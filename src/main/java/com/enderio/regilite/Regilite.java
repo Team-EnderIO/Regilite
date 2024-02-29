@@ -57,15 +57,17 @@ public class Regilite {
     public void register(IEventBus modbus) {
         dataProvider.register(modbus);
 
+        modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
+
+        modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
+
         if (FMLEnvironment.dist.isClient()) {
             modbus.addListener(new ColorEvents.Blocks(this)::registerBlockColor);
 
             modbus.addListener(new ColorEvents.Items(this)::registerItemColor);
-            modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
             modbus.addListener(this::addCreative);
 
             modbus.addListener(new BlockEntityRendererEvents(this)::registerBER);
-            modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
 
             modbus.addListener(new FluidRenderTypeEvents(this)::registerRenderTypes);
 
