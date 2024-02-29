@@ -16,6 +16,7 @@ import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -161,7 +162,7 @@ public class Regilite {
         }
     }
 
-    public Component addTranslation(String prefix, ResourceLocation location, String translation) {
+    public MutableComponent addTranslation(String prefix, ResourceLocation location, String translation) {
         return dataProvider.addTranslation(prefix + "." + location.toLanguageKey(), translation);
     }
 
