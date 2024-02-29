@@ -1,5 +1,6 @@
 package com.enderio.regilite.events;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlockEntity;
 import com.enderio.regilite.registry.BlockEntityRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -14,16 +15,16 @@ import java.util.function.Supplier;
 
 public class BlockEntityRendererEvents {
 
-    private final BlockEntityRegistry registry;
+    private final Regilite regilite;
 
-    public BlockEntityRendererEvents(BlockEntityRegistry registry) {
-        this.registry = registry;
+    public BlockEntityRendererEvents(Regilite regilite) {
+        this.regilite = regilite;
     }
 
     // TODO: These casts should be checked thoroughly.
     @SuppressWarnings("unchecked")
     private <T extends BlockEntity> void registerGenericBER(EntityRenderersEvent.RegisterRenderers event) {
-        for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : registry.getEntries()) {
+        for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : regilite.getBlockEntities()) {
             //noinspection rawtypes
             if (be instanceof RegiliteBlockEntity regiliteBlockEntity) {
                 Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer = regiliteBlockEntity.getRenderer();

@@ -1,38 +1,32 @@
 package com.enderio.regilite.registry;
 
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.data.RegiliteBlockLootProvider;
-import com.enderio.regilite.data.RegiliteBlockStateProvider;
-import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.data.RegiliteTagProvider;
-import com.enderio.regilite.events.ColorEvents;
 import com.enderio.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BlockRegistry extends DeferredRegister.Blocks {
-    protected BlockRegistry(String namespace) {
-        super(namespace);
+
+    private final Regilite regilite;
+
+    protected BlockRegistry(Regilite regilite) {
+        super(regilite.getModid());
+        this.regilite = regilite;
     }
 
     /**
@@ -112,31 +106,20 @@ public class BlockRegistry extends DeferredRegister.Blocks {
 
     @Override
     protected <I extends Block> DeferredBlock<I> createHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key) {
-        return RegiliteBlock.createBlock(ResourceKey.create(registryKey, key));
+        return RegiliteBlock.createBlock(ResourceKey.create(registryKey, key), regilite);
     }
 
     private <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
-        return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
+        return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
-    public static BlockRegistry createRegistry(String modid) {
-        return new BlockRegistry(modid);
+    public static BlockRegistry create(Regilite regilite) {
+        return new BlockRegistry(regilite);
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        this.onGatherData(bus);
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ColorEvents.Blocks(this)::registerBlockColor);
-        }
-    }
-
-    private void onGatherData(IEventBus bus) {
-        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteBlockStateProvider(packOutput, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new LootTableProvider(packOutput, Collections.emptySet(),
-            List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), this), LootContextParamSets.BLOCK))));
+        regilite.addBlocks(this.getEntries());
     }
 }

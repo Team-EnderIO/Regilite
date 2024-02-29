@@ -1,8 +1,6 @@
 package com.enderio.regilite.data;
 
-import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteItem;
-import com.enderio.regilite.registry.ItemRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -17,20 +15,20 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 public class RegiliteItemModelProvider extends ItemModelProvider {
-    private final ItemRegistry registry;
+    private final List<DeferredHolder<Item, ? extends Item>> registered;
 
-    public RegiliteItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper, ItemRegistry itemRegistry) {
+    public RegiliteItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper, List<DeferredHolder<Item, ? extends Item>> registered) {
         super(output, modid, existingFileHelper);
-        this.registry = itemRegistry;
+        this.registered = registered;
     }
 
     @Override
     protected void registerModels() {
-        for (DeferredHolder<Item, ? extends Item> item : registry.getEntries()) {
+        for (DeferredHolder<Item, ? extends Item> item : registered) {
             if (item instanceof RegiliteItem) {
                 var modelProvider = ((RegiliteItem<Item>) item).getModelProvider();
                 if (modelProvider != null) {

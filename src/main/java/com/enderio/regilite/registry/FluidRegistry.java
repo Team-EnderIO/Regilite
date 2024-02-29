@@ -1,13 +1,11 @@
 package com.enderio.regilite.registry;
 
-import com.enderio.regilite.events.BlockEntityRendererEvents;
-import com.enderio.regilite.events.FluidRenderTypeEvents;
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -17,14 +15,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FluidRegister extends DeferredRegister<FluidType>{
+public class FluidRegistry extends DeferredRegister<FluidType>{
 
-    protected FluidRegister(String namespace) {
-        super(NeoForgeRegistries.FLUID_TYPES.key(), namespace);
+    private final Regilite regilite;
+
+    protected FluidRegistry(Regilite regilite) {
+        super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.getModid());
+        this.regilite = regilite;
     }
 
-    public static FluidRegister create(String modid) {
-        return new FluidRegister(modid);
+    public static FluidRegistry create(Regilite regilite) {
+        return new FluidRegistry(regilite);
     }
 
     @Override
@@ -60,13 +61,11 @@ public class FluidRegister extends DeferredRegister<FluidType>{
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new FluidRenderTypeEvents(this)::registerRenderTypes);
-        }
+        regilite.addFluids(this.getEntries());
     }
 
     @Override
     protected <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<? extends Registry<FluidType>> registryKey, ResourceLocation key) {
-        return RegiliteFluid.createHolder(ResourceKey.create(registryKey, key));
+        return RegiliteFluid.createHolder(ResourceKey.create(registryKey, key), regilite);
     }
 }

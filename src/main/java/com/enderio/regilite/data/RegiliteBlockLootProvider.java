@@ -13,22 +13,23 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 public class RegiliteBlockLootProvider extends BlockLootSubProvider {
 
-    private final BlockRegistry registry;
+    private final List<DeferredHolder<Block, ? extends Block>> registered;
 
-    public RegiliteBlockLootProvider(Set<Item> explosionResistant, BlockRegistry registry) {
+    public RegiliteBlockLootProvider(Set<Item> explosionResistant, List<DeferredHolder<Block, ? extends Block>> registered) {
         super(explosionResistant, FeatureFlags.REGISTRY.allFlags());
-        this.registry = registry;
+        this.registered = registered;
     }
 
     @Override
     protected void generate() {
-        for (DeferredHolder<Block, ? extends Block> block : registry.getEntries()) {
+        for (DeferredHolder<Block, ? extends Block> block : registered) {
             if (block instanceof RegiliteBlock) {
                 if (block.get().getLootTable() == BuiltInLootTables.EMPTY) {
                     continue;
@@ -48,7 +49,7 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
         this.generate();
         Set<ResourceLocation> set = new HashSet<>();
 
-        for(DeferredHolder<Block, ? extends Block> block : registry.getEntries()) {
+        for(DeferredHolder<Block, ? extends Block> block : registered) {
             if (block.get().isEnabled(this.enabledFeatures)) {
                 ResourceLocation resourcelocation = block.get().getLootTable();
                 if (resourcelocation != BuiltInLootTables.EMPTY && set.add(resourcelocation)) {

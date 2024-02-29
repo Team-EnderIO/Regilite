@@ -2,7 +2,7 @@ package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.holder.RegiliteFluid;
-import com.enderio.regilite.registry.FluidRegister;
+import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,10 +17,10 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class Fluids {
-    private static final FluidRegister FLUIDTYPES = FluidRegister.create(ExampleMod.MODID);
+    private static final FluidRegistry FLUIDTYPES = FluidRegistry.create(ExampleMod.getRegilite());
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID.key(), ExampleMod.MODID);
-    public static final BlockRegistry BLOCKS = BlockRegistry.createRegistry(ExampleMod.MODID);
-    public static final ItemRegistry ITEMS = ItemRegistry.createRegistry(ExampleMod.MODID);
+    public static final BlockRegistry BLOCKS = BlockRegistry.create(ExampleMod.getRegilite());
+    public static final ItemRegistry ITEMS = ItemRegistry.create(ExampleMod.getRegilite());
 
     public static final RegiliteFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
             .createFluid(FLUIDS)

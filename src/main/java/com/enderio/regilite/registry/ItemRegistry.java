@@ -1,10 +1,6 @@
 package com.enderio.regilite.registry;
 
-import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.data.RegiliteItemModelProvider;
-import com.enderio.regilite.data.RegiliteTagProvider;
-import com.enderio.regilite.events.ColorEvents;
-import com.enderio.regilite.events.ItemCapabilityEvents;
+import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.holder.RegiliteItem;
@@ -13,25 +9,24 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ItemRegistry extends DeferredRegister.Items {
-    protected ItemRegistry(String namespace) {
-        super(namespace);
+
+    private final Regilite regilite;
+
+    protected ItemRegistry(Regilite regilite) {
+        super(regilite.getModid());
+        this.regilite = regilite;
     }
 
     /**
@@ -181,42 +176,20 @@ public class ItemRegistry extends DeferredRegister.Items {
 
     @Override
     protected <I extends Item> RegiliteItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
-        return RegiliteItem.createItem(ResourceKey.create(registryKey, key));
+        return RegiliteItem.createItem(ResourceKey.create(registryKey, key), regilite);
     }
 
     protected <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
-        return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid);
+        return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
-    public static ItemRegistry createRegistry(String modid) {
-        return new ItemRegistry(modid);
+    public static ItemRegistry create(Regilite regilite) {
+        return new ItemRegistry(regilite);
     }
 
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        this.onGatherData(bus);
-        bus.addListener(this::addCreative);
-        if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(new ColorEvents.Items(this)::registerItemColor);
-            bus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
-        }
-    }
-
-    private void onGatherData(IEventBus bus) {
-        RegiliteDataProvider provider = RegiliteDataProvider.register(getNamespace(), bus);
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteTagProvider<>(packOutput, this.getRegistryKey(), b -> b.builtInRegistryHolder().key(), lookup, getNamespace(), existingFileHelper, this));
-        provider.addServerSubProvider((packOutput, existingFileHelper, lookup) -> new RegiliteItemModelProvider(packOutput, getNamespace(), existingFileHelper, this));
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        for (DeferredHolder<Item, ? extends Item> item : this.getEntries()) {
-            if (item instanceof RegiliteItem) {
-                Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>) item).getTab().get(event.getTabKey());
-                if (outputConsumer != null) {
-                    outputConsumer.accept(event);
-                }
-            }
-        }
+        regilite.addItems(this.getEntries());
     }
 }
