@@ -1,0 +1,57 @@
+name: Release Build
+env:
+  CI: true
+  BUILD_VERSION: ${{ github.event.release.tag_name }}
+  CHANGELOG: ${{ github.event.release.body }}
+  PUBLISH: true
+
+# Run when release is created on GitHub
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Clean
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean
+
+      - name: Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release-build
+          path: build/libs/*.jar
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: build/libs/*.jar
+
+      # Publish to Rover's maven last. Failure email will still be sent, but it'll still release elsewhere
+      - name: Rover656 Maven Publish
+        uses: gradle/gradle-build-action@v2
+        env:
+          RVR_MAVEN_USER: ${{ secrets.RVR_MAVEN_USER }}
+          RVR_MAVEN_PASSWORD: ${{ secrets.RVR_MAVEN_PASSWORD }}
+        with:
+          arguments: publishAllPublicationsToRover656Repository
