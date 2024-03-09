@@ -186,7 +186,7 @@ fun getVersionString(): String {
             version_number = version_number.substring(1)
         }
 
-        return "${version_number}"
+        return "${minecraft_version}-${version_number}"
     }
 
     if (System.getenv("NIGHTLY") != null) {
