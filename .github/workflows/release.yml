@@ -41,11 +41,11 @@ jobs:
           name: release-build
           path: build/libs/*.jar
 
-      - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: build/libs/*.jar
+      #- name: Upload to GitHub Releases
+      #  uses: softprops/action-gh-release@v1
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    files: build/libs/*.jar
 
       # Publish to Rover's maven last. Failure email will still be sent, but it'll still release elsewhere
       - name: Rover656 Maven Publish
