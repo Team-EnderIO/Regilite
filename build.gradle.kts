@@ -1,6 +1,4 @@
 import java.net.URI
-import java.text.SimpleDateFormat
-import java.util.*
 
 plugins {
     id("java-library")
@@ -12,7 +10,6 @@ plugins {
 
 val minecraft_version: String by project
 val minecraft_version_range: String by project
-val mod_version_series: String by project
 
 val neo_version: String by project
 val neo_version_range: String by project
@@ -28,7 +25,7 @@ repositories {
 }
 
 base {
-    archivesName.set("Regilite-${minecraft_version}")
+    archivesName.set("Regilite")
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -198,7 +195,7 @@ fun getVersionString(): String {
             version_patch_lc = System.getenv("BUILD_NUMBER")
         }
 
-        return "${mod_version_series}-nightly-${version_patch_lc}"
+        return "${minecraft_version}-nightly-${version_patch_lc}"
     }
 
     var version_hash = ""
@@ -216,7 +213,7 @@ fun getVersionString(): String {
         }
     }
 
-    return "${mod_version_series}-dev${branch_name}${version_hash}"
+    return "${minecraft_version}-dev${branch_name}${version_hash}"
 }
 
 fun shellRunAndRead(command: String): String {
