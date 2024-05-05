@@ -14,8 +14,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 
 public class Blocks {
-    public static final BlockRegistry BLOCKS = BlockRegistry.create(ExampleMod.getRegilite());
-    public static final ItemRegistry ITEMS = ItemRegistry.create(ExampleMod.getRegilite());
+    public static final BlockRegistry BLOCKS =  ExampleMod.getRegilite().blockRegistry();
+    public static final ItemRegistry ITEMS =  ExampleMod.getRegilite().itemRegistry();
 
     public static final RegiliteBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))

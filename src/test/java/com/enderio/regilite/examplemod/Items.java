@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 
 public class Items {
-    public static final ItemRegistry ITEMS = ItemRegistry.create(ExampleMod.getRegilite());
+    public static final ItemRegistry ITEMS = ExampleMod.getRegilite().itemRegistry();
 
     public static final RegiliteItem<Item> EXAMPLE_ITEM = ITEMS.registerItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
                     .alwaysEdible().nutrition(1).saturationModifier(2f).build()))

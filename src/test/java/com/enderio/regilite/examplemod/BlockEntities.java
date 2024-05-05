@@ -6,7 +6,7 @@ import com.enderio.regilite.holder.RegiliteBlockEntity;
 import net.neoforged.bus.api.IEventBus;
 
 public class BlockEntities {
-    public static final BlockEntityRegistry BLOCK_ENTITIES = BlockEntityRegistry.create(ExampleMod.getRegilite());
+    public static final BlockEntityRegistry BLOCK_ENTITIES = ExampleMod.getRegilite().blockEntityRegistry();
 
     public static RegiliteBlockEntity<ExampleBlockentity> EXAMPLE_BLOCKENTITY = BLOCK_ENTITIES.registerBlockEntity("example", ExampleBlockentity::new, Blocks.EXAMPLE_BLOCK);
 

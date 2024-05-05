@@ -1,17 +1,15 @@
-# Regilite (Registrate at home)
-A light library helping with registration and data generation
+# Regilite
+A lightweight library helping with registration and data generation.
 
-## Content
-This library provides helper functions and wrappers around for various Objects. Below we provide a list of all
-functions provided.
+## Usage
+This library provides helper functions and wrappers around for various Holders and registries. To be able to use 
+Regilite, you firstly create and register a `Regilite`-object. This object will do the actual registring data to events 
+and doing DataGen.
 
-### Translations
-We provide automatic translations for objects where the `ResourceLocation` gives enough context. This can always 
-be changed using the `setTranslation` method.
+Below you can find a list of Holder objects Regilite supports. You can see not every Holder has a Regilite alternative, 
+and this is intentional. We've only provided our wrappers when the Holder could benefit from it in our eyes.
 
-Besides the translation of objects like blocks and items, we also provide helpers for adding automatic translations for `Components`.
-
-### com.testmod.Blocks
+### RegiliteBlock
 Besides the block itself, there are also functions to automatically register the following:
 - Loot tables
 - Blockstates and model
@@ -19,17 +17,18 @@ Besides the block itself, there are also functions to automatically register the
 - Block Tags
 - Translation
 - Block item 
-  - See `com.testmod.Items`
+  - See `Items`
 
-### com.testmod.Items
+### RegiliteItem
 Besides the item itself, there are also functions to automatically register the following:
 - Item model
 - Item color (tint)
 - Item Tags
 - Creative tabs
 - Translation
+- Capabilities
 
-### Fluid(type)s
+### RegiliteFluid
 Besides the fluid(type) itself, there are also functions to automatically register the following:
 - Flowing fluid
 - Source fluid
@@ -40,29 +39,32 @@ Besides the fluid(type) itself, there are also functions to automatically regist
 - Bucket Item
   - See `Item`
 
-### Block Entity(type)s
+### RegiliteBlockEntity
 Besides the block entity(type) itself, it automatically registers the following:
 
-- Block entity renderer (should we?)
+- Block entity renderer
 - Block entity tags
+- Capabilities
 
-This helper meanly helps by removing a lot of (constant) generic bounds from the code, and provides a shortcut to
-create a block entity directly from the holder.
-
-### Entity(type)s
+### RegiliteEntity
 Besides the entity(type) itself, it automatically registers the following:
 
-- Entity model (should we?)
-- Model layer (should we?)
+- Entity model
 - Entity tags
 - Translation
+- Capabilities (TODO)
+- Model layer (TODO)
 
-This helper also removes a lot of (constant) generic bounds from the code.
 
-### Menu(type)s
+### RegiliteMenu
 Besides the menu(type) itself, it automatically registers the following:
 
-- Screen factory (should we?)
-- Translation (should we, as we don't use it?)
+- Screen factory
+- Translation (TODO)
 
-This helper also removes a lot of (constant) generic bounds from the code.
+### Translations
+We provide automatic translations for holders where the `ResourceLocation` gives enough context. This can always
+be changed using the `setTranslation` method.
+
+For other translations, the `Regilite`-object provides methods for registering a translation. In case a translation is 
+added multiple times, only the last one will be used.
