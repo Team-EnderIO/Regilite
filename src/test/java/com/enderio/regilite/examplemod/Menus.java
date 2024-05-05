@@ -8,7 +8,7 @@ import net.neoforged.bus.api.IEventBus;
 
 public class Menus {
 
-    private static final MenuRegistry MENUS = MenuRegistry.create(ExampleMod.getRegilite());
+    private static final MenuRegistry MENUS = ExampleMod.getRegilite().menuRegistry();
 
     public static final RegiliteMenu<ExampleMenu> EXAMPLE_MENU = MENUS.registerMenu("example", ExampleMenu::new, () -> ExampleScreen::new);
 
