@@ -65,20 +65,21 @@ public class RegiliteDataProvider implements DataProvider {
     void onGatherData(GatherDataEvent event) {
         PackOutput packOutput = event.getGenerator().getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> registries = event.getLookupProvider();
 
         RegiliteLangProvider enUs = new RegiliteLangProvider(packOutput, this.modid, "en_us");
         enUs.add(this.langEntries);
         this.subProviders.add(enUs);
 
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getBlock()));
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ITEM, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getItems()));
-        this.subProviders.add(new RegiliteTagProvider.FluidTagProvider(packOutput, Registries.FLUID, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getFluids()));
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK_ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getBlockEntities()));
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), lookupProvider, modid, existingFileHelper, regilite.getEntities()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getBlock()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ITEM, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getItems()));
+        this.subProviders.add(new RegiliteTagProvider.FluidTagProvider(packOutput, Registries.FLUID, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getFluids()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK_ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getBlockEntities()));
+        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getEntities()));
 
         this.subProviders.add(new RegiliteBlockStateProvider(packOutput, modid, existingFileHelper, regilite.getBlock()));
-        this.subProviders.add(new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), regilite.getBlock()), LootContextParamSets.BLOCK))));
+        this.subProviders.add(new LootTableProvider(packOutput, Collections.emptySet(),
+                List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), regilite.getBlock()), LootContextParamSets.BLOCK)), registries));
 
         this.subProviders.add(new RegiliteItemModelProvider(packOutput, modid, existingFileHelper, regilite.getItems()));
         event.getGenerator().addProvider(true, this);

@@ -74,7 +74,7 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
     public ItemModelBuilder bucketItem(BucketItem item) {
         return withExistingParent(BuiltInRegistries.ITEM.getKey(item).toString(), new ResourceLocation(NeoForgeVersion.MOD_ID, "item/bucket"))
                 .customLoader(DynamicFluidContainerModelBuilder::begin)
-                .fluid(item.getFluid())
+                .fluid(item.content)
                 .end();
     }
 }

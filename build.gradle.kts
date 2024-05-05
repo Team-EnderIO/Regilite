@@ -5,7 +5,7 @@ plugins {
     id("eclipse")
     id("idea")
     id("maven-publish")
-    id("net.neoforged.gradle.userdev") version "7.0.80"
+    id("net.neoforged.gradle.userdev") version "7.0.109"
 }
 
 val minecraft_version: String by project
@@ -28,8 +28,8 @@ base {
     archivesName.set("Regilite")
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+// Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 runs {
     configureEach {
@@ -105,7 +105,7 @@ tasks.withType<ProcessResources>().configureEach {
     )
     inputs.properties(replaceProperties)
 
-    filesMatching(listOf("META-INF/mods.toml", "pack.mcmeta")) {
+    filesMatching(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta")) {
         expand(replaceProperties)
         expand(mutableMapOf("project" to project))
     }

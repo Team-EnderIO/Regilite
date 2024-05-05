@@ -101,7 +101,7 @@ public class BlockRegistry extends DeferredRegister.Blocks {
     }
 
     public <U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<LiquidBlock, U> registerLiquidBlock(String name, BlockBehaviour.Properties props, Supplier<FlowingFluid> fluidSupp, RegiliteFluid<U> fluid) {
-        return this.registerLiquidBlock(name, (rl) -> new LiquidBlock(fluidSupp, props), fluid);
+        return this.registerLiquidBlock(name, (rl) -> new LiquidBlock(fluidSupp.get(), props), fluid);
     }
 
     @Override

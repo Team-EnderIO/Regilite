@@ -27,15 +27,15 @@ public class ExampleBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState p_60503_, Level p_60504_, BlockPos p_60505_, Player p_60506_, InteractionHand p_60507_, BlockHitResult p_60508_) {
-        BlockEntity be = p_60504_.getBlockEntity(p_60505_);
+    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+        BlockEntity be = pLevel.getBlockEntity(pPos);
         if (be instanceof ExampleBlockentity exampleBlockentity) {
-            MenuProvider menuprovider = this.getMenuProvider(p_60503_, p_60504_, p_60505_);
-            if (menuprovider != null && p_60506_ instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuprovider, buf -> buf.writeBlockPos(p_60505_));
+            MenuProvider menuprovider = this.getMenuProvider(pState, pLevel, pPos);
+            if (menuprovider != null && pPlayer instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuprovider, buf -> buf.writeBlockPos(pPos));
             }
         }
-        return super.use(p_60503_, p_60504_, p_60505_, p_60506_, p_60507_, p_60508_);
+        return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
     }
 
     @Nullable

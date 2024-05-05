@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ScreenEvents {
@@ -18,20 +19,19 @@ public class ScreenEvents {
         this.regilite = regilite;
     }
 
-    public <T extends AbstractContainerMenu> void genericScreenEvent(FMLClientSetupEvent event) {
+    public <T extends AbstractContainerMenu> void genericScreenEvent(RegisterMenuScreensEvent event) {
         for (DeferredHolder<MenuType<?>, ? extends MenuType<?>> menu : regilite.getMenus()) {
-            if (menu instanceof RegiliteMenu) {
-                IScreenConstructor<T, ? extends AbstractContainerScreen<T>> screen = ((RegiliteMenu<T>) menu).getScreenConstructor();
+            if (menu instanceof RegiliteMenu regiliteMenu) {
+                IScreenConstructor<T, ? extends AbstractContainerScreen<T>> screen = regiliteMenu.getScreenConstructor();
+
                 if (screen != null) {
-                    event.enqueueWork(
-                            () -> MenuScreens.register(((RegiliteMenu<T>) menu).get(), screen::create)
-                    );
+                    event.register((MenuType<T>)regiliteMenu.get(), screen::create);
                 }
             }
         }
     }
 
-    public void screenEvent(FMLClientSetupEvent event) {
+    public void screenEvent(RegisterMenuScreensEvent event) {
         this.genericScreenEvent(event);
     }
 }

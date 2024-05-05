@@ -2,8 +2,10 @@ package com.enderio.regilite.data;
 
 import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.registry.BlockRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -45,22 +47,22 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
 
     //TODO why these 2 methods, can we join them?
     @Override
-    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> p_249322_) {
+    public void generate(HolderLookup.Provider pRegistries, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> pGenerator) {
         this.generate();
-        Set<ResourceLocation> set = new HashSet<>();
+        Set<ResourceKey<LootTable>> set = new HashSet<>();
 
         for(DeferredHolder<Block, ? extends Block> block : registered) {
             if (block.get().isEnabled(this.enabledFeatures)) {
-                ResourceLocation resourcelocation = block.get().getLootTable();
-                if (resourcelocation != BuiltInLootTables.EMPTY && set.add(resourcelocation)) {
-                    LootTable.Builder loottable$builder = this.map.remove(resourcelocation);
+                var lootTableResourceKey = block.get().getLootTable();
+                if (lootTableResourceKey != BuiltInLootTables.EMPTY && set.add(lootTableResourceKey)) {
+                    LootTable.Builder loottable$builder = this.map.remove(lootTableResourceKey);
                     if (loottable$builder == null) {
                         throw new IllegalStateException(
-                                String.format(Locale.ROOT, "Missing loottable '%s' for '%s'", resourcelocation, BuiltInRegistries.BLOCK.getKey(block.get()))
+                                String.format(Locale.ROOT, "Missing loottable '%s' for '%s'", lootTableResourceKey, BuiltInRegistries.BLOCK.getKey(block.get()))
                         );
                     }
 
-                    p_249322_.accept(resourcelocation, loottable$builder);
+                    pGenerator.accept(lootTableResourceKey, loottable$builder);
                 }
             }
         }

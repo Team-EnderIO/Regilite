@@ -1,7 +1,6 @@
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.registry.ITagagble;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.util.NonNullFunction;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -24,11 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
-    protected Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer;
+    protected Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer;
 
     protected List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
@@ -66,12 +65,12 @@ public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<B
         return this;
     }
 
-    public RegiliteBlockEntity<T> setRenderer(Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
+    public RegiliteBlockEntity<T> setRenderer(Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
         this.renderer = renderer;
         return this;
     }
 
-    public Supplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> getRenderer() {
+    public Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> getRenderer() {
         return renderer;
     }
 

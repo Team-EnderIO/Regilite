@@ -24,9 +24,10 @@ public class Fluids {
 
     public static final RegiliteFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
             .createFluid(FLUIDS)
-            .withBlock(BLOCKS, fluid -> new LiquidBlock(fluid, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)))
+            // TODO: Maybe make withBlock and withBucket just provide the fluid, no supplier.
+            .withBlock(BLOCKS, fluid -> new LiquidBlock(fluid.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)))
             .finishLiquidBlock()
-            .withBucket(ITEMS, fluid -> new BucketItem(fluid, new Item.Properties().stacksTo(1)))
+            .withBucket(ITEMS, fluid -> new BucketItem(fluid.get(), new Item.Properties().stacksTo(1)))
             .finishBucket()
             .setRenderType(() -> RenderType::translucent);
 

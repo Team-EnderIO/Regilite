@@ -12,7 +12,7 @@ public class Items {
     public static final ItemRegistry ITEMS = ItemRegistry.create(ExampleMod.getRegilite());
 
     public static final RegiliteItem<Item> EXAMPLE_ITEM = ITEMS.registerItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
-                    .alwaysEat().nutrition(1).saturationMod(2f).build()))
+                    .alwaysEdible().nutrition(1).saturationModifier(2f).build()))
             .addItemTags(ItemTags.WOOL)
             .setTranslation("Test Example Item")
             .setColorSupplier(() -> () -> ExampleColors.ITEM)
