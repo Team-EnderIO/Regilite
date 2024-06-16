@@ -1,12 +1,10 @@
 package com.enderio.regilite.data;
 
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.registry.BlockRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -24,8 +22,9 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
 
     private final List<DeferredHolder<Block, ? extends Block>> registered;
 
-    public RegiliteBlockLootProvider(Set<Item> explosionResistant, List<DeferredHolder<Block, ? extends Block>> registered) {
-        super(explosionResistant, FeatureFlags.REGISTRY.allFlags());
+    public RegiliteBlockLootProvider(Set<Item> explosionResistant, List<DeferredHolder<Block, ? extends Block>> registered,
+                                     HolderLookup.Provider registries) {
+        super(explosionResistant, FeatureFlags.REGISTRY.allFlags(), registries);
         this.registered = registered;
     }
 
@@ -47,7 +46,7 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
 
     //TODO why these 2 methods, can we join them?
     @Override
-    public void generate(HolderLookup.Provider pRegistries, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> pGenerator) {
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> pGenerator) {
         this.generate();
         Set<ResourceKey<LootTable>> set = new HashSet<>();
 

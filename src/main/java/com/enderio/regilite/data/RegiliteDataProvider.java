@@ -79,7 +79,7 @@ public class RegiliteDataProvider implements DataProvider {
 
         this.subProviders.add(new RegiliteBlockStateProvider(packOutput, modid, existingFileHelper, regilite.getBlock()));
         this.subProviders.add(new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(() -> new RegiliteBlockLootProvider(Set.of(), regilite.getBlock()), LootContextParamSets.BLOCK)), registries));
+                List.of(new LootTableProvider.SubProviderEntry((provider) -> new RegiliteBlockLootProvider(Set.of(), regilite.getBlock(), provider), LootContextParamSets.BLOCK)), registries));
 
         this.subProviders.add(new RegiliteItemModelProvider(packOutput, modid, existingFileHelper, regilite.getItems()));
         event.getGenerator().addProvider(true, this);

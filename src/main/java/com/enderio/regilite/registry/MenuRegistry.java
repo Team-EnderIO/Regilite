@@ -35,7 +35,7 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
     public <I extends AbstractContainerMenu> RegiliteMenu<I> registerMenu(String name, Function<ResourceLocation, ? extends MenuType<I>> func) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
-        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
 
         RegiliteMenu<I> ret = createMenuHolder(this.getRegistryKey(), key);
 

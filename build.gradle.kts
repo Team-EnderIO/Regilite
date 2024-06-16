@@ -5,7 +5,7 @@ plugins {
     id("eclipse")
     id("idea")
     id("maven-publish")
-    id("net.neoforged.gradle.userdev") version "7.0.109"
+    id("net.neoforged.gradle.userdev") version "7.0.142"
 }
 
 val minecraft_version: String by project

@@ -24,7 +24,7 @@ public class CreativeTabs {
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> registerTab(String name, String translation, Consumer<CreativeModeTab.Builder> builder) {
         return CREATIVE_MODE_TABS.register(name, () -> {
             CreativeModeTab.Builder config = CreativeModeTab.builder()
-                    .title(ExampleMod.getRegilite().addTranslation("itemGroup", new ResourceLocation(CREATIVE_MODE_TABS.getNamespace(), name), translation));
+                    .title(ExampleMod.getRegilite().addTranslation("itemGroup", ResourceLocation.fromNamespaceAndPath(CREATIVE_MODE_TABS.getNamespace(), name), translation));
             builder.accept(config);
             return config.build();
         });

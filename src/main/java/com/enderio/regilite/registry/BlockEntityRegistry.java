@@ -35,7 +35,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     private <T extends BlockEntity> RegiliteBlockEntity<T> registerBlockEntity(String name, Function<ResourceLocation, BlockEntityType<T>> func) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
-        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
 
         RegiliteBlockEntity<T> ret = RegiliteBlockEntity.createBlockEntity(ResourceKey.create(getRegistryKey(), key));
 

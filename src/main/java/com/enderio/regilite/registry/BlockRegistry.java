@@ -84,7 +84,7 @@ public class BlockRegistry extends DeferredRegister.Blocks {
         //    throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
-        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
 
         RegiliteBlock.RegiliteLiquidBlock<B, U> ret = createLiquidHolder(this.getRegistryKey(), key, fluid);
 

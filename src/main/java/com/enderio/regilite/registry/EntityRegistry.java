@@ -36,7 +36,7 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
     private <T extends Entity> RegiliteEntity<T> registerEntity(String name, Function<ResourceLocation, EntityType<T>> func) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
-        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
 
         RegiliteEntity<T> ret = RegiliteEntity.createEntity(ResourceKey.create(getRegistryKey(), key), regilite);
 

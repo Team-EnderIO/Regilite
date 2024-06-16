@@ -61,7 +61,7 @@ public class ItemRegistry extends DeferredRegister.Items {
         //throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
-        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
 
         RegiliteItem<I> ret = createHolder(getRegistryKey(), key);
 
@@ -162,7 +162,7 @@ public class ItemRegistry extends DeferredRegister.Items {
     public <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I,U> registerBucket(String name, Function<ResourceLocation, ? extends I> func, RegiliteFluid<U> fluid) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(func);
-        final ResourceLocation key = new ResourceLocation(getNamespace(), name);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
 
         RegiliteItem.RegiliteBucketItem<I,U> ret = createBucketHolder(getRegistryKey(), key, fluid);
 

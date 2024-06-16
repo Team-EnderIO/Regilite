@@ -25,6 +25,6 @@ public class DataGenContext<R, E extends R> implements Supplier<E> {
     }
 
     public ResourceLocation getId() {
-        return new ResourceLocation(modid, name);
+        return ResourceLocation.fromNamespaceAndPath(modid, name);
     }
 }

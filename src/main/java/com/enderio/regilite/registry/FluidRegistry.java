@@ -45,12 +45,12 @@ public class FluidRegistry extends DeferredRegister<FluidType>{
                 consumer.accept(new IClientFluidTypeExtensions() {
                     @Override
                     public ResourceLocation getStillTexture() {
-                        return new ResourceLocation(getNamespace(), "block/" + name + "_still");
+                        return ResourceLocation.fromNamespaceAndPath(getNamespace(), "block/" + name + "_still");
                     }
 
                     @Override
                     public ResourceLocation getFlowingTexture() {
-                        return new ResourceLocation(getNamespace(), "block/" + name + "_flowing");
+                        return ResourceLocation.fromNamespaceAndPath(getNamespace(), "block/" + name + "_flowing");
                     }
                 });
             }

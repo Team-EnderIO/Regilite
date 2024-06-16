@@ -48,7 +48,8 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
 
     public ItemModelBuilder basicBlock(ResourceLocation item) {
         return getBuilder(item.toString())
-            .parent(new ModelFile.UncheckedModelFile(new ResourceLocation(item.getNamespace(), "block/" + item.getPath())));
+            .parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(
+                    item.getNamespace(), "block/" + item.getPath())));
     }
 
     public ItemModelBuilder basicItem(Item item, ResourceLocation texture) {
@@ -68,11 +69,11 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
 
     public ResourceLocation itemTexture(ItemLike item) {
         var itemLocation = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
-        return new ResourceLocation(itemLocation.getNamespace(), "item/" + itemLocation.getPath());
+        return ResourceLocation.fromNamespaceAndPath(itemLocation.getNamespace(), "item/" + itemLocation.getPath());
     }
 
     public ItemModelBuilder bucketItem(BucketItem item) {
-        return withExistingParent(BuiltInRegistries.ITEM.getKey(item).toString(), new ResourceLocation(NeoForgeVersion.MOD_ID, "item/bucket"))
+        return withExistingParent(BuiltInRegistries.ITEM.getKey(item).toString(), ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
                 .customLoader(DynamicFluidContainerModelBuilder::begin)
                 .fluid(item.content)
                 .end();

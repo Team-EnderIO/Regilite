@@ -116,7 +116,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
             this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t.get())
                     .partialState()
                     .modelForState()
-                    .modelFile(prov.models().getExistingFile(new ResourceLocation("water")))
+                    .modelFile(prov.models().getExistingFile(ResourceLocation.withDefaultNamespace("water")))
                     .addModel()
             );
         }
