@@ -17,7 +17,6 @@ import net.minecraft.world.item.*;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.ApiStatus;
@@ -28,7 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITagagble<Item> {
+public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITagagble<Item>, RegiliteHolder<RegiliteItem<T>> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private final Regilite regilite;
     protected Set<TagKey<Item>> ItemTags = new HashSet<>();
@@ -96,14 +95,8 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return this;
     }
 
-    public <TCap, TContext> RegiliteItem<T> addCapability(ItemCapability<TCap, TContext> capability, ICapabilityProvider<ItemStack, TContext, TCap> provider) {
+    public <TCap, TContext> RegiliteItem<T> withCapability(ItemCapability<TCap, TContext> capability, ICapabilityProvider<ItemStack, TContext, TCap> provider) {
         attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
-        return this;
-    }
-
-    // Allows wrapping common holder builder methods into other methods and applying them.
-    public RegiliteItem<T> apply(Consumer<RegiliteItem<T>> applicator) {
-        applicator.accept(this);
         return this;
     }
 

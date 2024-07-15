@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid> {
+public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid>, RegiliteHolder<RegiliteFluid<T>> {
     private final Supplier<String> descriptionIdSupplier = () -> get().getDescriptionId();
     private final Regilite regilite;
     private Set<TagKey<Fluid>> fluidTags = Set.of();

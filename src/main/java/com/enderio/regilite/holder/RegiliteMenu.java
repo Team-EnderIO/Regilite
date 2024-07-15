@@ -14,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
 
-public class RegiliteMenu<T extends AbstractContainerMenu> extends DeferredHolder<MenuType<? extends AbstractContainerMenu>, MenuType<T>> {
+public class RegiliteMenu<T extends AbstractContainerMenu> extends DeferredHolder<MenuType<? extends AbstractContainerMenu>, MenuType<T>> implements RegiliteHolder<RegiliteMenu<T>> {
 
     private Supplier<IScreenConstructor<T, ? extends AbstractContainerScreen<T>>> screenConstructor;
 

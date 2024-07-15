@@ -30,7 +30,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>> implements ITagagble<BlockEntityType<?>> {
+public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<BlockEntityType<? extends BlockEntity>, BlockEntityType<T>>
+        implements ITagagble<BlockEntityType<?>>, RegiliteHolder<RegiliteBlockEntity<T>> {
     protected Set<TagKey<BlockEntityType<?>>> BlockEntityTags = new HashSet<>();
     protected Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer;
 
@@ -79,14 +80,8 @@ public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<B
         return renderer;
     }
 
-    public <TCap, TContext> RegiliteBlockEntity<T> addCapability(BlockCapability<TCap, TContext> capability, ICapabilityProvider<? super T, TContext, TCap> provider) {
+    public <TCap, TContext> RegiliteBlockEntity<T> withCapability(BlockCapability<TCap, TContext> capability, ICapabilityProvider<? super T, TContext, TCap> provider) {
         attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
-        return this;
-    }
-
-    // Allows wrapping common holder builder methods into other methods and applying them.
-    public RegiliteBlockEntity<T> apply(Consumer<RegiliteBlockEntity<T>> applicator) {
-        applicator.accept(this);
         return this;
     }
 

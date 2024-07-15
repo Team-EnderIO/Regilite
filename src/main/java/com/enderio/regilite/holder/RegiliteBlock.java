@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements ITagagble<Block> {
+public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements ITagagble<Block>, RegiliteHolder<RegiliteBlock<T>> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private final Regilite regilite;
     private Set<TagKey<Block>> blockTags = Set.of();
