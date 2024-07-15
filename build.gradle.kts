@@ -104,7 +104,7 @@ publishing {
 
         create<MavenPublication>("regilite") {
             groupId = "com.enderio"
-            artifactId = "Regilite"
+            artifactId = "regilite"
             version = version
 
             artifact(tasks.getByName("jar"))

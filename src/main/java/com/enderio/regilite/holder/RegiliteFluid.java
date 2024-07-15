@@ -100,19 +100,23 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
 
     // region Bucket Item
 
-    public <I extends BucketItem> RegiliteFluid<T> withBucket(ItemRegistry registry) {
-        return withBucket(registry, f -> new BucketItem(f.get(), new Item.Properties().stacksTo(1)), i -> {});
+    public RegiliteFluid<T> withBucket(ItemRegistry registry) {
+        return withCustomBucket(registry, f -> new BucketItem(f.get(), new Item.Properties().stacksTo(1)), i -> {});
     }
 
-    public <I extends BucketItem> RegiliteFluid<T> withBucket(ItemRegistry registry, Item.Properties properties) {
-        return withBucket(registry, f -> new BucketItem(f.get(), properties), i -> {});
+    public RegiliteFluid<T> withBucket(ItemRegistry registry, Consumer<RegiliteItem<BucketItem>> itemConfigure) {
+        return withCustomBucket(registry, f -> new BucketItem(f.get(), new Item.Properties().stacksTo(1)), itemConfigure);
     }
 
-    public <I extends BucketItem> RegiliteFluid<T> withBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, I> supplier) {
-        return withBucket(registry, supplier, i -> {});
+    public RegiliteFluid<T> withBucket(ItemRegistry registry, Item.Properties properties) {
+        return withCustomBucket(registry, f -> new BucketItem(f.get(), properties), i -> {});
     }
 
-    public <I extends BucketItem> RegiliteFluid<T> withBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, I> supplier, Consumer<RegiliteItem<I>> itemConfigure) {
+    public <I extends BucketItem> RegiliteFluid<T> withCustomBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, I> supplier) {
+        return withCustomBucket(registry, supplier, i -> {});
+    }
+
+    public <I extends BucketItem> RegiliteFluid<T> withCustomBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, I> supplier, Consumer<RegiliteItem<I>> itemConfigure) {
         var bucket = registry.register(getId().getPath() + "_bucket", () -> supplier.apply(this.sourceFluid));
         itemConfigure.accept(bucket);
         this.bucket = bucket;
