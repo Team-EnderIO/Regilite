@@ -79,7 +79,7 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return tab;
     }
 
-    public RegiliteItem<T> setModelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
+    public RegiliteItem<T> withModelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
         this.modelProvider = modelProvider;
         return this;
     }
@@ -88,11 +88,11 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return modelProvider;
     }
 
-    public Supplier<Supplier<ItemColor>> getColorSupplier() {
+    public Supplier<Supplier<ItemColor>> getItemColorSupplier() {
         return colorSupplier;
     }
 
-    public RegiliteItem<T> setColorSupplier(Supplier<Supplier<ItemColor>> colorSupplier) {
+    public RegiliteItem<T> withItemColor(Supplier<Supplier<ItemColor>> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }

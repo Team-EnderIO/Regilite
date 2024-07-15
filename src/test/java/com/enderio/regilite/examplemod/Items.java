@@ -20,7 +20,7 @@ public class Items {
                     .alwaysEdible().nutrition(1).saturationModifier(2f).build()))
             .withTags(ItemTags.WOOL)
             .withTranslation("Test Example Item")
-            .setColorSupplier(() -> () -> ExampleColors.ITEM)
+            .withItemColor(() -> () -> ExampleColors.ITEM)
             .withTab(null);
 
     public static void register(IEventBus modEventBus) {

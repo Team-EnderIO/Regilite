@@ -74,7 +74,7 @@ public class ItemRegistry extends DeferredRegister.Items {
 
         return ret
                 .withTranslation("")
-                .setModelProvider((prov, ctx) -> prov.basicBlock(ctx.get()));
+                .withModelProvider((prov, ctx) -> prov.basicBlock(ctx.get()));
     }
 
     public <I extends BlockItem, U extends Block> RegiliteItem<I> registerBlockItem(String name, RegiliteBlock<U> block, Supplier<I> sup) {

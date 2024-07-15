@@ -70,7 +70,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         return lootTable;
     }
 
-    public RegiliteBlock<T> setBlockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
+    public RegiliteBlock<T> withBlockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
         this.blockStateProvider = blockStateProvider;
         return this;
     }
@@ -81,7 +81,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     }
 
     @Nullable
-    public Supplier<Supplier<BlockColor>> getColorSupplier() {
+    public Supplier<Supplier<BlockColor>> getBlockColorSupplier() {
         return colorSupplier;
     }
 

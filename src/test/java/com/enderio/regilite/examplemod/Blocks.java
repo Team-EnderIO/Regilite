@@ -27,11 +27,11 @@ public class Blocks {
             .withTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .withTranslation("Test Example Block")
             .withBlockColor(() -> () -> ExampleColors.BLOCK)
-            .setBlockStateProvider((prov, ctx) -> prov.simpleBlock(ctx.get()))
+            .withBlockStateProvider((prov, ctx) -> prov.simpleBlock(ctx.get()))
             .withLootTable(RegiliteBlockLootProvider::dropSelf)
             .withBlockItem(ITEMS, item -> item
                     .withTags(ItemTags.PLANKS)
-                    .setModelProvider((prov, ctx) -> prov.basicItem(ctx.get()))
+                    .withModelProvider((prov, ctx) -> prov.basicItem(ctx.get()))
                     .withTab(CreativeModeTabs.BUILDING_BLOCKS)
                     .withTab(CreativeTabs.EXAMPLE_TAB.getKey()));
 

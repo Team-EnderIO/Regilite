@@ -26,7 +26,7 @@ public class ColorEvents {
         public void registerItemColor(RegisterColorHandlersEvent.Item event) {
             for (DeferredHolder<Item, ? extends Item> item : regilite.getItems()) {
                 if (item instanceof RegiliteItem) {
-                    var colorSupplier = ((RegiliteItem<Item>)item).getColorSupplier();
+                    var colorSupplier = ((RegiliteItem<Item>)item).getItemColorSupplier();
                     if (colorSupplier != null) {
                         event.register(colorSupplier.get().get(), item.get());
                     }
@@ -46,7 +46,7 @@ public class ColorEvents {
         public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
             for (DeferredHolder<Block, ? extends Block> block : regilite.getBlock()) {
                 if (block instanceof RegiliteBlock) {
-                    var colorSupplier = ((RegiliteBlock<Block>)block).getColorSupplier();
+                    var colorSupplier = ((RegiliteBlock<Block>)block).getBlockColorSupplier();
                     if (colorSupplier != null) {
                         event.register(colorSupplier.get().get(), block.get());
                     }
