@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
@@ -25,7 +30,7 @@ public class ItemRegistry extends DeferredRegister.Items {
     private final Regilite regilite;
 
     protected ItemRegistry(Regilite regilite) {
-        super(regilite.getModid());
+        super(regilite.getModId());
         this.regilite = regilite;
     }
 
@@ -71,7 +76,7 @@ public class ItemRegistry extends DeferredRegister.Items {
         }
 
         return ret
-                .setTranslation("")
+                .withTranslation("")
                 .setModelProvider((prov, ctx) -> prov.basicBlock(ctx.get()));
     }
 
@@ -155,32 +160,9 @@ public class ItemRegistry extends DeferredRegister.Items {
         return this.registerItem(name, Item::new, new Item.Properties());
     }
 
-    public <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> registerBucket(String name, Supplier<? extends I> supp, RegiliteFluid<U> fluid) {
-        return this.registerBucket(name, key -> supp.get(), fluid);
-    }
-
-    public <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I,U> registerBucket(String name, Function<ResourceLocation, ? extends I> func, RegiliteFluid<U> fluid) {
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(func);
-        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
-
-        RegiliteItem.RegiliteBucketItem<I,U> ret = createBucketHolder(getRegistryKey(), key, fluid);
-
-        var entries = DeferredRegistryReflect.getEntries(this);
-        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
-            throw new IllegalArgumentException("Duplicate registration " + name);
-        }
-
-        return ret;
-    }
-
     @Override
     protected <I extends Item> RegiliteItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
         return RegiliteItem.createItem(ResourceKey.create(registryKey, key), regilite);
-    }
-
-    protected <I extends BucketItem, U extends FluidType> RegiliteItem.RegiliteBucketItem<I, U> createBucketHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
-        return RegiliteItem.RegiliteBucketItem.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
     public static ItemRegistry create(Regilite regilite) {

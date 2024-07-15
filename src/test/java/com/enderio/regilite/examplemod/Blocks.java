@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.examplemod.exampleclasses.ExampleBlock;
@@ -19,16 +24,16 @@ public class Blocks {
 
     public static final RegiliteBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
-            .addBlockTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
-            .setTranslation("Test Example Block")
-            .setColorSupplier(() -> () -> ExampleColors.BLOCK)
+            .withTags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
+            .withTranslation("Test Example Block")
+            .withBlockColor(() -> () -> ExampleColors.BLOCK)
             .setBlockStateProvider((prov, ctx) -> prov.simpleBlock(ctx.get()))
-            .setLootTable(RegiliteBlockLootProvider::dropSelf)
-            .createBlockItem(ITEMS, item -> item
-                    .addItemTags(ItemTags.PLANKS)
+            .withLootTable(RegiliteBlockLootProvider::dropSelf)
+            .withBlockItem(ITEMS, item -> item
+                    .withTags(ItemTags.PLANKS)
                     .setModelProvider((prov, ctx) -> prov.basicItem(ctx.get()))
-                    .setTab(CreativeModeTabs.BUILDING_BLOCKS)
-                    .setTab(CreativeTabs.EXAMPLE_TAB.getKey()));
+                    .withTab(CreativeModeTabs.BUILDING_BLOCKS)
+                    .withTab(CreativeTabs.EXAMPLE_TAB.getKey()));
 
     public static void register(IEventBus modEventBus) {
         BLOCKS.register(modEventBus);

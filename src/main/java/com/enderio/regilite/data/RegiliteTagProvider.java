@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.data;
 
 import com.enderio.regilite.holder.RegiliteFluid;
@@ -12,7 +17,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -29,7 +33,7 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider p_256380_) {
+    protected void addTags(HolderLookup.Provider lookupProvider) {
         for (DeferredHolder<T, ? extends T> entry : registered) {
             if (entry instanceof ITagagble) {
                 Set<TagKey<T>> tag = ((ITagagble<T>) entry).getTags();
@@ -51,7 +55,7 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
         }
 
         @Override
-        protected void addTags(HolderLookup.Provider p_256380_) {
+        protected void addTags(HolderLookup.Provider lookupProvider) {
             for (DeferredHolder<FluidType, ? extends FluidType> entry : registered) {
                 if (entry instanceof RegiliteFluid<? extends FluidType> fluidtype) {
                     Set<TagKey<Fluid>> tag = ((ITagagble<Fluid>) entry).getTags();

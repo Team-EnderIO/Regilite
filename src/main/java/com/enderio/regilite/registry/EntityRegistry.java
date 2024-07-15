@@ -1,10 +1,11 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.data.RegiliteTagProvider;
-import com.enderio.regilite.events.BlockEntityRendererEvents;
-import com.enderio.regilite.events.EntityRendererEvents;
 import com.enderio.regilite.holder.RegiliteEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -12,14 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,7 +25,7 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
     private final Regilite regilite;
 
     protected EntityRegistry(Regilite regilite) {
-        super(BuiltInRegistries.ENTITY_TYPE.key(), regilite.getModid());
+        super(BuiltInRegistries.ENTITY_TYPE.key(), regilite.getModId());
         this.regilite = regilite;
     }
 

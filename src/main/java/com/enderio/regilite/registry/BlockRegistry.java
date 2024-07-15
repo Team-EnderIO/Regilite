@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
@@ -25,7 +30,7 @@ public class BlockRegistry extends DeferredRegister.Blocks {
     private final Regilite regilite;
 
     protected BlockRegistry(Regilite regilite) {
-        super(regilite.getModid());
+        super(regilite.getModId());
         this.regilite = regilite;
     }
 
@@ -79,38 +84,9 @@ public class BlockRegistry extends DeferredRegister.Blocks {
         return this.registerBlock(name, Block::new, props);
     }
 
-    public <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> registerLiquidBlock(String name, Function<ResourceLocation, ? extends B> func, RegiliteFluid<U> fluid) {
-        //if (seenRegisterEvent)
-        //    throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(func);
-        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
-
-        RegiliteBlock.RegiliteLiquidBlock<B, U> ret = createLiquidHolder(this.getRegistryKey(), key, fluid);
-
-        var entries = DeferredRegistryReflect.getEntries(this);
-        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
-            throw new IllegalArgumentException("Duplicate registration " + name);
-        }
-
-        return ret;
-    }
-
-    public <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> registerLiquidBlock(String namespace, Supplier<? extends B> supplier, RegiliteFluid<U> fluid) {
-        return this.registerLiquidBlock(namespace, key -> supplier.get(), fluid);
-    }
-
-    public <U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<LiquidBlock, U> registerLiquidBlock(String name, BlockBehaviour.Properties props, Supplier<FlowingFluid> fluidSupp, RegiliteFluid<U> fluid) {
-        return this.registerLiquidBlock(name, (rl) -> new LiquidBlock(fluidSupp.get(), props), fluid);
-    }
-
     @Override
     protected <I extends Block> DeferredBlock<I> createHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key) {
         return RegiliteBlock.createBlock(ResourceKey.create(registryKey, key), regilite);
-    }
-
-    private <B extends LiquidBlock, U extends FluidType> RegiliteBlock.RegiliteLiquidBlock<B, U> createLiquidHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key, RegiliteFluid<U> fluid) {
-        return RegiliteBlock.RegiliteLiquidBlock.createLiquidBlock(ResourceKey.create(registryKey, key), fluid, regilite);
     }
 
     public static BlockRegistry create(Regilite regilite) {

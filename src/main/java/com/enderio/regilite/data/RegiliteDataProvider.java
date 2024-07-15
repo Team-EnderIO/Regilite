@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.data;
 
 import com.enderio.regilite.Regilite;
@@ -30,7 +35,7 @@ public class RegiliteDataProvider implements DataProvider {
     private final Regilite regilite;
 
     public RegiliteDataProvider(Regilite regilite) {
-        this.modid = regilite.getModid();
+        this.modid = regilite.getModId();
         this.regilite = regilite;
     }
 

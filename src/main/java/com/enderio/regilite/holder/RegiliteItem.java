@@ -1,20 +1,19 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
-import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -45,13 +44,13 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
-    public RegiliteItem<T> setTranslation(String translation) {
+    public RegiliteItem<T> withTranslation(String translation) {
         regilite.addTranslation(supplier, translation);
         return this;
     }
 
     @SafeVarargs
-    public final RegiliteItem<T> addItemTags(TagKey<Item>... tags) {
+    public final RegiliteItem<T> withTags(TagKey<Item>... tags) {
         ItemTags.addAll(new HashSet<>(List.of(tags)));
         return this;
     }
@@ -60,17 +59,17 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
         return ItemTags;
     }
 
-    public RegiliteItem<T> setTab(ResourceKey<CreativeModeTab> tab) {
+    public RegiliteItem<T> withTab(ResourceKey<CreativeModeTab> tab) {
         this.tab.put(tab, output -> output.accept(new ItemStack(this.get())));
         return this;
     }
 
-    public RegiliteItem<T> setTab(ResourceKey<CreativeModeTab> tab, CreativeModeTab.TabVisibility visibility) {
+    public RegiliteItem<T> withTab(ResourceKey<CreativeModeTab> tab, CreativeModeTab.TabVisibility visibility) {
         this.tab.put(tab, output -> output.accept(new ItemStack(this.get()), visibility));
         return this;
     }
 
-    public RegiliteItem<T> setTab(ResourceKey<CreativeModeTab> tab, Consumer<CreativeModeTab.Output> output) {
+    public RegiliteItem<T> withTab(ResourceKey<CreativeModeTab> tab, Consumer<CreativeModeTab.Output> output) {
         this.tab.put(tab, output);
         return this;
     }
@@ -132,48 +131,5 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
      */
     public static <T extends Item> RegiliteItem<T> createItem(ResourceKey<Item> key, Regilite regilite) {
         return new RegiliteItem<>(key, regilite);
-    }
-
-    public static class RegiliteBucketItem<T extends BucketItem, U extends FluidType> extends RegiliteItem<T> {
-
-        private final RegiliteFluid<U> fluid;
-
-        protected RegiliteBucketItem(ResourceKey<Item> key, RegiliteFluid<U> fluid, Regilite regilite) {
-            super(key, regilite);
-            this.fluid = fluid;
-            this.modelProvider = (prov, ctx) -> prov.bucketItem(ctx.get());
-        }
-
-        public RegiliteFluid<U> finishBucket() {
-            return fluid;
-        }
-
-        public static <I extends BucketItem, U extends FluidType> RegiliteBucketItem<I,U> createLiquidBlock(ResourceKey<Item> key, RegiliteFluid<U> fluid, Regilite regilite) {
-            return new RegiliteBucketItem<>(key, fluid, regilite);
-        }
-
-        @Override
-        public RegiliteBucketItem<T, U> setTab(ResourceKey<CreativeModeTab> tab) {
-            super.setTab(tab);
-            return this;
-        }
-
-        @Override
-        public RegiliteBucketItem<T, U> setModelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
-            super.setModelProvider(modelProvider);
-            return this;
-        }
-
-        @SafeVarargs
-        public final RegiliteBucketItem<T,U> addBucketItemTags(TagKey<Item>... tags) {
-            super.addItemTags(tags);
-            return this;
-        }
-
-        @Override
-        public RegiliteBucketItem<T,U> setTranslation(String translation) {
-            super.setTranslation(translation);
-            return this;
-        }
     }
 }

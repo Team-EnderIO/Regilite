@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite;
 
 import com.enderio.regilite.data.RegiliteDataProvider;
@@ -15,7 +20,6 @@ import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -38,7 +42,7 @@ import java.util.function.Supplier;
 
 public class Regilite {
 
-    private final String modid;
+    private final String modId;
 
     private final List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> blockentities = new ArrayList<>();
     private final List<DeferredHolder<Block, ? extends Block>> blocks = new ArrayList<>();
@@ -48,9 +52,8 @@ public class Regilite {
     private final List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> menus = new ArrayList<>();
     private final RegiliteDataProvider dataProvider;
 
-
-    public Regilite(String modid) {
-        this.modid = modid;
+    public Regilite(String modId) {
+        this.modId = modId;
         this.dataProvider = new RegiliteDataProvider(this);
     }
 
@@ -58,7 +61,6 @@ public class Regilite {
         dataProvider.register(modbus);
 
         modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
-
         modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
 
         if (FMLEnvironment.dist.isClient()) {
@@ -77,8 +79,8 @@ public class Regilite {
         }
     }
 
-    public String getModid() {
-        return modid;
+    public String getModId() {
+        return modId;
     }
 
     public BlockRegistry blockRegistry() {

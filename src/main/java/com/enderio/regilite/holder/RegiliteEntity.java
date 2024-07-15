@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
@@ -38,17 +43,17 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
     }
 
     @SafeVarargs
-    public final RegiliteEntity<T> addEntityTags(TagKey<EntityType<?>>... tags) {
+    public final RegiliteEntity<T> withTags(TagKey<EntityType<?>>... tags) {
         this.entityTags.addAll(Set.of(tags));
         return this;
     }
 
-    public RegiliteEntity<T> setTranslation(String translation) {
+    public RegiliteEntity<T> withTranslation(String translation) {
         regilite.addTranslation(supplier, translation);
         return this;
     }
 
-    public RegiliteEntity<T> setRenderer(Supplier<Function<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer) {
+    public RegiliteEntity<T> withRenderer(Supplier<Function<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer) {
         this.renderer = renderer;
         return this;
     }

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
@@ -20,7 +25,7 @@ public class FluidRegistry extends DeferredRegister<FluidType>{
     private final Regilite regilite;
 
     protected FluidRegistry(Regilite regilite) {
-        super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.getModid());
+        super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.getModId());
         this.regilite = regilite;
     }
 

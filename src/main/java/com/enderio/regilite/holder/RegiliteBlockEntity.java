@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.registry.ITagagble;
@@ -60,12 +65,12 @@ public class RegiliteBlockEntity<T extends BlockEntity> extends DeferredHolder<B
     }
 
     @SafeVarargs
-    public final RegiliteBlockEntity<T> addBlockEntityTagsTags(TagKey<BlockEntityType<?>>... tags) {
+    public final RegiliteBlockEntity<T> withTags(TagKey<BlockEntityType<?>>... tags) {
         BlockEntityTags.addAll(Set.of(tags));
         return this;
     }
 
-    public RegiliteBlockEntity<T> setRenderer(Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
+    public RegiliteBlockEntity<T> withRenderer(Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
         this.renderer = renderer;
         return this;
     }

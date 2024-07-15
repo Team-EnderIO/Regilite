@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
@@ -24,7 +29,7 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
     private final Regilite regilite;
 
     protected MenuRegistry(Regilite regilite) {
-        super(BuiltInRegistries.MENU.key(), regilite.getModid());
+        super(BuiltInRegistries.MENU.key(), regilite.getModId());
         this.regilite = regilite;
     }
 

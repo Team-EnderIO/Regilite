@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
@@ -5,18 +10,13 @@ import com.enderio.regilite.data.DataGenContext;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.data.RegiliteBlockLootProvider;
-import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import javax.annotation.Nullable;
@@ -44,13 +44,13 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
-    public RegiliteBlock<T> setTranslation(String translation) {
+    public RegiliteBlock<T> withTranslation(String translation) {
         regilite.addTranslation(supplier, translation);
         return this;
     }
 
     @SafeVarargs
-    public final RegiliteBlock<T> addBlockTags(TagKey<Block>... tags) {
+    public final RegiliteBlock<T> withTags(TagKey<Block>... tags) {
         blockTags = new HashSet<>(List.of(tags));
         return this;
     }
@@ -59,7 +59,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         return blockTags;
     }
 
-    public RegiliteBlock<T> setLootTable(BiConsumer<RegiliteBlockLootProvider, T> lootTable) {
+    public RegiliteBlock<T> withLootTable(BiConsumer<RegiliteBlockLootProvider, T> lootTable) {
         this.lootTable = lootTable;
         return this;
     }
@@ -84,19 +84,19 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
         return colorSupplier;
     }
 
-    public RegiliteBlock<T> setColorSupplier(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
+    public RegiliteBlock<T> withBlockColor(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
     }
 
-    public RegiliteBlock<T> createBlockItem(ItemRegistry registry, Consumer<RegiliteItem<BlockItem>> itemConfigure) {
+    public RegiliteBlock<T> withBlockItem(ItemRegistry registry, Consumer<RegiliteItem<BlockItem>> itemConfigure) {
         var item = registry.registerBlockItem(this);
         itemConfigure.accept(item);
         return this;
     }
 
-    public RegiliteBlock<T> createBlockItem(ItemRegistry registry, Function<T, ? extends BlockItem> function,
-                                            Consumer<RegiliteItem<? extends BlockItem>> itemConfigure) {
+    public RegiliteBlock<T> withBlockItem(ItemRegistry registry, Function<T, ? extends BlockItem> function,
+                                          Consumer<RegiliteItem<? extends BlockItem>> itemConfigure) {
         var item = registry.registerBlockItem(getId().getPath(), this, () -> function.apply(this.get()));
         itemConfigure.accept(item);
         return this;
@@ -104,54 +104,5 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
 
     public static <T extends Block> RegiliteBlock<T> createBlock(ResourceKey<Block> key, Regilite regilite) {
         return new RegiliteBlock<>(key, regilite);
-    }
-
-    public static class RegiliteLiquidBlock<T extends LiquidBlock, U extends FluidType> extends RegiliteBlock<T> {
-        private final RegiliteFluid<U> fluid;
-
-        protected RegiliteLiquidBlock(ResourceKey<Block> key, RegiliteFluid<U> fluid, Regilite regilite) {
-            super(key, regilite);
-            this.fluid = fluid;
-            this.setLootTable(RegiliteBlockLootProvider::noDrop);
-            this.setBlockStateProvider((prov, t) -> prov.getVariantBuilder(t.get())
-                    .partialState()
-                    .modelForState()
-                    .modelFile(prov.models().getExistingFile(ResourceLocation.withDefaultNamespace("water")))
-                    .addModel()
-            );
-        }
-
-        public RegiliteFluid<U> finishLiquidBlock() {
-            return fluid;
-        }
-
-        public static <B extends LiquidBlock, U extends FluidType> RegiliteLiquidBlock<B, U> createLiquidBlock(ResourceKey<Block> key, RegiliteFluid<U> fluid, Regilite regilite) {
-            return new RegiliteLiquidBlock<>(key, fluid, regilite);
-        }
-
-        @Override
-        public RegiliteLiquidBlock<T,U> setLootTable(BiConsumer<RegiliteBlockLootProvider, T> lootTable) {
-            super.setLootTable(lootTable);
-            return this;
-        }
-
-        @Override
-        public RegiliteLiquidBlock<T,U> setBlockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
-            super.setBlockStateProvider(blockStateProvider);
-            return this;
-        }
-
-        @Override
-        public RegiliteLiquidBlock<T,U> setColorSupplier(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
-            super.setColorSupplier(colorSupplier);
-            return this;
-        }
-
-        @Override
-        public RegiliteLiquidBlock<T,U> setTranslation(String translation) {
-            super.setTranslation(translation);
-            return this;
-        }
-
     }
 }

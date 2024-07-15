@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.registry.BlockRegistry;
@@ -24,12 +29,9 @@ public class Fluids {
 
     public static final RegiliteFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
             .createFluid(FLUIDS)
-            // TODO: Maybe make withBlock and withBucket just provide the fluid, no supplier.
-            .withBlock(BLOCKS, fluid -> new LiquidBlock(fluid.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)))
-            .finishLiquidBlock()
-            .withBucket(ITEMS, fluid -> new BucketItem(fluid.get(), new Item.Properties().stacksTo(1)))
-            .finishBucket()
-            .setRenderType(() -> RenderType::translucent);
+            .withBlock(BLOCKS, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER))
+            .withBucket(ITEMS)
+            .withRenderType(() -> RenderType::translucent);
 
     public static void register(IEventBus modEventBus) {
         FLUIDTYPES.register(modEventBus);

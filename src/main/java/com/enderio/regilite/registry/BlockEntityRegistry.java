@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
@@ -10,11 +15,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -24,7 +27,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     private final Regilite regilite;
 
     protected BlockEntityRegistry(Regilite regilite) {
-        super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), regilite.getModid());
+        super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), regilite.getModId());
         this.regilite = regilite;
     }
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Team Ender IO and contributors
+ * SPDX-License-Identifier: LGPL-3.0-only
+ */
+
 package com.enderio.regilite.data;
 
 import net.minecraft.data.PackOutput;
@@ -10,8 +15,8 @@ import java.util.function.Supplier;
 public class RegiliteLangProvider extends LanguageProvider {
     private final Map<Supplier<String>, String> langEntries = new HashMap<>();
 
-    public RegiliteLangProvider(PackOutput output, String modid, String locale) {
-        super(output, modid, locale);
+    public RegiliteLangProvider(PackOutput output, String modId, String locale) {
+        super(output, modId, locale);
     }
 
     public void add(Map<Supplier<String>, String> entries) {
