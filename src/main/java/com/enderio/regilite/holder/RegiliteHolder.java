@@ -7,6 +7,7 @@ public interface RegiliteHolder<T extends RegiliteHolder<T>> {
     /**
      * Mutate this object using the provided applicator.
      * This can be used to collect common combinations of modifications together to reduce repetition.
+     *
      * @param applicator An applicator that will modify the object.
      * @return The object.
      */

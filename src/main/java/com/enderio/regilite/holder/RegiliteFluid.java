@@ -57,7 +57,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public RegiliteFluid<T> createFluid(DeferredRegister<Fluid> register) {
-        return this.createFluid(register, properties1 -> {});
+        return this.createFluid(register, properties1 -> {
+        });
     }
 
     public BaseFlowingFluid.Source getSource() {
@@ -79,7 +80,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     // region Block
 
     public RegiliteFluid<T> withBlock(BlockRegistry registry, BlockBehaviour.Properties properties) {
-        return withBlock(registry, f -> new LiquidBlock(f.get(), properties), b -> {});
+        return withBlock(registry, f -> new LiquidBlock(f.get(), properties), b -> {
+        });
     }
 
     public RegiliteFluid<T> withBlock(BlockRegistry registry, BlockBehaviour.Properties properties, Consumer<RegiliteBlock<? extends LiquidBlock>> blockConfigure) {
@@ -87,7 +89,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public RegiliteFluid<T> withBlock(BlockRegistry registry, Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier) {
-        return withBlock(registry, supplier, b -> {});
+        return withBlock(registry, supplier, b -> {
+        });
     }
 
     public RegiliteFluid<T> withBlock(BlockRegistry registry, Function<Supplier<BaseFlowingFluid.Flowing>, ? extends LiquidBlock> supplier, Consumer<RegiliteBlock<? extends LiquidBlock>> blockConfigure) {
@@ -101,7 +104,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     // region Bucket Item
 
     public RegiliteFluid<T> withBucket(ItemRegistry registry) {
-        return withCustomBucket(registry, f -> new BucketItem(f.get(), new Item.Properties().stacksTo(1)), i -> {});
+        return withCustomBucket(registry, f -> new BucketItem(f.get(), new Item.Properties().stacksTo(1)), i -> {
+        });
     }
 
     public RegiliteFluid<T> withBucket(ItemRegistry registry, Consumer<RegiliteItem<BucketItem>> itemConfigure) {
@@ -109,11 +113,13 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public RegiliteFluid<T> withBucket(ItemRegistry registry, Item.Properties properties) {
-        return withCustomBucket(registry, f -> new BucketItem(f.get(), properties), i -> {});
+        return withCustomBucket(registry, f -> new BucketItem(f.get(), properties), i -> {
+        });
     }
 
     public <I extends BucketItem> RegiliteFluid<T> withCustomBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, I> supplier) {
-        return withCustomBucket(registry, supplier, i -> {});
+        return withCustomBucket(registry, supplier, i -> {
+        });
     }
 
     public <I extends BucketItem> RegiliteFluid<T> withCustomBucket(ItemRegistry registry, Function<Supplier<BaseFlowingFluid.Source>, I> supplier, Consumer<RegiliteItem<I>> itemConfigure) {

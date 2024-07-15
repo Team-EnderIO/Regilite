@@ -7,17 +7,14 @@ package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.holder.RegiliteItem;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -45,7 +42,7 @@ public class ItemRegistry extends DeferredRegister.Items {
     @SuppressWarnings("unchecked")
     @Override
     public <I extends Item> RegiliteItem<I> register(String name, Function<ResourceLocation, ? extends I> func) {
-        return (RegiliteItem<I>) super.register(name, func);
+        return (RegiliteItem<I>)super.register(name, func);
     }
 
     /**

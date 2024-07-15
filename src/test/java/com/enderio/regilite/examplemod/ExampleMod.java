@@ -6,7 +6,6 @@
 package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.data.RegiliteDataProvider;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -14,8 +13,7 @@ import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExampleMod.MODID)
-public class ExampleMod
-{
+public class ExampleMod {
     public static final String MODID = "examplemod";
     private static final Logger LOGGER = LogUtils.getLogger();
     public static final Regilite regilite = new Regilite(MODID);

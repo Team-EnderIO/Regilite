@@ -158,7 +158,7 @@ public class Regilite {
     public void addCreative(BuildCreativeModeTabContentsEvent event) {
         for (DeferredHolder<Item, ? extends Item> item : getItems()) {
             if (item instanceof RegiliteItem) {
-                Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>) item).getTab().get(event.getTabKey());
+                Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>)item).getTab().get(event.getTabKey());
                 if (outputConsumer != null) {
                     outputConsumer.accept(event);
                 }

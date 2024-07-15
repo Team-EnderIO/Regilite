@@ -35,7 +35,7 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         for (DeferredHolder<Item, ? extends Item> item : registered) {
             if (item instanceof RegiliteItem) {
-                var modelProvider = ((RegiliteItem<Item>) item).getModelProvider();
+                var modelProvider = ((RegiliteItem<Item>)item).getModelProvider();
                 if (modelProvider != null) {
                     modelProvider.accept(this, new DataGenContext<>(item.getKey().location(), item::get));
                 }
@@ -53,14 +53,14 @@ public class RegiliteItemModelProvider extends ItemModelProvider {
 
     public ItemModelBuilder basicBlock(ResourceLocation item) {
         return getBuilder(item.toString())
-            .parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(
-                    item.getNamespace(), "block/" + item.getPath())));
+                .parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(
+                        item.getNamespace(), "block/" + item.getPath())));
     }
 
     public ItemModelBuilder basicItem(Item item, ResourceLocation texture) {
         return getBuilder(BuiltInRegistries.ITEM.getKey(item).toString())
-            .parent(new ModelFile.UncheckedModelFile("item/generated"))
-            .texture("layer0", texture);
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", texture);
     }
 
     public ItemModelBuilder handheld(Item item) {

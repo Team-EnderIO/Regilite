@@ -26,8 +26,9 @@ public class RegiliteLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         for (Map.Entry<Supplier<String>, String> entry : langEntries.entrySet()) {
-            if (!entry.getValue().isEmpty())
+            if (!entry.getValue().isEmpty()) {
                 this.add(entry.getKey().get(), entry.getValue());
+            }
         }
     }
 }

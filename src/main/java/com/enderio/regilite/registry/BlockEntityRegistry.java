@@ -53,7 +53,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     //TODO steam mess, can this be cleaner?
     @SafeVarargs
     public final <T extends BlockEntity> RegiliteBlockEntity<T> registerBlockEntity(String name, BlockEntityType.BlockEntitySupplier<T> sup, Supplier<? extends Block>... blocks) {
-        return this.registerBlockEntity(name, () -> BlockEntityType.Builder.of(sup, Arrays.stream(blocks).map(Supplier::get).toList().toArray(new Block[] {})).build(null));
+        return this.registerBlockEntity(name, () -> BlockEntityType.Builder.of(sup, Arrays.stream(blocks).map(Supplier::get).toList().toArray(new Block[]{})).build(null));
     }
 
     public <T extends BlockEntity> RegiliteBlockEntity<T> registerBlockEntity(String name, Supplier<BlockEntityType<T>> supplier) {

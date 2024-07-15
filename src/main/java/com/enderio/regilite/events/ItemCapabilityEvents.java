@@ -7,7 +7,6 @@ package com.enderio.regilite.events;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteItem;
-import com.enderio.regilite.registry.ItemRegistry;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class ItemCapabilityEvents {

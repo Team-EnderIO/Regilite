@@ -8,7 +8,6 @@ package com.enderio.regilite.events;
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteItem;
-import com.enderio.regilite.registry.ItemRegistry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -27,9 +26,10 @@ public class ColorEvents {
         public void registerItemColor(RegisterColorHandlersEvent.Item event) {
             for (DeferredHolder<Item, ? extends Item> item : regilite.getItems()) {
                 if (item instanceof RegiliteItem) {
-                    var colorSupplier = ((RegiliteItem<Item>) item).getColorSupplier();
-                    if (colorSupplier != null)
+                    var colorSupplier = ((RegiliteItem<Item>)item).getColorSupplier();
+                    if (colorSupplier != null) {
                         event.register(colorSupplier.get().get(), item.get());
+                    }
                 }
             }
         }
@@ -46,9 +46,10 @@ public class ColorEvents {
         public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
             for (DeferredHolder<Block, ? extends Block> block : regilite.getBlock()) {
                 if (block instanceof RegiliteBlock) {
-                    var colorSupplier = ((RegiliteBlock<Block>) block).getColorSupplier();
-                    if (colorSupplier != null)
+                    var colorSupplier = ((RegiliteBlock<Block>)block).getColorSupplier();
+                    if (colorSupplier != null) {
                         event.register(colorSupplier.get().get(), block.get());
+                    }
                 }
             }
         }

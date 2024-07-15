@@ -36,7 +36,7 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
     protected void addTags(HolderLookup.Provider lookupProvider) {
         for (DeferredHolder<T, ? extends T> entry : registered) {
             if (entry instanceof ITagagble) {
-                Set<TagKey<T>> tag = ((ITagagble<T>) entry).getTags();
+                Set<TagKey<T>> tag = ((ITagagble<T>)entry).getTags();
 
                 if (tag != null) {
                     tag.forEach(t -> tag(t).add(entry.get()));
@@ -58,7 +58,7 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
         protected void addTags(HolderLookup.Provider lookupProvider) {
             for (DeferredHolder<FluidType, ? extends FluidType> entry : registered) {
                 if (entry instanceof RegiliteFluid<? extends FluidType> fluidtype) {
-                    Set<TagKey<Fluid>> tag = ((ITagagble<Fluid>) entry).getTags();
+                    Set<TagKey<Fluid>> tag = ((ITagagble<Fluid>)entry).getTags();
 
                     if (tag != null) {
                         tag.forEach(t -> tag(t).add(fluidtype.getSource()));

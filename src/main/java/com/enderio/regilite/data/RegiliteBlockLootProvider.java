@@ -41,7 +41,7 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
                     continue;
                 }
 
-                BiConsumer<RegiliteBlockLootProvider, Block> lootTable = ((RegiliteBlock<Block>) block).getLootTable();
+                BiConsumer<RegiliteBlockLootProvider, Block> lootTable = ((RegiliteBlock<Block>)block).getLootTable();
                 if (lootTable != null) {
                     lootTable.accept(this, block.get());
                 }
@@ -55,7 +55,7 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
         this.generate();
         Set<ResourceKey<LootTable>> set = new HashSet<>();
 
-        for(DeferredHolder<Block, ? extends Block> block : registered) {
+        for (DeferredHolder<Block, ? extends Block> block : registered) {
             if (block.get().isEnabled(this.enabledFeatures)) {
                 var lootTableResourceKey = block.get().getLootTable();
                 if (lootTableResourceKey != BuiltInLootTables.EMPTY && set.add(lootTableResourceKey)) {

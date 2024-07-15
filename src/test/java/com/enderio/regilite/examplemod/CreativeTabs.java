@@ -5,7 +5,6 @@
 
 package com.enderio.regilite.examplemod;
 
-import com.enderio.regilite.data.RegiliteDataProvider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;

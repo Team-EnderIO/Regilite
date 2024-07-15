@@ -6,7 +6,6 @@
 package com.enderio.regilite.data;
 
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.registry.BlockRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -28,7 +27,7 @@ public class RegiliteBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         for (DeferredHolder<Block, ? extends Block> block : registered) {
             if (block instanceof RegiliteBlock) {
-                BiConsumer<BlockStateProvider, DataGenContext<Block, Block>> blockstate = ((RegiliteBlock<Block>) block).getBlockStateProvider();
+                BiConsumer<BlockStateProvider, DataGenContext<Block, Block>> blockstate = ((RegiliteBlock<Block>)block).getBlockStateProvider();
                 if (blockstate != null) {
                     blockstate.accept(this, new DataGenContext<>(block.getKey().location(), block::get));
                 }

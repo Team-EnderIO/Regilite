@@ -1,15 +1,15 @@
-modLoader="javafml"
-loaderVersion="${loader_version_range}"
-license="N/A"
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "N/A"
 [[mods]]
-modId="examplemod"
-version="1.0"
-displayName="Example Mod"
-description='''Test mod for Regilite'''
+modId = "examplemod"
+version = "1.0"
+displayName = "Example Mod"
+description = '''Test mod for Regilite'''
 
 [[dependencies.examplemod]]
-    modId="minecraft"
-    type="required" #mandatory
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+type = "required" #mandatory
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"

@@ -7,13 +7,15 @@ package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.DataGenContext;
-import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.data.RegiliteItemModelProvider;
+import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;

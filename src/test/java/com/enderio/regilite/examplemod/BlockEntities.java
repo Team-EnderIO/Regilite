@@ -6,8 +6,8 @@
 package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.examplemod.exampleclasses.ExampleBlockentity;
-import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.holder.RegiliteBlockEntity;
+import com.enderio.regilite.registry.BlockEntityRegistry;
 import net.neoforged.bus.api.IEventBus;
 
 public class BlockEntities {

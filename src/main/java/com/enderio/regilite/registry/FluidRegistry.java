@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FluidRegistry extends DeferredRegister<FluidType>{
+public class FluidRegistry extends DeferredRegister<FluidType> {
 
     private final Regilite regilite;
 
@@ -35,7 +35,7 @@ public class FluidRegistry extends DeferredRegister<FluidType>{
 
     @Override
     public <I extends FluidType> RegiliteFluid<I> register(String name, Function<ResourceLocation, ? extends I> func) {
-        return (RegiliteFluid<I>) super.register(name, func);
+        return (RegiliteFluid<I>)super.register(name, func);
     }
 
     @Override

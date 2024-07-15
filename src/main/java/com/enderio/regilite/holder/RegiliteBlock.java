@@ -7,9 +7,9 @@ package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.data.DataGenContext;
+import com.enderio.regilite.data.RegiliteBlockLootProvider;
 import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
-import com.enderio.regilite.data.RegiliteBlockLootProvider;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.resources.ResourceKey;
@@ -38,6 +38,7 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
     private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
     @Nullable
     private Supplier<Supplier<BlockColor>> colorSupplier;
+
     protected RegiliteBlock(ResourceKey<Block> key, Regilite regilite) {
         super(key);
         this.regilite = regilite;

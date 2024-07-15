@@ -7,21 +7,16 @@ package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlock;
-import com.enderio.regilite.holder.RegiliteFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -44,7 +39,7 @@ public class BlockRegistry extends DeferredRegister.Blocks {
     @SuppressWarnings("unchecked")
     @Override
     public <B extends Block> RegiliteBlock<B> register(String name, Function<ResourceLocation, ? extends B> func) {
-        return ((RegiliteBlock<B>) super.register(name, func));
+        return ((RegiliteBlock<B>)super.register(name, func));
     }
 
     /**

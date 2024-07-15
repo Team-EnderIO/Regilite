@@ -7,7 +7,6 @@ package com.enderio.regilite.events;
 
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.holder.RegiliteBlockEntity;
-import com.enderio.regilite.registry.BlockEntityRegistry;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class BlockEntityCapabilityEvents {

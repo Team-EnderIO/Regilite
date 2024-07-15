@@ -5,11 +5,11 @@
 
 package com.enderio.regilite.examplemod;
 
+import com.enderio.regilite.data.RegiliteBlockLootProvider;
 import com.enderio.regilite.examplemod.exampleclasses.ExampleBlock;
 import com.enderio.regilite.examplemod.exampleclasses.ExampleColors;
-import com.enderio.regilite.data.RegiliteBlockLootProvider;
-import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.holder.RegiliteBlock;
+import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -19,8 +19,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 
 public class Blocks {
-    public static final BlockRegistry BLOCKS =  ExampleMod.getRegilite().blockRegistry();
-    public static final ItemRegistry ITEMS =  ExampleMod.getRegilite().itemRegistry();
+    public static final BlockRegistry BLOCKS = ExampleMod.getRegilite().blockRegistry();
+    public static final ItemRegistry ITEMS = ExampleMod.getRegilite().itemRegistry();
 
     public static final RegiliteBlock<ExampleBlock> EXAMPLE_BLOCK = BLOCKS
             .registerBlock("example_block", ExampleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
