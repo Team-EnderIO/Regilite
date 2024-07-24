@@ -5,7 +5,7 @@
 
 package com.enderio.regilite;
 
-import com.enderio.regilite.data.BundledDataProvider;
+import com.enderio.regilite.utils.BundledDataProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.events.BlockEntityCapabilityEvents;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
@@ -26,8 +26,8 @@ import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -60,13 +60,18 @@ public class Regilite {
     private final List<DeferredHolder<Item, ? extends Item>> items = new ArrayList<>();
     private final List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> menus = new ArrayList<>();
 
-    private final RegiliteBlocks blocksRegistry;
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
 
     private final RegiliteLootTables lootTablesModule;
 
+    private final RegiliteItems itemsModule;
+    private final RegiliteBlocks blocksRegistry;
+
     private final RegiliteDataProvider dataProvider;
+
+    private final ObjectList<RegiliteModuleDataGen> modulesWithDataGeneration = new ObjectArrayList<>();
+    private final ObjectList<RegiliteModuleEvents> modulesWithEvents = new ObjectArrayList<>();
 
     //private final DeferredRegister.DataComponents dataComponentsRegistry;
 
@@ -74,11 +79,24 @@ public class Regilite {
         this.modId = modId;
         this.dataProvider = new RegiliteDataProvider(this);
 
-        this.langModule = new RegiliteLang(modId);
-        this.tagsModule = new RegiliteTags(modId);
-        this.lootTablesModule = new RegiliteLootTables();
+        this.langModule = registerModule(new RegiliteLang(modId));
+        this.tagsModule = registerModule(new RegiliteTags(modId));
+        this.lootTablesModule = registerModule(new RegiliteLootTables());
 
-        this.blocksRegistry = RegiliteBlocks.create(this);
+        this.itemsModule = registerModule(RegiliteItems.create(this));
+        this.blocksRegistry = registerModule(RegiliteBlocks.create(this));
+    }
+
+    private <T> T registerModule(T module) {
+        if (module instanceof RegiliteModuleDataGen dataGenModule) {
+            modulesWithDataGeneration.add(dataGenModule);
+        }
+
+        if (module instanceof RegiliteModuleEvents eventsModule) {
+            modulesWithEvents.add(eventsModule);
+        }
+
+        return module;
     }
 
     public RegiliteLang lang() {
@@ -90,7 +108,7 @@ public class Regilite {
     }
 
     public RegiliteItems items() {
-        return null;
+        return itemsModule;
     }
 
     public RegiliteBlocks blocks() {
@@ -110,7 +128,9 @@ public class Regilite {
 
         modbus.addListener(this::onGatherData);
 
-        blocksRegistry.register(modbus);
+        for (var module : modulesWithEvents) {
+            module.register(modbus);
+        }
 
         modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
         modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
@@ -134,9 +154,9 @@ public class Regilite {
     private void onGatherData(GatherDataEvent event) {
         var provider = new BundledDataProvider(modId);
 
-        langModule.gatherProviders(event, provider::addSubProvider);
-        tagsModule.gatherProviders(event, provider::addSubProvider);
-        lootTablesModule.gatherProviders(event, provider::addSubProvider);
+        for (var module : modulesWithDataGeneration) {
+            module.gatherProviders(event, provider::addSubProvider);
+        }
 
         event.getGenerator().addProvider(true, provider);
     }
@@ -229,12 +249,7 @@ public class Regilite {
     }
 
     @Deprecated(forRemoval = true, since = "0.1")
-    public MutableComponent addTranslation(String prefix, ResourceLocation location, String translation) {
-        return lang().addTranslation(prefix, location, translation);
-    }
-
-    @Deprecated(forRemoval = true, since = "0.1")
     public void addTranslation(Supplier<String> key, String translation) {
-        lang().addTranslation(key, translation);
+        lang().add(key, translation);
     }
 }

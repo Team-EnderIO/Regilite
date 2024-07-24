@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-3.0-only
  */
 
-package com.enderio.regilite.data;
+package com.enderio.regilite.utils;
 
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;

@@ -22,14 +22,14 @@ public class ItemBuilder<T extends Item> extends RegiliteBuilder<ItemBuilder<T>,
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
 
-    protected ItemBuilder(DeferredItem<T> holder, RegiliteLang langModule, RegiliteTags tagsModule) {
+    public ItemBuilder(DeferredItem<T> holder, RegiliteLang langModule, RegiliteTags tagsModule) {
         super(holder);
         this.langModule = langModule;
         this.tagsModule = tagsModule;
     }
 
     public ItemBuilder<T> withTranslation(String englishTranslation) {
-        langModule.addTranslation(this::getDescriptionId, englishTranslation);
+        langModule.add(this::getDescriptionId, englishTranslation);
         return this;
     }
 
@@ -37,21 +37,26 @@ public class ItemBuilder<T extends Item> extends RegiliteBuilder<ItemBuilder<T>,
         return get().getDescriptionId();
     }
 
-    @SafeVarargs
-    public final ItemBuilder<T> withTags(TagKey<Item>... tags) {
-        //tagsModule.registry(Registries.ITEM).addToTags(this::get, tags);
+    public final ItemBuilder<T> tag(TagKey<Item> tag) {
+        tagsModule.items().tag(tag).add(this::get);
         return this;
     }
 
-    public final ItemBuilder<T> withTab(ResourceKey<CreativeModeTab> tab) {
+    @SafeVarargs
+    public final ItemBuilder<T> tags(TagKey<Item>... tags) {
+        tagsModule.items().addToTags(this::get, tags);
+        return this;
+    }
+
+    public final ItemBuilder<T> tab(ResourceKey<CreativeModeTab> tab) {
         throw new NotImplementedException();
     }
 
-    public final ItemBuilder<T> withTab(ResourceKey<CreativeModeTab> tab, CreativeModeTab.TabVisibility visibility) {
+    public final ItemBuilder<T> tab(ResourceKey<CreativeModeTab> tab, CreativeModeTab.TabVisibility visibility) {
         throw new NotImplementedException();
     }
 
-    public final ItemBuilder<T> withTab(ResourceKey<CreativeModeTab> tab, Consumer<CreativeModeTab.Output> output) {
+    public final ItemBuilder<T> tab(ResourceKey<CreativeModeTab> tab, Consumer<CreativeModeTab.Output> output) {
         throw new NotImplementedException();
     }
 }

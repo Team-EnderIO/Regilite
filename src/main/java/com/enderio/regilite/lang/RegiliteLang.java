@@ -13,7 +13,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -29,16 +28,16 @@ public class RegiliteLang implements RegiliteModuleDataGen {
         this.modId = modId;
     }
 
-    public MutableComponent addTranslation(String prefix, ResourceLocation location, String translation) {
-        return addTranslation(prefix + "." + location.toLanguageKey(), translation);
+    public MutableComponent add(String prefix, ResourceLocation location, String translation) {
+        return add(prefix + "." + location.toLanguageKey(), translation);
     }
 
-    public MutableComponent addTranslation(String key, String translation) {
+    public MutableComponent add(String key, String translation) {
         entries.put(() -> key, translation);
         return Component.translatable(key);
     }
 
-    public void addTranslation(Supplier<String> keySupplier, String translation) {
+    public void add(Supplier<String> keySupplier, String translation) {
         entries.put(keySupplier, translation);
     }
 

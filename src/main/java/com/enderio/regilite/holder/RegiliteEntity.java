@@ -6,7 +6,6 @@
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -16,8 +15,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -44,7 +41,7 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
     }
 
     public RegiliteEntity<T> withTranslation(String translation) {
-        regilite.lang().addTranslation(supplier, translation);
+        regilite.lang().add(supplier, translation);
         return this;
     }
 

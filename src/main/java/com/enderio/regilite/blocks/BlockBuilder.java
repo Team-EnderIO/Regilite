@@ -46,8 +46,8 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         this.itemsModule = itemsModule;
     }
 
-    public BlockBuilder<T> withTranslation(String englishTranslation) {
-        langModule.addTranslation(this::getDescriptionId, englishTranslation);
+    public BlockBuilder<T> translation(String englishTranslation) {
+        langModule.add(this::getDescriptionId, englishTranslation);
         return this;
     }
 
@@ -55,32 +55,37 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         return get().getDescriptionId();
     }
 
+    public final BlockBuilder<T> tag(TagKey<Block> tag) {
+        tagsModule.blocks().tag(tag).add(this::get);
+        return this;
+    }
+
     @SafeVarargs
-    public final BlockBuilder<T> withTags(TagKey<Block>... tags) {
+    public final BlockBuilder<T> tags(TagKey<Block>... tags) {
         tagsModule.blocks().addToTags(this::get, tags);
         return this;
     }
 
-    public BlockBuilder<T> withSimpleBlockItem() {
+    // TODO: more permutations, based on those available in RegiliteItems.
+    public BlockBuilder<T> createSimpleBlockItem() {
         return withBlockItem(b -> new BlockItem(b, new Item.Properties()), i -> {});
     }
 
-    public BlockBuilder<T> withSimpleBlockItem(Consumer<ItemBuilder<BlockItem>> itemConfigure) {
+    public BlockBuilder<T> createSimpleBlockItem(Consumer<ItemBuilder<BlockItem>> itemConfigure) {
         return withBlockItem(b -> new BlockItem(b, new Item.Properties()), itemConfigure);
     }
 
-    public BlockBuilder<T> withSimpleBlockItem(Item.Properties properties, Consumer<ItemBuilder<BlockItem>> itemConfigure) {
+    public BlockBuilder<T> createSimpleBlockItem(Item.Properties properties, Consumer<ItemBuilder<BlockItem>> itemConfigure) {
         return withBlockItem(b -> new BlockItem(b, properties), itemConfigure);
     }
 
     public <I extends BlockItem> BlockBuilder<T> withBlockItem(Function<T, I> function, Consumer<ItemBuilder<I>> itemConfigure) {
-        throw new NotImplementedException();
-        //var item = registry.registerBlockItem(getId().getPath(), this, () -> function.apply(this.get()));
-        //itemConfigure.accept(item);
-        //return this;
+        var item = itemsModule.create(getId().getPath(), () -> function.apply(this.get()));
+        itemConfigure.accept(item);
+        return this;
     }
 
-    public BlockBuilder<T> withLootTable(BiConsumer<RegiliteBlockLootProvider, T> lootTable)  {
+    public BlockBuilder<T> lootTable(BiConsumer<RegiliteBlockLootProvider, T> lootTable)  {
         this.lootTable = lootTable;
         return this;
     }
@@ -90,11 +95,11 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         return lootTable;
     }
 
-    public BlockBuilder<T> withBlockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
+    public BlockBuilder<T> blockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
         throw new NotImplementedException();
     }
 
-    public BlockBuilder<T> withBlockColor(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
+    public BlockBuilder<T> blockColor(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
         blockColorSupplier = colorSupplier;
         return this;
     }

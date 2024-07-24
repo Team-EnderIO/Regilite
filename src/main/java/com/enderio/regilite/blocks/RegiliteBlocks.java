@@ -40,6 +40,7 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
     private final DeferredRegister.Blocks deferredRegister;
 
     // Tracks all of the builders so that they can be used for data-generation.
+    // TODO: Look into a way to drop this list, either by not having it or by dumping its contents once all events have fired?
     private final ObjectList<BlockBuilder<? extends Block>> blocks = new ObjectArrayList<>();
 
     public RegiliteBlocks(RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule, RegiliteLootTables lootTablesModule, DeferredRegister.Blocks deferredRegister) {

@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "examplemod:example_block_demo"
         }
       ],
       "rolls": 1.0
