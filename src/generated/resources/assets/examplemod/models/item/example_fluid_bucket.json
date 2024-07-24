@@ -1,5 +1,0 @@
-{
-  "parent": "neoforge:item/bucket",
-  "fluid": "examplemod:fluid_example_fluid_still",
-  "loader": "neoforge:fluid_container"
-}
