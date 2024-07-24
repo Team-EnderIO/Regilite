@@ -21,8 +21,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<? extends Entity>, EntityType<T>> implements ITagagble<EntityType<?>>, RegiliteHolder<RegiliteEntity<T>> {
-    private final Set<TagKey<EntityType<?>>> entityTags = new HashSet<>();
+public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<? extends Entity>, EntityType<T>> implements RegiliteHolder<RegiliteEntity<T>> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private final Regilite regilite;
     private Supplier<Function<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer = null;
@@ -30,12 +29,8 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
     protected RegiliteEntity(ResourceKey<EntityType<? extends Entity>> key, Regilite regilite) {
         super(key);
         this.regilite = regilite;
-        regilite.addTranslation(supplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
-    }
 
-    @Override
-    public Set<TagKey<EntityType<?>>> getTags() {
-        return null;
+        withTranslation(DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public static <T extends Entity> RegiliteEntity<T> createEntity(ResourceKey<EntityType<? extends Entity>> key, Regilite regilite) {
@@ -44,12 +39,12 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
 
     @SafeVarargs
     public final RegiliteEntity<T> withTags(TagKey<EntityType<?>>... tags) {
-        this.entityTags.addAll(Set.of(tags));
+        regilite.tags().entityTypes().addToTags(this, tags);
         return this;
     }
 
     public RegiliteEntity<T> withTranslation(String translation) {
-        regilite.addTranslation(supplier, translation);
+        regilite.lang().addTranslation(supplier, translation);
         return this;
     }
 

@@ -1,7 +1,7 @@
 package com.enderio.regilite.items;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.modules.RegiliteLang;
+import com.enderio.regilite.lang.RegiliteLang;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 

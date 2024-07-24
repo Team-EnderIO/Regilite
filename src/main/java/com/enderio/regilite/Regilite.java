@@ -5,6 +5,7 @@
 
 package com.enderio.regilite;
 
+import com.enderio.regilite.data.BundledDataProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.events.BlockEntityCapabilityEvents;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
@@ -16,7 +17,8 @@ import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.holder.RegiliteItem;
 import com.enderio.regilite.blocks.RegiliteBlocks;
 import com.enderio.regilite.items.RegiliteItems;
-import com.enderio.regilite.modules.RegiliteLang;
+import com.enderio.regilite.lang.RegiliteLang;
+import com.enderio.regilite.loot.RegiliteLootTables;
 import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.registry.BlockRegistry;
@@ -24,7 +26,6 @@ import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -59,9 +60,11 @@ public class Regilite {
     private final List<DeferredHolder<Item, ? extends Item>> items = new ArrayList<>();
     private final List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> menus = new ArrayList<>();
 
-    private RegiliteBlocks blocksRegistry;
+    private final RegiliteBlocks blocksRegistry;
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
+
+    private final RegiliteLootTables lootTablesModule;
 
     private final RegiliteDataProvider dataProvider;
 
@@ -73,8 +76,9 @@ public class Regilite {
 
         this.langModule = new RegiliteLang(modId);
         this.tagsModule = new RegiliteTags(modId);
+        this.lootTablesModule = new RegiliteLootTables();
 
-        //this.blocksRegistry = RegiliteBlocks.create(this);
+        this.blocksRegistry = RegiliteBlocks.create(this);
     }
 
     public RegiliteLang lang() {
@@ -86,7 +90,7 @@ public class Regilite {
     }
 
     public RegiliteItems items() {
-        throw new NotImplementedException();
+        return null;
     }
 
     public RegiliteBlocks blocks() {
@@ -97,10 +101,16 @@ public class Regilite {
         throw new NotImplementedException();
     }
 
+    public RegiliteLootTables lootTables() {
+        return lootTablesModule;
+    }
+
     public void register(IEventBus modbus) {
         dataProvider.register(modbus);
 
         modbus.addListener(this::onGatherData);
+
+        blocksRegistry.register(modbus);
 
         modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
         modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
@@ -122,11 +132,13 @@ public class Regilite {
     }
 
     private void onGatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
+        var provider = new BundledDataProvider(modId);
 
-        // TODO: Technically we could just pass the event and nothing else...
-        langModule.addDataProviders(event, generator::addProvider);
-        tagsModule.addDataProviders(event, generator::addProvider);
+        langModule.gatherProviders(event, provider::addSubProvider);
+        tagsModule.gatherProviders(event, provider::addSubProvider);
+        lootTablesModule.gatherProviders(event, provider::addSubProvider);
+
+        event.getGenerator().addProvider(true, provider);
     }
 
     public String getModId() {

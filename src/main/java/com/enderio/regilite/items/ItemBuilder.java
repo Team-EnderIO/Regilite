@@ -1,9 +1,8 @@
 package com.enderio.regilite.items;
 
 import com.enderio.regilite.RegiliteBuilder;
-import com.enderio.regilite.modules.RegiliteLang;
+import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.tags.RegiliteTags;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;

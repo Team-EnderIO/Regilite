@@ -2,6 +2,7 @@ package com.enderio.regilite;
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.UnaryOperator;
 
@@ -27,7 +28,8 @@ public abstract class RegiliteBuilder<B extends RegiliteBuilder<B, R, T, H>, R, 
         return holder;
     }
 
-    protected final T get() {
+    @ApiStatus.Internal
+    public final T get() {
         return holder.value();
     }
 

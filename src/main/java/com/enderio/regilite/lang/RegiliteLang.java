@@ -1,6 +1,6 @@
-package com.enderio.regilite.modules;
+package com.enderio.regilite.lang;
 
-import com.enderio.regilite.RegiliteDataModule;
+import com.enderio.regilite.RegiliteModuleDataGen;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.data.DataProvider;
@@ -8,14 +8,15 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegiliteLang implements RegiliteDataModule {
+public class RegiliteLang implements RegiliteModuleDataGen {
     private final String modId;
     private final Object2ObjectMap<Supplier<String>, String> entries = new Object2ObjectOpenHashMap<>();
 
@@ -37,8 +38,12 @@ public class RegiliteLang implements RegiliteDataModule {
     }
 
     @Override
-    public void addDataProviders(GatherDataEvent event, BiConsumer<Boolean, DataProvider> addProvider) {
-        addProvider.accept(event.includeClient(), new DefaultProvider(event.getGenerator().getPackOutput(), this.modId, "en_us"));
+    public void gatherProviders(GatherDataEvent event, Consumer<DataProvider> addProvider) {
+        if (!event.includeClient()) {
+            return;
+        }
+
+        addProvider.accept(new DefaultProvider(event.getGenerator().getPackOutput(), this.modId, "en_us"));
     }
 
     private class DefaultProvider extends LanguageProvider {

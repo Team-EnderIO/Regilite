@@ -28,10 +28,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements ITagagble<Fluid>, RegiliteHolder<RegiliteFluid<T>> {
+public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements RegiliteHolder<RegiliteFluid<T>> {
     private final Supplier<String> descriptionIdSupplier = () -> get().getDescriptionId();
     private final Regilite regilite;
-    private Set<TagKey<Fluid>> fluidTags = Set.of();
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
     private RegiliteBlock<? extends LiquidBlock> block;
@@ -132,12 +131,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
 
     @SafeVarargs
     public final RegiliteFluid<T> withTags(TagKey<Fluid>... tags) {
-        this.fluidTags = Set.of(tags);
+        regilite.tags().fluids().addToTags(this::getSource, tags);
         return this;
-    }
-
-    public Set<TagKey<Fluid>> getTags() {
-        return fluidTags;
     }
 
     public RegiliteFluid<T> withTranslation(String translation) {

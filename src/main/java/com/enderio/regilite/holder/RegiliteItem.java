@@ -29,10 +29,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITagagble<Item>, RegiliteHolder<RegiliteItem<T>> {
+public class RegiliteItem<T extends Item> extends DeferredItem<T> implements RegiliteHolder<RegiliteItem<T>> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private final Regilite regilite;
-    protected Set<TagKey<Item>> ItemTags = new HashSet<>();
     protected Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tab = new HashMap<>();
     @Nullable
     protected BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider = (prov, ctx) -> prov.basicItem(ctx.get());
@@ -52,12 +51,8 @@ public class RegiliteItem<T extends Item> extends DeferredItem<T> implements ITa
 
     @SafeVarargs
     public final RegiliteItem<T> withTags(TagKey<Item>... tags) {
-        ItemTags.addAll(new HashSet<>(List.of(tags)));
+        regilite.tags().items().addToTags(this, tags);
         return this;
-    }
-
-    public Set<TagKey<Item>> getTags() {
-        return ItemTags;
     }
 
     public RegiliteItem<T> withTab(ResourceKey<CreativeModeTab> tab) {
