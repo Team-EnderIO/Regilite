@@ -27,7 +27,8 @@ public class Fluids {
     public static final RegiliteFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
             .createFluid(FLUIDS)
             .withBlock(BLOCKS, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER))
-            .withBucket(ITEMS)
+            // TODO: rethink bucket as it needs a default model imo.
+            //.withBucket(ITEMS)
             .withRenderType(() -> RenderType::translucent);
 
     public static void register(IEventBus modEventBus) {

@@ -14,12 +14,17 @@ import com.enderio.regilite.events.FluidRenderTypeEvents;
 import com.enderio.regilite.events.ItemCapabilityEvents;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.holder.RegiliteItem;
+import com.enderio.regilite.blocks.RegiliteBlocks;
+import com.enderio.regilite.items.RegiliteItems;
+import com.enderio.regilite.modules.RegiliteLang;
+import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -30,9 +35,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,15 +58,49 @@ public class Regilite {
     private final List<DeferredHolder<FluidType, ? extends FluidType>> fluids = new ArrayList<>();
     private final List<DeferredHolder<Item, ? extends Item>> items = new ArrayList<>();
     private final List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> menus = new ArrayList<>();
+
+    private RegiliteBlocks blocksRegistry;
+    private final RegiliteLang langModule;
+    private final RegiliteTags tagsModule;
+
     private final RegiliteDataProvider dataProvider;
+
+    //private final DeferredRegister.DataComponents dataComponentsRegistry;
 
     public Regilite(String modId) {
         this.modId = modId;
         this.dataProvider = new RegiliteDataProvider(this);
+
+        this.langModule = new RegiliteLang(modId);
+        this.tagsModule = new RegiliteTags(modId);
+
+        //this.blocksRegistry = RegiliteBlocks.create(this);
+    }
+
+    public RegiliteLang lang() {
+        return langModule;
+    }
+
+    public RegiliteTags tags() {
+        return tagsModule;
+    }
+
+    public RegiliteItems items() {
+        throw new NotImplementedException();
+    }
+
+    public RegiliteBlocks blocks() {
+        return blocksRegistry;
+    }
+
+    public DeferredRegister.DataComponents dataComponents() {
+        throw new NotImplementedException();
     }
 
     public void register(IEventBus modbus) {
         dataProvider.register(modbus);
+
+        modbus.addListener(this::onGatherData);
 
         modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
         modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
@@ -77,6 +119,14 @@ public class Regilite {
 
             modbus.addListener(new ScreenEvents(this)::screenEvent);
         }
+    }
+
+    private void onGatherData(GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+
+        // TODO: Technically we could just pass the event and nothing else...
+        langModule.addDataProviders(event, generator::addProvider);
+        tagsModule.addDataProviders(event, generator::addProvider);
     }
 
     public String getModId() {
@@ -166,11 +216,13 @@ public class Regilite {
         }
     }
 
+    @Deprecated(forRemoval = true, since = "0.1")
     public MutableComponent addTranslation(String prefix, ResourceLocation location, String translation) {
-        return dataProvider.addTranslation(prefix + "." + location.toLanguageKey(), translation);
+        return lang().addTranslation(prefix, location, translation);
     }
 
+    @Deprecated(forRemoval = true, since = "0.1")
     public void addTranslation(Supplier<String> key, String translation) {
-        dataProvider.addTranslation(key, translation);
+        lang().addTranslation(key, translation);
     }
 }

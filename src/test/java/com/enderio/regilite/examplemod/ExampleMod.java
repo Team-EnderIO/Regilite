@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 public class ExampleMod {
     public static final String MODID = "examplemod";
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final Regilite regilite = new Regilite(MODID);
+    public static final Regilite REGILITE = new Regilite(MODID);
 
     public ExampleMod(IEventBus modEventBus) {
         Blocks.register(modEventBus);
@@ -25,10 +25,10 @@ public class ExampleMod {
         Fluids.register(modEventBus);
         BlockEntities.register(modEventBus);
         Menus.register(modEventBus);
-        regilite.register(modEventBus);
+        REGILITE.register(modEventBus);
     }
 
     public static Regilite getRegilite() {
-        return regilite;
+        return REGILITE;
     }
 }

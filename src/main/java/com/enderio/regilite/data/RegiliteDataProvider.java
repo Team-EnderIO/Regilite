@@ -47,7 +47,6 @@ public class RegiliteDataProvider implements DataProvider {
         this.langEntries.put(key, translation);
     }
 
-
     @Override
     public CompletableFuture<?> run(CachedOutput pOutput) {
         List<CompletableFuture<?>> list = new ArrayList<>();
@@ -59,7 +58,7 @@ public class RegiliteDataProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "Ender IO Data (" + modid + ")";
+        return "Regilite Data (" + modid + ")";
     }
 
     void onGatherData(GatherDataEvent event) {

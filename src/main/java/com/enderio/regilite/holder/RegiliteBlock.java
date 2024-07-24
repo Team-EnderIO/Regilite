@@ -12,6 +12,7 @@ import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -28,10 +29,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements ITagagble<Block>, RegiliteHolder<RegiliteBlock<T>> {
+public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements RegiliteHolder<RegiliteBlock<T>> {
     private final Supplier<String> supplier = () -> get().getDescriptionId();
     private final Regilite regilite;
-    private Set<TagKey<Block>> blockTags = Set.of();
     @Nullable
     private BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
     @Nullable
@@ -52,12 +52,8 @@ public class RegiliteBlock<T extends Block> extends DeferredBlock<T> implements 
 
     @SafeVarargs
     public final RegiliteBlock<T> withTags(TagKey<Block>... tags) {
-        blockTags = new HashSet<>(List.of(tags));
+        regilite.tags().blocks().addToTags(this, tags);
         return this;
-    }
-
-    public Set<TagKey<Block>> getTags() {
-        return blockTags;
     }
 
     public RegiliteBlock<T> withLootTable(BiConsumer<RegiliteBlockLootProvider, T> lootTable) {
