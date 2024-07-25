@@ -9,12 +9,9 @@ import com.enderio.regilite.utils.BundledDataProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.events.BlockEntityCapabilityEvents;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
-import com.enderio.regilite.events.ColorEvents;
 import com.enderio.regilite.events.EntityRendererEvents;
 import com.enderio.regilite.events.FluidRenderTypeEvents;
-import com.enderio.regilite.events.ItemCapabilityEvents;
 import com.enderio.regilite.events.ScreenEvents;
-import com.enderio.regilite.holder.RegiliteItem;
 import com.enderio.regilite.blocks.RegiliteBlocks;
 import com.enderio.regilite.items.RegiliteItems;
 import com.enderio.regilite.lang.RegiliteLang;
@@ -23,20 +20,17 @@ import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.FluidRegistry;
-import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -45,7 +39,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Regilite {
@@ -98,6 +91,10 @@ public class Regilite {
         return module;
     }
 
+    public String modId() {
+        return modId;
+    }
+
     public RegiliteLang lang() {
         return langModule;
     }
@@ -131,13 +128,9 @@ public class Regilite {
             module.register(modbus);
         }
 
-        modbus.addListener(new ItemCapabilityEvents(this)::registerCapabilities);
         modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
 
         if (FMLEnvironment.dist.isClient()) {
-            modbus.addListener(new ColorEvents.Items(this)::registerItemColor);
-            modbus.addListener(this::addCreative);
-
             modbus.addListener(new BlockEntityRendererEvents(this)::registerBER);
 
             modbus.addListener(new FluidRenderTypeEvents(this)::registerRenderTypes);
@@ -158,10 +151,6 @@ public class Regilite {
         event.getGenerator().addProvider(true, provider);
     }
 
-    public String getModId() {
-        return modId;
-    }
-
     public BlockEntityRegistry blockEntityRegistry() {
         return BlockEntityRegistry.create(this);
     }
@@ -172,10 +161,6 @@ public class Regilite {
 
     public FluidRegistry fluidRegistry() {
         return FluidRegistry.create(this);
-    }
-
-    public ItemRegistry itemRegistry() {
-        return ItemRegistry.create(this);
     }
 
     public MenuRegistry menuRegistry() {
@@ -228,21 +213,5 @@ public class Regilite {
 
     public void addMenus(Collection<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> entries) {
         this.menus.addAll(entries);
-    }
-
-    public void addCreative(BuildCreativeModeTabContentsEvent event) {
-        for (DeferredHolder<Item, ? extends Item> item : getItems()) {
-            if (item instanceof RegiliteItem) {
-                Consumer<CreativeModeTab.Output> outputConsumer = ((RegiliteItem<Item>)item).getTab().get(event.getTabKey());
-                if (outputConsumer != null) {
-                    outputConsumer.accept(event);
-                }
-            }
-        }
-    }
-
-    @Deprecated(forRemoval = true, since = "0.1")
-    public void addTranslation(Supplier<String> key, String translation) {
-        lang().add(key, translation);
     }
 }

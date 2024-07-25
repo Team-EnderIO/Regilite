@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -79,7 +80,7 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
 
     @ApiStatus.Internal
     public static RegiliteBlocks create(Regilite regilite) {
-        return new RegiliteBlocks(regilite.getModId(), regilite.lang(), regilite.tags(), regilite.items(), regilite.lootTables(), DeferredRegister.createBlocks(regilite.getModId()));
+        return new RegiliteBlocks(regilite.modId(), regilite.lang(), regilite.tags(), regilite.items(), regilite.lootTables(), DeferredRegister.createBlocks(regilite.modId()));
     }
 
     @Override
@@ -95,6 +96,7 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
     @Override
     public void register(IEventBus modEventBus) {
         deferredRegister.register(modEventBus);
+        modEventBus.addListener(this::onRegisterCapabilities);
 
         lootTablesModule.addLootTableProvider(() -> new LootTableProvider.SubProviderEntry(
                 prov -> new RegiliteBlockLootProvider(prov, this), LootContextParamSets.BLOCK));
@@ -102,6 +104,10 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.register(new RegiliteClientBlocks(this));
         }
+    }
+
+    private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        blockBuilders().forEach(blockBuilder -> blockBuilder.attachCapabilities(event));
     }
 
     @Override

@@ -11,10 +11,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -30,7 +28,7 @@ public class RegiliteDataProvider implements DataProvider {
     private final Regilite regilite;
 
     public RegiliteDataProvider(Regilite regilite) {
-        this.modid = regilite.getModId();
+        this.modid = regilite.modId();
         this.regilite = regilite;
     }
 
@@ -68,7 +66,6 @@ public class RegiliteDataProvider implements DataProvider {
 
         this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK_ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getBlockEntities()));
 
-        this.subProviders.add(new RegiliteItemModelProvider(packOutput, modid, existingFileHelper, regilite.getItems()));
         event.getGenerator().addProvider(true, this);
     }
 }

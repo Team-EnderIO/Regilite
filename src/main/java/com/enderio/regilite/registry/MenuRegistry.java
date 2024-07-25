@@ -29,7 +29,7 @@ public class MenuRegistry extends DeferredRegister<MenuType<?>> {
     private final Regilite regilite;
 
     protected MenuRegistry(Regilite regilite) {
-        super(BuiltInRegistries.MENU.key(), regilite.getModId());
+        super(BuiltInRegistries.MENU.key(), regilite.modId());
         this.regilite = regilite;
     }
 

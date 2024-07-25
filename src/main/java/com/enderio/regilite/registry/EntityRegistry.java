@@ -25,7 +25,7 @@ public class EntityRegistry extends DeferredRegister<EntityType<?>> {
     private final Regilite regilite;
 
     protected EntityRegistry(Regilite regilite) {
-        super(BuiltInRegistries.ENTITY_TYPE.key(), regilite.getModId());
+        super(BuiltInRegistries.ENTITY_TYPE.key(), regilite.modId());
         this.regilite = regilite;
     }
 

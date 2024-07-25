@@ -41,7 +41,7 @@ public class RegiliteEntity<T extends Entity> extends DeferredHolder<EntityType<
     }
 
     public RegiliteEntity<T> withTranslation(String translation) {
-        regilite.lang().add(supplier, translation);
+        regilite.lang().addEntity(this, translation);
         return this;
     }
 

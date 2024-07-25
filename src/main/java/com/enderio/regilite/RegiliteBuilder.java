@@ -18,7 +18,7 @@ import java.util.function.UnaryOperator;
  */
 public abstract class RegiliteBuilder<B extends RegiliteBuilder<B, R, T, H>, R, T extends R, H extends DeferredHolder<R, T>> {
 
-    private final H holder;
+    protected final H holder;
 
     protected RegiliteBuilder(H holder) {
         this.holder = holder;

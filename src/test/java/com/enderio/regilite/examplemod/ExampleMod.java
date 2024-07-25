@@ -19,8 +19,8 @@ public class ExampleMod {
     public static final Regilite REGILITE = new Regilite(MODID);
 
     public ExampleMod(IEventBus modEventBus) {
-        Blocks.register(modEventBus);
-        Items.register(modEventBus);
+        Blocks.register();
+        Items.register();
         CreativeTabs.register(modEventBus);
         Fluids.register(modEventBus);
         BlockEntities.register(modEventBus);

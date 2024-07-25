@@ -27,7 +27,7 @@ public class BlockEntityRegistry extends DeferredRegister<BlockEntityType<?>> {
     private final Regilite regilite;
 
     protected BlockEntityRegistry(Regilite regilite) {
-        super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), regilite.getModId());
+        super(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), regilite.modId());
         this.regilite = regilite;
     }
 

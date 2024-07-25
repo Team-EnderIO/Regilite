@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: LGPL-3.0-only
  */
 
-package com.enderio.regilite.data;
+package com.enderio.regilite.items;
 
-import com.enderio.regilite.holder.RegiliteItem;
+import com.enderio.regilite.data.DataGenContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -18,29 +18,27 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
 import java.util.Objects;
 
 public class RegiliteItemModelProvider extends ItemModelProvider {
-    private final List<DeferredHolder<Item, ? extends Item>> registered;
+    private final RegiliteItems items;
 
-    public RegiliteItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper, List<DeferredHolder<Item, ? extends Item>> registered) {
+    public RegiliteItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper, RegiliteItems items) {
         super(output, modid, existingFileHelper);
-        this.registered = registered;
+        this.items = items;
     }
 
     @Override
     protected void registerModels() {
-        for (DeferredHolder<Item, ? extends Item> item : registered) {
-            if (item instanceof RegiliteItem) {
-                var modelProvider = ((RegiliteItem<Item>)item).getModelProvider();
-                if (modelProvider != null) {
-                    modelProvider.accept(this, new DataGenContext<>(item.getKey().location(), item::get));
-                }
-            }
+        items.itemBuilders().forEach(this::registerItemModel);
+    }
 
+    private <T extends Item> void registerItemModel(ItemBuilder<T> itemBuilder) {
+        var modelProvider = itemBuilder.modelProvider;
+        if (modelProvider != null) {
+            modelProvider.accept(this, new DataGenContext<>(itemBuilder.getId(), itemBuilder::get));
         }
     }
 

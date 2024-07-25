@@ -25,7 +25,7 @@ public class FluidRegistry extends DeferredRegister<FluidType> {
     private final Regilite regilite;
 
     protected FluidRegistry(Regilite regilite) {
-        super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.getModId());
+        super(NeoForgeRegistries.FLUID_TYPES.key(), regilite.modId());
         this.regilite = regilite;
     }
 

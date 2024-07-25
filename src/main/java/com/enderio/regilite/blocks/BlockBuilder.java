@@ -17,11 +17,16 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -33,8 +38,6 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     private final RegiliteTags tagsModule;
     private final RegiliteItems itemsModule;
 
-    private Supplier<String> descriptionIdSupplier = this::getDescriptionId;
-
     @Nullable
     private BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
 
@@ -44,25 +47,20 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     @Nullable
     private Supplier<Supplier<BlockColor>> blockColorSupplier;
 
+    protected List<AttachedCapability<?, ?>> attachedCapabilityList = new ArrayList<>();
+
     public BlockBuilder(DeferredBlock<T> holder, RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule) {
         super(holder);
         this.langModule = langModule;
         this.tagsModule = tagsModule;
         this.itemsModule = itemsModule;
 
-        // Default translation
         translation(DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public BlockBuilder<T> translation(String englishTranslation) {
-        langModule.add(descriptionIdSupplier, englishTranslation);
+        langModule.addBlock(holder, englishTranslation);
         return this;
-    }
-
-    // Do not call directly, use descriptionIdSupplier
-    @Deprecated
-    private String getDescriptionId() {
-        return get().getDescriptionId();
     }
 
     public BlockBuilder<T> tag(TagKey<Block> tag) {
@@ -91,7 +89,7 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
 
     public <I extends BlockItem> BlockBuilder<T> withBlockItem(Function<T, I> function, Consumer<ItemBuilder<I>> itemConfigure) {
         var item = itemsModule.create(getId().getPath(), () -> function.apply(this.get()));
-        itemConfigure.accept(item);
+        itemConfigure.accept(item.removeTranslation());
         return this;
     }
 
@@ -123,5 +121,26 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     @ApiStatus.Internal
     public Supplier<Supplier<BlockColor>> blockColor() {
         return blockColorSupplier;
+    }
+
+    public <TCap, TContext> BlockBuilder<T> capability(BlockCapability<TCap, TContext> capability, IBlockCapabilityProvider<TCap, TContext> provider) {
+        attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
+        return this;
+    }
+
+    @ApiStatus.Internal
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        for (var attachedCapability : attachedCapabilityList) {
+            attachedCapability.registerProvider(event, get());
+        }
+    }
+
+    protected record AttachedCapability<TCap, TContext>(
+            BlockCapability<TCap, TContext> capability,
+            IBlockCapabilityProvider<TCap, TContext> provider) {
+
+        private void registerProvider(RegisterCapabilitiesEvent event, Block block) {
+            event.registerBlock(capability, provider, block);
+        }
     }
 }

@@ -6,13 +6,11 @@
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -21,7 +19,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType, T> implements RegiliteHolder<RegiliteFluid<T>> {
@@ -30,14 +27,14 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
     //private RegiliteBlock<? extends LiquidBlock> block;
-    private RegiliteItem<? extends BucketItem> bucket;
+//    private RegiliteItem<? extends BucketItem> bucket;
     private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, this::getSource, this::getFlowing).block(this::getBlock).bucket(this::getBucket);
     private Supplier<Supplier<RenderType>> renderTypeSupplier = () -> null;
 
     protected RegiliteFluid(ResourceKey<FluidType> key, Regilite regilite) {
         super(key);
         this.regilite = regilite;
-        regilite.addTranslation(descriptionIdSupplier, DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
+        withTranslation(DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public static <I extends FluidType> RegiliteFluid<I> createHolder(ResourceKey<FluidType> fluidTypeResourceKey, Regilite regilite) {
@@ -65,7 +62,8 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public BucketItem getBucket() {
-        return bucket.get();
+        //return bucket.get();
+        return null;
     }
 
     public LiquidBlock getBlock() {
@@ -99,7 +97,7 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
 
     // region Bucket Item
 
-    public RegiliteFluid<T> withBucket(ItemRegistry registry) {
+    /*public RegiliteFluid<T> withBucket(ItemRegistry registry) {
         return withCustomBucket(registry, f -> new BucketItem(f.get(), new Item.Properties().stacksTo(1)), i -> {
         });
     }
@@ -122,7 +120,7 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
         itemConfigure.accept(bucket);
         this.bucket = bucket;
         return this;
-    }
+    }*/
 
     // endregion
 
@@ -133,7 +131,7 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public RegiliteFluid<T> withTranslation(String translation) {
-        regilite.addTranslation(descriptionIdSupplier, translation);
+        regilite.lang().addFluid(this, translation);
         return this;
     }
 

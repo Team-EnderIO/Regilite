@@ -6,6 +6,7 @@
 package com.enderio.regilite.items;
 
 import com.enderio.regilite.Regilite;
+import com.enderio.regilite.RegiliteModuleDataGen;
 import com.enderio.regilite.RegiliteModuleEvents;
 import com.enderio.regilite.RegiliteRegistryModule;
 import com.enderio.regilite.lang.RegiliteLang;
@@ -15,19 +16,27 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegister.Items>, RegiliteModuleEvents {
+public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegister.Items>, RegiliteModuleEvents, RegiliteModuleDataGen {
+    private final String modId;
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
     private final DeferredRegister.Items deferredRegister;
@@ -35,7 +44,8 @@ public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegis
     // Tracks all of the builders so that they can be used for data-generation.
     private final ObjectList<ItemBuilder<? extends Item>> items = new ObjectArrayList<>();
 
-    private RegiliteItems(RegiliteLang langModule, RegiliteTags tagsModule, DeferredRegister.Items deferredRegister) {
+    private RegiliteItems(String modId, RegiliteLang langModule, RegiliteTags tagsModule, DeferredRegister.Items deferredRegister) {
+        this.modId = modId;
         this.langModule = langModule;
         this.tagsModule = tagsModule;
         this.deferredRegister = deferredRegister;
@@ -43,7 +53,12 @@ public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegis
 
     @ApiStatus.Internal
     public static RegiliteItems create(Regilite regilite) {
-        return new RegiliteItems(regilite.lang(), regilite.tags(), DeferredRegister.createItems(regilite.getModId()));
+        return new RegiliteItems(regilite.modId(), regilite.lang(), regilite.tags(), DeferredRegister.createItems(regilite.modId()));
+    }
+
+    @ApiStatus.Internal
+    public Stream<ItemBuilder<?>> itemBuilders() {
+        return items.stream();
     }
 
     public <T extends Item> ItemBuilder<T> create(String name, Function<Item.Properties, ? extends T> func, Item.Properties props) {
@@ -83,7 +98,7 @@ public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegis
 
     public ItemBuilder<BlockItem> createSimpleBlockItem(String name, Supplier<? extends Block> block, Item.Properties properties) {
         DeferredItem<BlockItem> holder = deferredRegister.registerSimpleBlockItem(name, block, properties);
-        var builder = new ItemBuilder<>(holder, langModule, tagsModule);
+        var builder = new ItemBuilder<>(holder, langModule, tagsModule).removeTranslation();
         items.add(builder);
         return builder;
     }
@@ -101,5 +116,34 @@ public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegis
     @Override
     public void register(IEventBus modEventBus) {
         deferredRegister.register(modEventBus);
+        modEventBus.addListener(this::onBuildCreativeTabs);
+        modEventBus.addListener(this::onRegisterCapabilities);
+
+        if (FMLEnvironment.dist.isClient()) {
+            modEventBus.register(new RegiliteClientItems(this));
+        }
+    }
+
+    private void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        for (var item : items) {
+            var outputConsumer = item.tabs().get(event.getTabKey());
+            if (outputConsumer != null) {
+                outputConsumer.accept(event);
+            }
+        }
+    }
+
+    private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        itemBuilders().forEach(itemBuilder -> itemBuilder.attachCapabilities(event));
+    }
+
+    @Override
+    public void gatherProviders(GatherDataEvent event, Consumer<DataProvider> addProvider) {
+        if (!event.includeClient()) {
+            return;
+        }
+
+        addProvider.accept(new RegiliteItemModelProvider(event.getGenerator().getPackOutput(), modId,
+                event.getExistingFileHelper(), this));
     }
 }
