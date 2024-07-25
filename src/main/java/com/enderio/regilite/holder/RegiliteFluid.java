@@ -6,8 +6,6 @@
 package com.enderio.regilite.holder;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.registry.BlockRegistry;
-import com.enderio.regilite.registry.ITagagble;
 import com.enderio.regilite.registry.ItemRegistry;
 import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.renderer.RenderType;
@@ -16,14 +14,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -33,7 +29,7 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     private final Regilite regilite;
     private DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowingFluid;
     private DeferredHolder<Fluid, BaseFlowingFluid.Source> sourceFluid;
-    private RegiliteBlock<? extends LiquidBlock> block;
+    //private RegiliteBlock<? extends LiquidBlock> block;
     private RegiliteItem<? extends BucketItem> bucket;
     private final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(this, this::getSource, this::getFlowing).block(this::getBlock).bucket(this::getBucket);
     private Supplier<Supplier<RenderType>> renderTypeSupplier = () -> null;
@@ -73,12 +69,13 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
     }
 
     public LiquidBlock getBlock() {
-        return block.get();
+        //return block.get();
+        return null;
     }
 
     // region Block
 
-    public RegiliteFluid<T> withBlock(BlockRegistry registry, BlockBehaviour.Properties properties) {
+    /*public RegiliteFluid<T> withBlock(BlockRegistry registry, BlockBehaviour.Properties properties) {
         return withBlock(registry, f -> new LiquidBlock(f.get(), properties), b -> {
         });
     }
@@ -96,7 +93,7 @@ public class RegiliteFluid<T extends FluidType> extends DeferredHolder<FluidType
         this.block = registry.register(getId().getPath(), () -> supplier.apply(this.flowingFluid));
         blockConfigure.accept(this.block);
         return this;
-    }
+    }*/
 
     // endregion
 

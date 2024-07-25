@@ -38,7 +38,8 @@ public abstract class RegiliteBuilder<B extends RegiliteBuilder<B, R, T, H>, R, 
         return holder.value();
     }
 
-    protected final ResourceLocation getId() {
+    @ApiStatus.Internal
+    public final ResourceLocation getId() {
         return holder.getId();
     }
 

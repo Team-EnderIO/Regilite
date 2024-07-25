@@ -6,19 +6,15 @@
 package com.enderio.regilite.registry;
 
 import com.enderio.regilite.Regilite;
-import com.enderio.regilite.holder.RegiliteBlock;
 import com.enderio.regilite.holder.RegiliteItem;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -56,46 +52,6 @@ public class ItemRegistry extends DeferredRegister.Items {
     @Override
     public <I extends Item> RegiliteItem<I> register(String name, Supplier<? extends I> sup) {
         return this.register(name, key -> sup.get());
-    }
-
-    private <I extends BlockItem, U extends Block> RegiliteItem<I> registerBlockItem(String name, Function<ResourceLocation, I> func, RegiliteBlock<U> block) {
-        //if (seenRegisterEvent)
-        //throw new IllegalStateException("Cannot register new entries to DeferredRegister after RegisterEvent has been fired.");
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(func);
-        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(getNamespace(), name);
-
-        RegiliteItem<I> ret = createHolder(getRegistryKey(), key);
-
-        var entries = DeferredRegistryReflect.getEntries(this);
-        if (entries.putIfAbsent(ret, () -> func.apply(key)) != null) {
-            throw new IllegalArgumentException("Duplicate registration " + name);
-        }
-
-        return ret
-                .withTranslation("")
-                .withModelProvider((prov, ctx) -> prov.basicBlock(ctx.get()));
-    }
-
-    public <I extends BlockItem, U extends Block> RegiliteItem<I> registerBlockItem(String name, RegiliteBlock<U> block, Supplier<I> sup) {
-        return this.registerBlockItem(name, key -> sup.get(), block);
-    }
-
-
-    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(String name, RegiliteBlock<U> block, Item.Properties properties) {
-        return this.registerBlockItem(name, key -> new BlockItem(block.get(), properties), block);
-    }
-
-    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(String name, RegiliteBlock<U> block) {
-        return this.registerBlockItem(name, block, new Item.Properties());
-    }
-
-    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(RegiliteBlock<U> block, Item.Properties properties) {
-        return this.registerBlockItem(block.unwrapKey().orElseThrow().location().getPath(), block, properties);
-    }
-
-    public <U extends Block> RegiliteItem<BlockItem> registerBlockItem(RegiliteBlock<U> block) {
-        return this.registerBlockItem(block, new Item.Properties());
     }
 
     /**

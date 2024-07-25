@@ -21,7 +21,6 @@ import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.loot.RegiliteLootTables;
 import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.registry.BlockEntityRegistry;
-import com.enderio.regilite.registry.BlockRegistry;
 import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.ItemRegistry;
@@ -136,8 +135,6 @@ public class Regilite {
         modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
 
         if (FMLEnvironment.dist.isClient()) {
-            modbus.addListener(new ColorEvents.Blocks(this)::registerBlockColor);
-
             modbus.addListener(new ColorEvents.Items(this)::registerItemColor);
             modbus.addListener(this::addCreative);
 
@@ -163,10 +160,6 @@ public class Regilite {
 
     public String getModId() {
         return modId;
-    }
-
-    public BlockRegistry blockRegistry() {
-        return BlockRegistry.create(this);
     }
 
     public BlockEntityRegistry blockEntityRegistry() {

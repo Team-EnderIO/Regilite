@@ -6,6 +6,7 @@
 package com.enderio.regilite.blocks;
 
 import com.enderio.regilite.Regilite;
+import com.enderio.regilite.RegiliteModuleDataGen;
 import com.enderio.regilite.RegiliteModuleEvents;
 import com.enderio.regilite.RegiliteRegistryModule;
 import com.enderio.regilite.items.RegiliteItems;
@@ -16,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
@@ -23,15 +25,18 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public final class RegiliteBlocks implements RegiliteRegistryModule<Block, DeferredRegister.Blocks>, RegiliteModuleEvents {
+public final class RegiliteBlocks implements RegiliteRegistryModule<Block, DeferredRegister.Blocks>, RegiliteModuleEvents, RegiliteModuleDataGen {
+    private final String modId;
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
     private final RegiliteItems itemsModule;
@@ -43,7 +48,8 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
     // TODO: Look into a way to drop this list, either by not having it or by dumping its contents once all events have fired?
     private final ObjectList<BlockBuilder<? extends Block>> blocks = new ObjectArrayList<>();
 
-    public RegiliteBlocks(RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule, RegiliteLootTables lootTablesModule, DeferredRegister.Blocks deferredRegister) {
+    public RegiliteBlocks(String modId, RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule, RegiliteLootTables lootTablesModule, DeferredRegister.Blocks deferredRegister) {
+        this.modId = modId;
         this.langModule = langModule;
         this.tagsModule = tagsModule;
         this.itemsModule = itemsModule;
@@ -73,7 +79,7 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
 
     @ApiStatus.Internal
     public static RegiliteBlocks create(Regilite regilite) {
-        return new RegiliteBlocks(regilite.lang(), regilite.tags(), regilite.items(), regilite.lootTables(), DeferredRegister.createBlocks(regilite.getModId()));
+        return new RegiliteBlocks(regilite.getModId(), regilite.lang(), regilite.tags(), regilite.items(), regilite.lootTables(), DeferredRegister.createBlocks(regilite.getModId()));
     }
 
     @Override
@@ -98,5 +104,12 @@ public final class RegiliteBlocks implements RegiliteRegistryModule<Block, Defer
         }
     }
 
-    // TODO: Create data providers for loot tables, block states etc.
+    @Override
+    public void gatherProviders(GatherDataEvent event, Consumer<DataProvider> addProvider) {
+        if (!event.includeClient()) {
+            return;
+        }
+
+        addProvider.accept(new RegiliteBlockStateProvider(event.getGenerator().getPackOutput(), modId, event.getExistingFileHelper(), this));
+    }
 }

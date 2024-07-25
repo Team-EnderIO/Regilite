@@ -11,6 +11,7 @@ import com.enderio.regilite.items.ItemBuilder;
 import com.enderio.regilite.items.RegiliteItems;
 import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.tags.RegiliteTags;
+import com.enderio.regilite.utils.DefaultTranslationUtility;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +33,13 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     private final RegiliteTags tagsModule;
     private final RegiliteItems itemsModule;
 
+    private Supplier<String> descriptionIdSupplier = this::getDescriptionId;
+
     @Nullable
     private BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
+
+    @Nullable
+    private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
 
     @Nullable
     private Supplier<Supplier<BlockColor>> blockColorSupplier;
@@ -44,18 +49,23 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         this.langModule = langModule;
         this.tagsModule = tagsModule;
         this.itemsModule = itemsModule;
+
+        // Default translation
+        translation(DefaultTranslationUtility.getDefaultTranslationFrom(getId().getPath()));
     }
 
     public BlockBuilder<T> translation(String englishTranslation) {
-        langModule.add(this::getDescriptionId, englishTranslation);
+        langModule.add(descriptionIdSupplier, englishTranslation);
         return this;
     }
 
+    // Do not call directly, use descriptionIdSupplier
+    @Deprecated
     private String getDescriptionId() {
         return get().getDescriptionId();
     }
 
-    public final BlockBuilder<T> tag(TagKey<Block> tag) {
+    public BlockBuilder<T> tag(TagKey<Block> tag) {
         tagsModule.blocks().tag(tag).add(this::get);
         return this;
     }
@@ -96,7 +106,13 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     }
 
     public BlockBuilder<T> blockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
-        throw new NotImplementedException();
+        this.blockStateProvider = blockStateProvider;
+        return this;
+    }
+
+    @ApiStatus.Internal
+    public BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider() {
+        return blockStateProvider;
     }
 
     public BlockBuilder<T> blockColor(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
