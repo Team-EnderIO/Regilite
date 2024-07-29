@@ -24,13 +24,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.NotImplementedException;
@@ -38,17 +35,13 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class Regilite {
 
     private final String modId;
 
     private final List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> blockentities = new ArrayList<>();
-    private final List<DeferredHolder<Block, ? extends Block>> blocks = new ArrayList<>();
     private final List<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> entities = new ArrayList<>();
-    private final List<DeferredHolder<FluidType, ? extends FluidType>> fluids = new ArrayList<>();
-    private final List<DeferredHolder<Item, ? extends Item>> items = new ArrayList<>();
     private final List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> menus = new ArrayList<>();
 
     private final RegiliteLang langModule;
@@ -174,36 +167,12 @@ public class Regilite {
         this.blockentities.addAll(entries);
     }
 
-    public List<DeferredHolder<Block, ? extends Block>> getBlock() {
-        return blocks;
-    }
-
-    public void addBlocks(Collection<DeferredHolder<Block, ? extends Block>> entries) {
-        this.blocks.addAll(entries);
-    }
-
     public List<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> getEntities() {
         return entities;
     }
 
     public void addEntities(Collection<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> entries) {
         this.entities.addAll(entries);
-    }
-
-    public List<DeferredHolder<FluidType, ? extends FluidType>> getFluids() {
-        return fluids;
-    }
-
-    public void addFluids(Collection<DeferredHolder<FluidType, ? extends FluidType>> entries) {
-        this.fluids.addAll(entries);
-    }
-
-    public List<DeferredHolder<Item, ? extends Item>> getItems() {
-        return items;
-    }
-
-    public void addItems(Collection<DeferredHolder<Item, ? extends Item>> entries) {
-        this.items.addAll(entries);
     }
 
     public List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> getMenus() {
