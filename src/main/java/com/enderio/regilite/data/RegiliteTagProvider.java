@@ -5,7 +5,6 @@
 
 package com.enderio.regilite.data;
 
-import com.enderio.regilite.holder.RegiliteFluid;
 import com.enderio.regilite.registry.ITagagble;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -40,29 +39,6 @@ public class RegiliteTagProvider<T> extends IntrinsicHolderTagsProvider<T> {
 
                 if (tag != null) {
                     tag.forEach(t -> tag(t).add(entry.get()));
-                }
-            }
-        }
-    }
-
-    public static class FluidTagProvider extends IntrinsicHolderTagsProvider<Fluid> {
-
-        public final List<DeferredHolder<FluidType, ? extends FluidType>> registered;
-
-        public FluidTagProvider(PackOutput output, ResourceKey<Registry<Fluid>> key, Function<Fluid, ResourceKey<Fluid>> func, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper, List<DeferredHolder<FluidType, ? extends FluidType>> registered) {
-            super(output, key, lookupProvider, func, modId, existingFileHelper);
-            this.registered = registered;
-        }
-
-        @Override
-        protected void addTags(HolderLookup.Provider lookupProvider) {
-            for (DeferredHolder<FluidType, ? extends FluidType> entry : registered) {
-                if (entry instanceof RegiliteFluid<? extends FluidType> fluidtype) {
-                    Set<TagKey<Fluid>> tag = ((ITagagble<Fluid>)entry).getTags();
-
-                    if (tag != null) {
-                        tag.forEach(t -> tag(t).add(fluidtype.getSource()));
-                    }
                 }
             }
         }

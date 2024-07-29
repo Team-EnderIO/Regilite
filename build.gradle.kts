@@ -3,7 +3,7 @@ import java.net.URI
 plugins {
     id("idea")
     id("maven-publish")
-    id("net.neoforged.moddev") version "1.0.9"
+    id("net.neoforged.moddev") version "1.0.15"
     id("org.cadixdev.licenser") version "0.6.1"
 }
 

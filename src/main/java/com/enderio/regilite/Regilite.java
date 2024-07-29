@@ -5,12 +5,12 @@
 
 package com.enderio.regilite;
 
+import com.enderio.regilite.fluids.RegiliteFluidTypes;
 import com.enderio.regilite.utils.BundledDataProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.events.BlockEntityCapabilityEvents;
 import com.enderio.regilite.events.BlockEntityRendererEvents;
 import com.enderio.regilite.events.EntityRendererEvents;
-import com.enderio.regilite.events.FluidRenderTypeEvents;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.blocks.RegiliteBlocks;
 import com.enderio.regilite.items.RegiliteItems;
@@ -19,7 +19,6 @@ import com.enderio.regilite.loot.RegiliteLootTables;
 import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.registry.EntityRegistry;
-import com.enderio.regilite.registry.FluidRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -59,6 +58,7 @@ public class Regilite {
 
     private final RegiliteItems itemsModule;
     private final RegiliteBlocks blocksRegistry;
+    private final RegiliteFluidTypes fluidTypesModule;
 
     private final RegiliteDataProvider dataProvider;
 
@@ -77,6 +77,7 @@ public class Regilite {
 
         this.itemsModule = registerModule(RegiliteItems.create(this));
         this.blocksRegistry = registerModule(RegiliteBlocks.create(this));
+        this.fluidTypesModule = registerModule(RegiliteFluidTypes.create(this));
     }
 
     private <T> T registerModule(T module) {
@@ -111,6 +112,10 @@ public class Regilite {
         return blocksRegistry;
     }
 
+    public RegiliteFluidTypes fluidTypes() {
+        return fluidTypesModule;
+    }
+
     public DeferredRegister.DataComponents dataComponents() {
         throw new NotImplementedException();
     }
@@ -132,8 +137,6 @@ public class Regilite {
 
         if (FMLEnvironment.dist.isClient()) {
             modbus.addListener(new BlockEntityRendererEvents(this)::registerBER);
-
-            modbus.addListener(new FluidRenderTypeEvents(this)::registerRenderTypes);
 
             modbus.addListener(new EntityRendererEvents(this)::registerER);
 
@@ -157,10 +160,6 @@ public class Regilite {
 
     public EntityRegistry entityRegistry() {
         return EntityRegistry.create(this);
-    }
-
-    public FluidRegistry fluidRegistry() {
-        return FluidRegistry.create(this);
     }
 
     public MenuRegistry menuRegistry() {

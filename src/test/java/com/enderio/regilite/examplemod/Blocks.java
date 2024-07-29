@@ -29,7 +29,7 @@ public class Blocks {
                 .tab(CreativeModeTabs.BUILDING_BLOCKS)
                 .tab(CreativeTabs.EXAMPLE_TAB.getKey())
             )
-            .finishHolder();
+            .asHolder();
 
     public static void register() {
     }

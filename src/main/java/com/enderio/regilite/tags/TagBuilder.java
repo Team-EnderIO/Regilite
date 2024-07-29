@@ -11,6 +11,7 @@ import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -37,6 +38,12 @@ public final class TagBuilder<T> {
 
     public TagBuilder<T> add(Supplier<? extends T> entry) {
         this.entries.add(entry);
+        return this;
+    }
+
+    @SafeVarargs
+    public final TagBuilder<T> add(Supplier<? extends T>... entries) {
+        this.entries.addAll(List.of(entries));
         return this;
     }
 

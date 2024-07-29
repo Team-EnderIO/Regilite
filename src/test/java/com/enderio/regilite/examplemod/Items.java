@@ -18,7 +18,7 @@ public class Items {
         .tags(ItemTags.WOOL)
         .translation("Test Example Item")
         .itemColor(() -> () -> ExampleColors.ITEM)
-        .finishHolder();
+        .asHolder();
 
     public static void register() {
     }

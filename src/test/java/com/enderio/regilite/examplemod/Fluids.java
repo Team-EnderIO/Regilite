@@ -5,28 +5,20 @@
 
 package com.enderio.regilite.examplemod;
 
-import com.enderio.regilite.holder.RegiliteFluid;
-import com.enderio.regilite.registry.FluidRegistry;
+import com.enderio.regilite.fluids.FluidTypeHolder;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.bus.api.IEventBus;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class Fluids {
-    private static final FluidRegistry FLUIDTYPES = ExampleMod.getRegilite().fluidRegistry();
-    private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID.key(), ExampleMod.MODID);
+    public static final FluidTypeHolder<FluidType> EXAMPLE_FLUID = ExampleMod.REGILITE.fluidTypes()
+            .create("example_fluid", FluidType.Properties.create())
+            .block(BlockBehaviour.Properties.ofFullCopy(Blocks.WATER))
+            .bucket()
+            .renderType(() -> RenderType::translucent)
+            .asHolder();
 
-    public static final RegiliteFluid<FluidType> EXAMPLE_FLUID = FLUIDTYPES.registerFluid("example_fluid", FluidType.Properties.create())
-            .createFluid(FLUIDS)
-            //.withBlock(BLOCKS, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER))
-            // TODO: rethink bucket as it needs a default model imo.
-            //.withBucket(ITEMS)
-            .withRenderType(() -> RenderType::translucent);
-
-    public static void register(IEventBus modEventBus) {
-        FLUIDTYPES.register(modEventBus);
-        FLUIDS.register(modEventBus);
+    public static void register() {
     }
 }
