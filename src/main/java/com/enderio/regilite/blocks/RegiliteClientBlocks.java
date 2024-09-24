@@ -21,8 +21,8 @@ public class RegiliteClientBlocks {
     @SubscribeEvent
     public void registerBlockColor(RegisterColorHandlersEvent.Block event) {
         regiliteBlocks.blockBuilders().forEach(blockBuilder -> {
-            if (blockBuilder.blockColor() != null) {
-                event.register(blockBuilder.blockColor().get().get(), blockBuilder.get());
+            if (blockBuilder.blockColorSupplier != null) {
+                event.register(blockBuilder.blockColorSupplier.get().get(), blockBuilder.get());
             }
         });
     }

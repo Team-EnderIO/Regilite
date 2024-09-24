@@ -27,7 +27,7 @@ public class ExampleBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-        return BlockEntities.EXAMPLE_BLOCKENTITY.create(p_153215_, p_153216_);
+        return BlockEntities.EXAMPLE_BLOCKENTITY.get().create(p_153215_, p_153216_);
     }
 
     @Override

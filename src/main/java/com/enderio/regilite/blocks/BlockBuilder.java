@@ -39,13 +39,13 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     private final RegiliteItems itemsModule;
 
     @Nullable
-    private BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
+    BiConsumer<RegiliteBlockLootProvider, T> lootTable = RegiliteBlockLootProvider::dropSelf;
 
     @Nullable
-    private BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
+    BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider = (prov, ctx) -> prov.simpleBlock(ctx.get());
 
     @Nullable
-    private Supplier<Supplier<BlockColor>> blockColorSupplier;
+    Supplier<Supplier<BlockColor>> blockColorSupplier;
 
     private final List<AttachedCapability<?, ?>> attachedCapabilityList = new ArrayList<>();
 
@@ -98,19 +98,9 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         return this;
     }
 
-    @ApiStatus.Internal
-    public BiConsumer<RegiliteBlockLootProvider, T> lootTable() {
-        return lootTable;
-    }
-
     public BlockBuilder<T> blockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
         this.blockStateProvider = blockStateProvider;
         return this;
-    }
-
-    @ApiStatus.Internal
-    public BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider() {
-        return blockStateProvider;
     }
 
     public BlockBuilder<T> blockColor(@Nullable Supplier<Supplier<BlockColor>> colorSupplier) {
@@ -118,18 +108,12 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         return this;
     }
 
-    @ApiStatus.Internal
-    public Supplier<Supplier<BlockColor>> blockColor() {
-        return blockColorSupplier;
-    }
-
     public <TCap, TContext> BlockBuilder<T> capability(BlockCapability<TCap, TContext> capability, IBlockCapabilityProvider<TCap, TContext> provider) {
         attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
         return this;
     }
 
-    @ApiStatus.Internal
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+    void attachCapabilities(RegisterCapabilitiesEvent event) {
         for (var attachedCapability : attachedCapabilityList) {
             attachedCapability.registerProvider(event, get());
         }

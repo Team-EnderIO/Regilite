@@ -5,11 +5,10 @@
 
 package com.enderio.regilite;
 
+import com.enderio.regilite.blockentities.RegiliteBlockEntities;
 import com.enderio.regilite.fluids.RegiliteFluidTypes;
 import com.enderio.regilite.utils.BundledDataProvider;
 import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.events.BlockEntityCapabilityEvents;
-import com.enderio.regilite.events.BlockEntityRendererEvents;
 import com.enderio.regilite.events.EntityRendererEvents;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.blocks.RegiliteBlocks;
@@ -17,7 +16,6 @@ import com.enderio.regilite.items.RegiliteItems;
 import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.loot.RegiliteLootTables;
 import com.enderio.regilite.tags.RegiliteTags;
-import com.enderio.regilite.registry.BlockEntityRegistry;
 import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -30,7 +28,6 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +48,7 @@ public class Regilite {
 
     private final RegiliteItems itemsModule;
     private final RegiliteBlocks blocksRegistry;
+    private final RegiliteBlockEntities blockEntityRegistry;
     private final RegiliteFluidTypes fluidTypesModule;
 
     private final RegiliteDataProvider dataProvider;
@@ -58,7 +56,7 @@ public class Regilite {
     private final ObjectList<RegiliteModuleDataGen> modulesWithDataGeneration = new ObjectArrayList<>();
     private final ObjectList<RegiliteModuleEvents> modulesWithEvents = new ObjectArrayList<>();
 
-    //private final DeferredRegister.DataComponents dataComponentsRegistry;
+    private final DeferredRegister.DataComponents dataComponentsRegistry;
 
     public Regilite(String modId) {
         this.modId = modId;
@@ -70,7 +68,10 @@ public class Regilite {
 
         this.itemsModule = registerModule(RegiliteItems.create(this));
         this.blocksRegistry = registerModule(RegiliteBlocks.create(this));
+        this.blockEntityRegistry = registerModule(RegiliteBlockEntities.create(this));
         this.fluidTypesModule = registerModule(RegiliteFluidTypes.create(this));
+
+        dataComponentsRegistry = DeferredRegister.createDataComponents(modId);
     }
 
     private <T> T registerModule(T module) {
@@ -105,12 +106,16 @@ public class Regilite {
         return blocksRegistry;
     }
 
+    public RegiliteBlockEntities blockEntities() {
+        return blockEntityRegistry;
+    }
+
     public RegiliteFluidTypes fluidTypes() {
         return fluidTypesModule;
     }
 
     public DeferredRegister.DataComponents dataComponents() {
-        throw new NotImplementedException();
+        return dataComponentsRegistry;
     }
 
     public RegiliteLootTables lootTables() {
@@ -119,6 +124,7 @@ public class Regilite {
 
     public void register(IEventBus modbus) {
         dataProvider.register(modbus);
+        dataComponentsRegistry.register(modbus);
 
         modbus.addListener(this::onGatherData);
 
@@ -126,11 +132,7 @@ public class Regilite {
             module.register(modbus);
         }
 
-        modbus.addListener(new BlockEntityCapabilityEvents(this)::registerCapabilities);
-
         if (FMLEnvironment.dist.isClient()) {
-            modbus.addListener(new BlockEntityRendererEvents(this)::registerBER);
-
             modbus.addListener(new EntityRendererEvents(this)::registerER);
 
             modbus.addListener(new ScreenEvents(this)::screenEvent);
@@ -145,10 +147,6 @@ public class Regilite {
         }
 
         event.getGenerator().addProvider(true, provider);
-    }
-
-    public BlockEntityRegistry blockEntityRegistry() {
-        return BlockEntityRegistry.create(this);
     }
 
     public EntityRegistry entityRegistry() {

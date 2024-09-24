@@ -25,7 +25,7 @@ public class RegiliteBlockStateProvider extends BlockStateProvider {
     }
 
     private <T extends Block> void registerState(BlockBuilder<T> blockBuilder) {
-        var blockStateProvider = blockBuilder.blockStateProvider();
+        var blockStateProvider = blockBuilder.blockStateProvider;
         if (blockStateProvider != null) {
             blockStateProvider.accept(this, new DataGenContext<>(blockBuilder.getId(), blockBuilder::get));
         }

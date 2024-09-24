@@ -6,16 +6,15 @@
 package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.examplemod.exampleclasses.ExampleBlockentity;
-import com.enderio.regilite.holder.RegiliteBlockEntity;
-import com.enderio.regilite.registry.BlockEntityRegistry;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class BlockEntities {
-    public static final BlockEntityRegistry BLOCK_ENTITIES = ExampleMod.getRegilite().blockEntityRegistry();
+    public static DeferredHolder<BlockEntityType<?>, BlockEntityType<ExampleBlockentity>> EXAMPLE_BLOCKENTITY = ExampleMod.REGILITE.blockEntities()
+            .create("example", ExampleBlockentity::new, Blocks.EXAMPLE_BLOCK)
+            .asHolder();
 
-    public static RegiliteBlockEntity<ExampleBlockentity> EXAMPLE_BLOCKENTITY = BLOCK_ENTITIES.registerBlockEntity("example", ExampleBlockentity::new, Blocks.EXAMPLE_BLOCK);
-
-    public static void register(IEventBus modEventBus) {
-        BLOCK_ENTITIES.register(modEventBus);
+    public static void register() {
     }
 }

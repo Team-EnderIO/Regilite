@@ -31,7 +31,7 @@ public class RegiliteBlockLootProvider extends BlockLootSubProvider {
                 return;
             }
 
-            var lootTable = blockBuilder.lootTable();
+            var lootTable = blockBuilder.lootTable;
             if (lootTable != null) {
                 processLootTable(lootTable, blockBuilder::get);
             }
