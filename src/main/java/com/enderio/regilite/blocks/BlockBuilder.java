@@ -47,7 +47,7 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
     @Nullable
     private Supplier<Supplier<BlockColor>> blockColorSupplier;
 
-    protected List<AttachedCapability<?, ?>> attachedCapabilityList = new ArrayList<>();
+    private final List<AttachedCapability<?, ?>> attachedCapabilityList = new ArrayList<>();
 
     public BlockBuilder(DeferredBlock<T> holder, RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule) {
         super(holder);
