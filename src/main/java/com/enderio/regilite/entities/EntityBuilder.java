@@ -1,6 +1,8 @@
 package com.enderio.regilite.entities;
 
 import com.enderio.regilite.RegiliteBuilder;
+import com.enderio.regilite.fluids.FluidTypeBuilder;
+import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.tags.RegiliteTags;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -19,14 +21,16 @@ import java.util.function.Supplier;
 
 public class EntityBuilder<T extends Entity> extends RegiliteBuilder<EntityBuilder<T>, EntityType<?>, EntityType<T>, DeferredHolder<EntityType<?>, EntityType<T>>> {
 
+    private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
 
     protected Supplier<Function<EntityRendererProvider.Context, EntityRenderer<? super T>>> rendererFactory;
 
     private final List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
-    protected EntityBuilder(DeferredHolder<EntityType<?>, EntityType<T>> holder, RegiliteTags tagsModule) {
+    protected EntityBuilder(DeferredHolder<EntityType<?>, EntityType<T>> holder, RegiliteLang langModule, RegiliteTags tagsModule) {
         super(holder);
+        this.langModule = langModule;
         this.tagsModule = tagsModule;
     }
 
@@ -38,6 +42,11 @@ public class EntityBuilder<T extends Entity> extends RegiliteBuilder<EntityBuild
     @SafeVarargs
     public final EntityBuilder<T> tags(TagKey<EntityType<?>>... tags) {
         tagsModule.entityTypes().addToTags(this::get, tags);
+        return this;
+    }
+
+    public EntityBuilder<T> translation(String translation) {
+        langModule.addEntity(this::get, translation);
         return this;
     }
 

@@ -61,6 +61,10 @@ public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegis
         return items.stream();
     }
 
+    public <T extends Item> ItemBuilder<T> create(String name, Function<Item.Properties, ? extends T> func) {
+        return create(name, () -> func.apply(new Item.Properties()));
+    }
+
     public <T extends Item> ItemBuilder<T> create(String name, Function<Item.Properties, ? extends T> func, Item.Properties props) {
         return create(name, () -> func.apply(props));
     }
