@@ -22,7 +22,6 @@ import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -90,11 +89,6 @@ public class ItemBuilder<T extends Item> extends RegiliteBuilder<ItemBuilder<T>,
         return this;
     }
 
-    @ApiStatus.Internal
-    public Object2ObjectMap<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTab.Output>> tabs() {
-        return tabs;
-    }
-
     public ItemBuilder<T> modelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
         this.modelProvider = modelProvider;
         return this;
@@ -110,8 +104,7 @@ public class ItemBuilder<T extends Item> extends RegiliteBuilder<ItemBuilder<T>,
         return this;
     }
 
-    @ApiStatus.Internal
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+    void attachCapabilities(RegisterCapabilitiesEvent event) {
         for (var attachedCapability : attachedCapabilityList) {
             attachedCapability.registerProvider(event, get());
         }

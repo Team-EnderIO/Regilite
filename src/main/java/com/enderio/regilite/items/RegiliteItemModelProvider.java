@@ -19,7 +19,6 @@ import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContai
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 
-import java.util.List;
 import java.util.Objects;
 
 public class RegiliteItemModelProvider extends ItemModelProvider {

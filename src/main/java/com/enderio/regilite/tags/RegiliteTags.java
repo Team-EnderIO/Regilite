@@ -81,16 +81,16 @@ public class RegiliteTags implements RegiliteModuleDataGen {
 
     private class TagProvider<T> extends IntrinsicHolderTagsProvider<T> {
 
-        private final RegistryTagBuilder<T> tags;
+        private final RegistryTagBuilder<T> tagBuilder;
 
-        public TagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper, RegistryTagBuilder<T> tags) {
-            super(output, tags.registry(), lookupProvider, tags::getKey, modId, existingFileHelper);
-            this.tags = tags;
+        public TagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper, RegistryTagBuilder<T> tagBuilder) {
+            super(output, tagBuilder.registry(), lookupProvider, tagBuilder.keyExtractor, modId, existingFileHelper);
+            this.tagBuilder = tagBuilder;
         }
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            for (var pair : tags.entrySet()) {
+            for (var pair : tagBuilder.tags.entrySet()) {
                 //noinspection unchecked
                 T[] items = (T[])pair.getValue().entries().map(Supplier::get).toArray();
                 tag(pair.getKey()).add(items);

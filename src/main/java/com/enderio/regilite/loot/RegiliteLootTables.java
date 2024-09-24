@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 // I don't think rich loot table support is something we need to provide, given I think its expressive enough in vanilla.
 public class RegiliteLootTables implements RegiliteModuleDataGen {
 
-    private ObjectList<Supplier<LootTableProvider.SubProviderEntry>> providerFactories = new ObjectArrayList<>();
+    private final ObjectList<Supplier<LootTableProvider.SubProviderEntry>> providerFactories = new ObjectArrayList<>();
 
     @ApiStatus.Internal
     public RegiliteLootTables() {

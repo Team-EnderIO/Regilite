@@ -11,7 +11,6 @@ import net.minecraft.data.DataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class NewRegiliteDataProvider implements DataProvider {
     private final String modId;

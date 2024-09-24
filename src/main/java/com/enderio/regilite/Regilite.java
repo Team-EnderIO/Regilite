@@ -6,18 +6,18 @@
 package com.enderio.regilite;
 
 import com.enderio.regilite.blockentities.RegiliteBlockEntities;
-import com.enderio.regilite.fluids.RegiliteFluidTypes;
-import com.enderio.regilite.utils.BundledDataProvider;
+import com.enderio.regilite.blocks.RegiliteBlocks;
 import com.enderio.regilite.data.RegiliteDataProvider;
 import com.enderio.regilite.events.EntityRendererEvents;
 import com.enderio.regilite.events.ScreenEvents;
-import com.enderio.regilite.blocks.RegiliteBlocks;
+import com.enderio.regilite.fluids.RegiliteFluidTypes;
 import com.enderio.regilite.items.RegiliteItems;
 import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.loot.RegiliteLootTables;
-import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
+import com.enderio.regilite.tags.RegiliteTags;
+import com.enderio.regilite.utils.BundledDataProvider;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.world.entity.EntityType;

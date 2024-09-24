@@ -126,7 +126,7 @@ public class RegiliteItems implements RegiliteRegistryModule<Item, DeferredRegis
 
     private void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         for (var item : items) {
-            var outputConsumer = item.tabs().get(event.getTabKey());
+            var outputConsumer = item.tabs.get(event.getTabKey());
             if (outputConsumer != null) {
                 outputConsumer.accept(event);
             }

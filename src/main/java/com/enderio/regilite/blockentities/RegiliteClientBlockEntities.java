@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-public class RegiliteClientBlockEntities {
+class RegiliteClientBlockEntities {
     private final RegiliteBlockEntities regiliteBlockEntities;
 
     public RegiliteClientBlockEntities(RegiliteBlockEntities regiliteBlockEntities) {

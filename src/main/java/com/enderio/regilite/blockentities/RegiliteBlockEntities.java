@@ -3,7 +3,6 @@ package com.enderio.regilite.blockentities;
 import com.enderio.regilite.Regilite;
 import com.enderio.regilite.RegiliteModuleEvents;
 import com.enderio.regilite.RegiliteRegistryModule;
-import com.enderio.regilite.blocks.RegiliteBlocks;
 import com.enderio.regilite.tags.RegiliteTags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;

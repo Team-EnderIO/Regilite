@@ -7,10 +7,8 @@ package com.enderio.regilite.blocks;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Internal
-public class RegiliteClientBlocks {
+class RegiliteClientBlocks {
     private final RegiliteBlocks regiliteBlocks;
 
     public RegiliteClientBlocks(RegiliteBlocks regiliteBlocks) {
