@@ -17,7 +17,7 @@ public class Fluids {
             .block(BlockBehaviour.Properties.ofFullCopy(Blocks.WATER))
             .bucket()
             .renderType(() -> RenderType::translucent)
-            .asHolder();
+            .finish();
 
     public static void register() {
     }

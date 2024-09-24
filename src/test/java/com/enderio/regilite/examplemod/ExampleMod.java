@@ -24,7 +24,7 @@ public class ExampleMod {
         CreativeTabs.register(modEventBus);
         Fluids.register();
         BlockEntities.register();
-        Menus.register(modEventBus);
+        Menus.register();
         REGILITE.register(modEventBus);
     }
 

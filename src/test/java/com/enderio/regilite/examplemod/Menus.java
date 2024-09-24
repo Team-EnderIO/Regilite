@@ -7,17 +7,14 @@ package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.examplemod.exampleclasses.ExampleMenu;
 import com.enderio.regilite.examplemod.exampleclasses.ExampleScreen;
-import com.enderio.regilite.holder.RegiliteMenu;
-import com.enderio.regilite.registry.MenuRegistry;
-import net.neoforged.bus.api.IEventBus;
+import net.minecraft.world.inventory.MenuType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class Menus {
 
-    private static final MenuRegistry MENUS = ExampleMod.getRegilite().menuRegistry();
+    public static final DeferredHolder<MenuType<?>, MenuType<ExampleMenu>> EXAMPLE_MENU = ExampleMod.REGILITE.menus()
+            .create("example", ExampleMenu::new, () -> ExampleScreen::new).finish();
 
-    public static final RegiliteMenu<ExampleMenu> EXAMPLE_MENU = MENUS.registerMenu("example", ExampleMenu::new, () -> ExampleScreen::new);
-
-    public static void register(IEventBus modbus) {
-        MENUS.register(modbus);
+    public static void register() {
     }
 }

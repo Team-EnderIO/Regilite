@@ -89,8 +89,8 @@ public class RegiliteFluidTypes implements RegiliteModuleEvents {
         for (var fluidType : fluids) {
             var renderType = fluidType.renderTypeSupplier.get().get();
             if (renderType != null) {
-                ItemBlockRenderTypes.setRenderLayer(fluidType.asHolder().flowingFluid(), renderType);
-                ItemBlockRenderTypes.setRenderLayer(fluidType.asHolder().sourceFluid(), renderType);
+                ItemBlockRenderTypes.setRenderLayer(fluidType.finish().flowingFluid(), renderType);
+                ItemBlockRenderTypes.setRenderLayer(fluidType.finish().sourceFluid(), renderType);
             }
         }
     }

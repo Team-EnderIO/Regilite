@@ -7,13 +7,12 @@ package com.enderio.regilite.examplemod;
 
 import com.enderio.regilite.examplemod.exampleclasses.ExampleBlockentity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class BlockEntities {
     public static DeferredHolder<BlockEntityType<?>, BlockEntityType<ExampleBlockentity>> EXAMPLE_BLOCKENTITY = ExampleMod.REGILITE.blockEntities()
             .create("example", ExampleBlockentity::new, Blocks.EXAMPLE_BLOCK)
-            .asHolder();
+            .finish();
 
     public static void register() {
     }

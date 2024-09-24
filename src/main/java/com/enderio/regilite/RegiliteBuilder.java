@@ -29,7 +29,7 @@ public abstract class RegiliteBuilder<B extends RegiliteBuilder<B, R, T, H>, R, 
      * This will allow all the builder data to be flushed after initialization.
      * @return The holder.
      */
-    public final H asHolder() {
+    public final H finish() {
         return holder;
     }
 

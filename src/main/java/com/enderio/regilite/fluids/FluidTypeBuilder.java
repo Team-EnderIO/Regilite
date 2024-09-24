@@ -97,7 +97,7 @@ public class FluidTypeBuilder<T extends FluidType> extends RegiliteBuilder<Fluid
         var bucket = itemsModule.create(getId().getPath() + "_bucket", () -> supplier.apply(holder::sourceFluid));
         bucket.modelProvider((prov, ctx) -> prov.bucketItem(ctx.get()));
         itemConfigure.accept(bucket);
-        holder.bucketHolder(bucket.asHolder());
+        holder.bucketHolder(bucket.finish());
         return this;
     }
 
@@ -118,7 +118,7 @@ public class FluidTypeBuilder<T extends FluidType> extends RegiliteBuilder<Fluid
     public <B extends LiquidBlock> FluidTypeBuilder<T> block(Function<Supplier<? extends BaseFlowingFluid>, B> supplier, Consumer<BlockBuilder<B>> blockConfigure) {
         var block = blocksModule.create(getId().getPath(), () -> supplier.apply(holder::flowingFluid));
         blockConfigure.accept(block);
-        holder.blockHolder(block.asHolder());
+        holder.blockHolder(block.finish());
         return this;
     }
 
