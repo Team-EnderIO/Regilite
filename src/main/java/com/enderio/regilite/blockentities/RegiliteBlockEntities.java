@@ -23,21 +23,19 @@ import java.util.function.Supplier;
 
 public class RegiliteBlockEntities implements RegiliteRegistryModule<BlockEntityType<?>, DeferredRegister<BlockEntityType<?>>>, RegiliteModuleEvents {
 
-    private final String modId;
     private final RegiliteTags tagsModule;
     private final DeferredRegister<BlockEntityType<?>> deferredRegister;
 
     final ObjectList<BlockEntityBuilder<?>> blockEntities = new ObjectArrayList<>();
 
-    public RegiliteBlockEntities(String modId, RegiliteTags tagsModule, DeferredRegister<BlockEntityType<?>> deferredRegister) {
-        this.modId = modId;
+    protected RegiliteBlockEntities(RegiliteTags tagsModule, DeferredRegister<BlockEntityType<?>> deferredRegister) {
         this.tagsModule = tagsModule;
         this.deferredRegister = deferredRegister;
     }
 
     @ApiStatus.Internal
     public static RegiliteBlockEntities create(Regilite regilite) {
-        return new RegiliteBlockEntities(regilite.modId(), regilite.tags(), DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, regilite.modId()));
+        return new RegiliteBlockEntities(regilite.tags(), DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, regilite.modId()));
     }
 
     @SafeVarargs
@@ -66,7 +64,7 @@ public class RegiliteBlockEntities implements RegiliteRegistryModule<BlockEntity
     }
 
     private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        blockEntities.forEach(blockBuilder -> blockBuilder.attachCapabilities(event));
+        blockEntities.forEach(blockEntityBuilder -> blockEntityBuilder.attachCapabilities(event));
     }
 
     @Override

@@ -7,7 +7,6 @@ package com.enderio.regilite.data;
 
 import com.enderio.regilite.Regilite;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -66,8 +65,6 @@ public class RegiliteDataProvider implements DataProvider {
         PackOutput packOutput = event.getGenerator().getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> registries = event.getLookupProvider();
-
-        this.subProviders.add(new RegiliteTagProvider<>(packOutput, Registries.BLOCK_ENTITY_TYPE, b -> b.builtInRegistryHolder().key(), registries, modid, existingFileHelper, regilite.getBlockEntities()));
 
         event.getGenerator().addProvider(true, this);
     }

@@ -8,21 +8,18 @@ package com.enderio.regilite;
 import com.enderio.regilite.blockentities.RegiliteBlockEntities;
 import com.enderio.regilite.blocks.RegiliteBlocks;
 import com.enderio.regilite.data.RegiliteDataProvider;
-import com.enderio.regilite.events.EntityRendererEvents;
+import com.enderio.regilite.entities.RegiliteEntities;
 import com.enderio.regilite.events.ScreenEvents;
 import com.enderio.regilite.fluids.RegiliteFluidTypes;
 import com.enderio.regilite.items.RegiliteItems;
 import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.loot.RegiliteLootTables;
-import com.enderio.regilite.registry.EntityRegistry;
 import com.enderio.regilite.registry.MenuRegistry;
 import com.enderio.regilite.tags.RegiliteTags;
 import com.enderio.regilite.utils.BundledDataProvider;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -37,8 +34,6 @@ public class Regilite {
 
     private final String modId;
 
-    private final List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> blockentities = new ArrayList<>();
-    private final List<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> entities = new ArrayList<>();
     private final List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> menus = new ArrayList<>();
 
     private final RegiliteLang langModule;
@@ -50,6 +45,7 @@ public class Regilite {
     private final RegiliteBlocks blocksRegistry;
     private final RegiliteBlockEntities blockEntityRegistry;
     private final RegiliteFluidTypes fluidTypesModule;
+    private final RegiliteEntities entitiesModule;
 
     private final RegiliteDataProvider dataProvider;
 
@@ -70,6 +66,7 @@ public class Regilite {
         this.blocksRegistry = registerModule(RegiliteBlocks.create(this));
         this.blockEntityRegistry = registerModule(RegiliteBlockEntities.create(this));
         this.fluidTypesModule = registerModule(RegiliteFluidTypes.create(this));
+        this.entitiesModule = registerModule(RegiliteEntities.create(this));
 
         dataComponentsRegistry = DeferredRegister.createDataComponents(modId);
     }
@@ -114,6 +111,10 @@ public class Regilite {
         return fluidTypesModule;
     }
 
+    public RegiliteEntities entities() {
+        return entitiesModule;
+    }
+
     public DeferredRegister.DataComponents dataComponents() {
         return dataComponentsRegistry;
     }
@@ -133,8 +134,6 @@ public class Regilite {
         }
 
         if (FMLEnvironment.dist.isClient()) {
-            modbus.addListener(new EntityRendererEvents(this)::registerER);
-
             modbus.addListener(new ScreenEvents(this)::screenEvent);
         }
     }
@@ -149,28 +148,8 @@ public class Regilite {
         event.getGenerator().addProvider(true, provider);
     }
 
-    public EntityRegistry entityRegistry() {
-        return EntityRegistry.create(this);
-    }
-
     public MenuRegistry menuRegistry() {
         return MenuRegistry.create(this);
-    }
-
-    public List<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> getBlockEntities() {
-        return blockentities;
-    }
-
-    public void addBlockEntities(Collection<DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>>> entries) {
-        this.blockentities.addAll(entries);
-    }
-
-    public List<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> getEntities() {
-        return entities;
-    }
-
-    public void addEntities(Collection<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> entries) {
-        this.entities.addAll(entries);
     }
 
     public List<DeferredHolder<MenuType<?>, ? extends MenuType<?>>> getMenus() {
