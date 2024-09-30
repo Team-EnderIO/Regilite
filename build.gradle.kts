@@ -107,8 +107,7 @@ publishing {
             artifactId = "regilite"
             version = version
 
-            artifact(tasks.getByName("jar"))
-            artifact(tasks.getByName("sourcesJar"))
+            from(components["java"])
 
             pom {
                 name.set("Regilite")
