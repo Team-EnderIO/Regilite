@@ -94,6 +94,11 @@ public class ItemBuilder<T extends Item> extends RegiliteBuilder<ItemBuilder<T>,
         return this;
     }
 
+    public ItemBuilder<T> noModel() {
+        this.modelProvider = (prov, ctx) -> {};
+        return this;
+    }
+
     public ItemBuilder<T> itemColor(Supplier<Supplier<ItemColor>> colorSupplier) {
         this.colorSupplier = colorSupplier;
         return this;
