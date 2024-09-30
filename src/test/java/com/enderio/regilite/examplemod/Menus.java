@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class Menus {
 
-    public static final DeferredHolder<MenuType<?>, MenuType<ExampleMenu>> EXAMPLE_MENU = ExampleMod.REGILITE.menus()
+    public static final DeferredHolder<MenuType<?>, MenuType<ExampleMenu>> EXAMPLE_MENU = ExampleMod.REGILITE.menuTypes()
             .create("example", ExampleMenu::new, () -> ExampleScreen::new).finish();
 
     public static void register() {

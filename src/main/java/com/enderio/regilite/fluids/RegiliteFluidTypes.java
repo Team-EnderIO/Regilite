@@ -51,7 +51,7 @@ public class RegiliteFluidTypes implements RegiliteModuleEvents {
 
     public FluidTypeBuilder<FluidType> create(String name, FluidType.Properties properties) {
         var holder = fluidTypeRegister.register(name, () -> new FluidType(properties));
-        var customHolder = FluidTypeHolder.from(holder);
+        var customHolder = DeferredFluidType.from(holder);
         var builder = new FluidTypeBuilder<>(customHolder, fluidRegister, langModule, tagsModule, itemsModule, blocksModule);
         fluids.add(builder);
         return builder;

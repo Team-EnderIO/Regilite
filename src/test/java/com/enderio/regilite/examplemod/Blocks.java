@@ -21,11 +21,11 @@ public class Blocks {
             .tags(BlockTags.MUSHROOM_GROW_BLOCK, BlockTags.LOGS)
             .translation("Test Example Block")
             .blockColor(() -> () -> ExampleColors.BLOCK)
-            .blockStateProvider((prov, ctx) -> prov.simpleBlock(ctx.get()))
+            .blockState((prov, ctx) -> prov.simpleBlock(ctx.get()))
             .lootTable(RegiliteBlockLootProvider::dropSelf)
             .createSimpleBlockItem(item -> item
                 .tags(ItemTags.PLANKS)
-                .modelProvider((prov, ctx) -> prov.basicItem(ctx.get()))
+                .model((prov, ctx) -> prov.basicItem(ctx.get()))
                 .tab(CreativeModeTabs.BUILDING_BLOCKS)
                 .tab(CreativeTabs.EXAMPLE_TAB.getKey())
             )

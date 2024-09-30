@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class BlockEntities {
-    public static DeferredHolder<BlockEntityType<?>, BlockEntityType<ExampleBlockentity>> EXAMPLE_BLOCKENTITY = ExampleMod.REGILITE.blockEntities()
+    public static DeferredHolder<BlockEntityType<?>, BlockEntityType<ExampleBlockentity>> EXAMPLE_BLOCKENTITY = ExampleMod.REGILITE.blockEntityTypes()
             .create("example", ExampleBlockentity::new, Blocks.EXAMPLE_BLOCK)
             .finish();
 

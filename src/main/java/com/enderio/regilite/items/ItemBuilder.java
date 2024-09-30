@@ -89,7 +89,7 @@ public class ItemBuilder<T extends Item> extends RegiliteBuilder<ItemBuilder<T>,
         return this;
     }
 
-    public ItemBuilder<T> modelProvider(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
+    public ItemBuilder<T> model(BiConsumer<RegiliteItemModelProvider, DataGenContext<Item, T>> modelProvider) {
         this.modelProvider = modelProvider;
         return this;
     }

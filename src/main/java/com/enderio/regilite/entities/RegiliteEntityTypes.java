@@ -21,32 +21,32 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
-public class RegiliteEntities implements RegiliteRegistryModule<EntityType<?>, DeferredRegister<EntityType<?>>>, RegiliteModuleEvents {
+public class RegiliteEntityTypes implements RegiliteRegistryModule<EntityType<?>, DeferredRegister<EntityType<?>>>, RegiliteModuleEvents {
 
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
     private final DeferredRegister<EntityType<?>> deferredRegister;
 
-    final ObjectList<EntityBuilder<?>> entities = new ObjectArrayList<>();
+    final ObjectList<EntityTypeBuilder<?>> entities = new ObjectArrayList<>();
 
-    protected RegiliteEntities(RegiliteLang langModule, RegiliteTags tagsModule, DeferredRegister<EntityType<?>> deferredRegister) {
+    protected RegiliteEntityTypes(RegiliteLang langModule, RegiliteTags tagsModule, DeferredRegister<EntityType<?>> deferredRegister) {
         this.langModule = langModule;
         this.tagsModule = tagsModule;
         this.deferredRegister = deferredRegister;
     }
 
     @ApiStatus.Internal
-    public static RegiliteEntities create(Regilite regilite) {
-        return new RegiliteEntities(regilite.lang(), regilite.tags(), DeferredRegister.create(Registries.ENTITY_TYPE, regilite.modId()));
+    public static RegiliteEntityTypes create(Regilite regilite) {
+        return new RegiliteEntityTypes(regilite.lang(), regilite.tags(), DeferredRegister.create(Registries.ENTITY_TYPE, regilite.modId()));
     }
 
-    public <T extends Entity> EntityBuilder<T> create(String name, EntityType.EntityFactory<T> factory, MobCategory category) {
+    public <T extends Entity> EntityTypeBuilder<T> create(String name, EntityType.EntityFactory<T> factory, MobCategory category) {
         return create(name, () -> EntityType.Builder.of(factory, category).build(name));
     }
 
-    public <T extends Entity> EntityBuilder<T> create(String name, Supplier<EntityType<T>> supplier) {
+    public <T extends Entity> EntityTypeBuilder<T> create(String name, Supplier<EntityType<T>> supplier) {
         var holder = deferredRegister.register(name, supplier);
-        var builder = new EntityBuilder<>(holder, langModule, tagsModule);
+        var builder = new EntityTypeBuilder<>(holder, langModule, tagsModule);
         entities.add(builder);
         return builder;
     }
@@ -57,12 +57,12 @@ public class RegiliteEntities implements RegiliteRegistryModule<EntityType<?>, D
         modEventBus.addListener(this::onRegisterCapabilities);
 
         if (FMLEnvironment.dist.isClient()) {
-            modEventBus.register(new RegiliteClientEntities(this));
+            modEventBus.register(new RegiliteClientEntityTypes(this));
         }
     }
 
     private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        entities.forEach(entityBuilder -> entityBuilder.attachCapabilities(event));
+        entities.forEach(entityTypeBuilder -> entityTypeBuilder.attachCapabilities(event));
     }
 
     @Override

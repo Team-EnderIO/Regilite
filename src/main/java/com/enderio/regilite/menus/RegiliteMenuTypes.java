@@ -15,46 +15,51 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.IContainerFactory;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
-public class RegiliteMenus implements RegiliteRegistryModule<MenuType<?>, DeferredRegister<MenuType<?>>>, RegiliteModuleEvents {
+public class RegiliteMenuTypes implements RegiliteRegistryModule<MenuType<?>, DeferredRegister<MenuType<?>>>, RegiliteModuleEvents {
 
     private final DeferredRegister<MenuType<?>> deferredRegister;
 
-    final ObjectList<MenuBuilder<?>> menus = new ObjectArrayList<>();
+    final ObjectList<MenuTypeBuilder<?>> menus = new ObjectArrayList<>();
 
-    protected RegiliteMenus(DeferredRegister<MenuType<?>> deferredRegister) {
+    protected RegiliteMenuTypes(DeferredRegister<MenuType<?>> deferredRegister) {
         this.deferredRegister = deferredRegister;
     }
 
     @ApiStatus.Internal
-    public static RegiliteMenus create(Regilite regilite) {
-        return new RegiliteMenus(DeferredRegister.create(Registries.MENU, regilite.modId()));
+    public static RegiliteMenuTypes create(Regilite regilite) {
+        return new RegiliteMenuTypes(DeferredRegister.create(Registries.MENU, regilite.modId()));
     }
 
-    public <T extends AbstractContainerMenu> MenuBuilder<T> create(String name, Supplier<MenuType<T>> menuSupplier) {
+    public <T extends AbstractContainerMenu> MenuTypeBuilder<T> create(String name, Supplier<MenuType<T>> menuSupplier) {
         var holder = deferredRegister.register(name, menuSupplier);
-        var builder = new MenuBuilder<>(holder);
+        var builder = new MenuTypeBuilder<>(holder);
         menus.add(builder);
         return builder;
     }
 
-    public <T extends AbstractContainerMenu> MenuBuilder<T> create(String name, IContainerFactory<T> factory) {
+    public <T extends AbstractContainerMenu> MenuTypeBuilder<T> create(String name, IContainerFactory<T> factory) {
         return create(name, () -> new MenuType<>(factory, FeatureFlags.DEFAULT_FLAGS));
     }
 
-    public <T extends AbstractContainerMenu> MenuBuilder<T> create(String name, IContainerFactory<T> factory, Supplier<IScreenConstructor<T, ? extends AbstractContainerScreen<T>>> screenFactory) {
+    public <T extends AbstractContainerMenu> MenuTypeBuilder<T> create(String name, IContainerFactory<T> factory, Supplier<IScreenConstructor<T, ? extends AbstractContainerScreen<T>>> screenFactory) {
         return create(name, factory).screen(screenFactory);
+    }
+
+    public <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> createOnly(String name, IContainerFactory<T> factory, Supplier<IScreenConstructor<T, ? extends AbstractContainerScreen<T>>> screenFactory) {
+        return create(name, factory, screenFactory).finish();
     }
 
     public void register(IEventBus modEventBus) {
         deferredRegister.register(modEventBus);
 
         if (FMLEnvironment.dist.isClient()) {
-            modEventBus.register(new RegiliteClientMenus(this));
+            modEventBus.register(new RegiliteClientMenuTypes(this));
         }
     }
 

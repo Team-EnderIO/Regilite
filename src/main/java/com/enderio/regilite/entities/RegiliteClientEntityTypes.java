@@ -4,21 +4,21 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-class RegiliteClientEntities {
-    private final RegiliteEntities regiliteEntities;
+class RegiliteClientEntityTypes {
+    private final RegiliteEntityTypes regiliteEntityTypes;
 
-    public RegiliteClientEntities(RegiliteEntities regiliteEntities) {
-        this.regiliteEntities = regiliteEntities;
+    public RegiliteClientEntityTypes(RegiliteEntityTypes regiliteEntityTypes) {
+        this.regiliteEntityTypes = regiliteEntityTypes;
     }
 
     @SubscribeEvent
     public void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        for (var entity : regiliteEntities.entities) {
+        for (var entity : regiliteEntityTypes.entities) {
             registerRenderer(event, entity);
         }
     }
 
-    private <T extends Entity> void registerRenderer(EntityRenderersEvent.RegisterRenderers event, EntityBuilder<T> builder) {
+    private <T extends Entity> void registerRenderer(EntityRenderersEvent.RegisterRenderers event, EntityTypeBuilder<T> builder) {
         if (builder.rendererFactory != null) {
             event.registerEntityRenderer(builder.get(), ctx -> builder.rendererFactory.get().apply(ctx));
         }

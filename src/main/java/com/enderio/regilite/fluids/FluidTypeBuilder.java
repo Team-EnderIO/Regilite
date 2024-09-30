@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-public class FluidTypeBuilder<T extends FluidType> extends RegiliteBuilder<FluidTypeBuilder<T>, FluidType, T, FluidTypeHolder<T>> {
+public class FluidTypeBuilder<T extends FluidType> extends RegiliteBuilder<FluidTypeBuilder<T>, FluidType, T, DeferredFluidType<T>> {
 
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
@@ -40,7 +40,7 @@ public class FluidTypeBuilder<T extends FluidType> extends RegiliteBuilder<Fluid
 
     protected Supplier<Supplier<RenderType>> renderTypeSupplier = () -> null;
 
-    protected FluidTypeBuilder(FluidTypeHolder<T> holder, DeferredRegister<Fluid> fluidRegister, RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule, RegiliteBlocks blocksModule) {
+    protected FluidTypeBuilder(DeferredFluidType<T> holder, DeferredRegister<Fluid> fluidRegister, RegiliteLang langModule, RegiliteTags tagsModule, RegiliteItems itemsModule, RegiliteBlocks blocksModule) {
         super(holder);
         this.langModule = langModule;
         this.tagsModule = tagsModule;
@@ -95,7 +95,7 @@ public class FluidTypeBuilder<T extends FluidType> extends RegiliteBuilder<Fluid
 
     public <I extends BucketItem> FluidTypeBuilder<T> customBucket(Function<Supplier<? extends FlowingFluid>, I> supplier, Consumer<ItemBuilder<I>> itemConfigure) {
         var bucket = itemsModule.create(getId().getPath() + "_bucket", () -> supplier.apply(holder::sourceFluid));
-        bucket.modelProvider((prov, ctx) -> prov.bucketItem(ctx.get()));
+        bucket.model((prov, ctx) -> prov.bucketItem(ctx.get()));
         itemConfigure.accept(bucket);
         holder.bucketHolder(bucket.finish());
         return this;

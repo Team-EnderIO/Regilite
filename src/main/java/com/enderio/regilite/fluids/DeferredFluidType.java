@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.Nullable;
 
-public class FluidTypeHolder<T extends FluidType> extends DeferredHolder<FluidType, T> {
+public class DeferredFluidType<T extends FluidType> extends DeferredHolder<FluidType, T> {
     @Nullable
     private DeferredHolder<Fluid, ? extends BaseFlowingFluid> flowingFluidHolder;
     @Nullable
@@ -27,12 +27,12 @@ public class FluidTypeHolder<T extends FluidType> extends DeferredHolder<FluidTy
     @Nullable
     private DeferredItem<? extends BucketItem> bucketHolder;
 
-    protected FluidTypeHolder(ResourceKey<FluidType> key) {
+    protected DeferredFluidType(ResourceKey<FluidType> key) {
         super(key);
     }
 
-    public static <T extends FluidType> FluidTypeHolder<T> from(DeferredHolder<FluidType, T> fluidTypeHolder) {
-        return new FluidTypeHolder<>(fluidTypeHolder.getKey());
+    static <T extends FluidType> DeferredFluidType<T> from(DeferredHolder<FluidType, T> fluidTypeHolder) {
+        return new DeferredFluidType<>(fluidTypeHolder.getKey());
     }
 
     public DeferredHolder<Fluid, ? extends BaseFlowingFluid> flowingFluidHolder() {

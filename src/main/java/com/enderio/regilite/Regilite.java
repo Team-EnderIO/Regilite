@@ -5,14 +5,14 @@
 
 package com.enderio.regilite;
 
-import com.enderio.regilite.blockentities.RegiliteBlockEntities;
+import com.enderio.regilite.blockentities.RegiliteBlockEntityTypes;
 import com.enderio.regilite.blocks.RegiliteBlocks;
-import com.enderio.regilite.entities.RegiliteEntities;
+import com.enderio.regilite.entities.RegiliteEntityTypes;
 import com.enderio.regilite.fluids.RegiliteFluidTypes;
 import com.enderio.regilite.items.RegiliteItems;
 import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.loot.RegiliteLootTables;
-import com.enderio.regilite.menus.RegiliteMenus;
+import com.enderio.regilite.menus.RegiliteMenuTypes;
 import com.enderio.regilite.tags.RegiliteTags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -24,12 +24,12 @@ public class Regilite extends AbstractRegilite {
 
     private final RegiliteLootTables lootTablesModule;
 
-    private final RegiliteItems itemsModule;
-    private final RegiliteBlocks blocksRegistry;
-    private final RegiliteBlockEntities blockEntityRegistry;
-    private final RegiliteFluidTypes fluidTypesModule;
-    private final RegiliteEntities entitiesModule;
-    private final RegiliteMenus regiliteMenus;
+    private final RegiliteItems items;
+    private final RegiliteBlocks blocks;
+    private final RegiliteBlockEntityTypes blockEntityTypes;
+    private final RegiliteFluidTypes fluidTypes;
+    private final RegiliteEntityTypes entityTypes;
+    private final RegiliteMenuTypes menuTypes;
 
     private final DeferredRegister.DataComponents dataComponentsRegistry;
 
@@ -40,12 +40,12 @@ public class Regilite extends AbstractRegilite {
         this.tagsModule = registerModule(new RegiliteTags(modId));
         this.lootTablesModule = registerModule(new RegiliteLootTables());
 
-        this.itemsModule = registerModule(RegiliteItems.create(this));
-        this.blocksRegistry = registerModule(RegiliteBlocks.create(this));
-        this.blockEntityRegistry = registerModule(RegiliteBlockEntities.create(this));
-        this.fluidTypesModule = registerModule(RegiliteFluidTypes.create(this));
-        this.entitiesModule = registerModule(RegiliteEntities.create(this));
-        this.regiliteMenus = registerModule(RegiliteMenus.create(this));
+        this.items = registerModule(RegiliteItems.create(this));
+        this.blocks = registerModule(RegiliteBlocks.create(this));
+        this.blockEntityTypes = registerModule(RegiliteBlockEntityTypes.create(this));
+        this.fluidTypes = registerModule(RegiliteFluidTypes.create(this));
+        this.entityTypes = registerModule(RegiliteEntityTypes.create(this));
+        this.menuTypes = registerModule(RegiliteMenuTypes.create(this));
 
         dataComponentsRegistry = DeferredRegister.createDataComponents(modId);
     }
@@ -59,27 +59,27 @@ public class Regilite extends AbstractRegilite {
     }
 
     public RegiliteItems items() {
-        return itemsModule;
+        return items;
     }
 
     public RegiliteBlocks blocks() {
-        return blocksRegistry;
+        return blocks;
     }
 
-    public RegiliteBlockEntities blockEntities() {
-        return blockEntityRegistry;
+    public RegiliteBlockEntityTypes blockEntityTypes() {
+        return blockEntityTypes;
     }
 
     public RegiliteFluidTypes fluidTypes() {
-        return fluidTypesModule;
+        return fluidTypes;
     }
 
-    public RegiliteEntities entities() {
-        return entitiesModule;
+    public RegiliteEntityTypes entityTypes() {
+        return entityTypes;
     }
 
-    public RegiliteMenus menus() {
-        return regiliteMenus;
+    public RegiliteMenuTypes menuTypes() {
+        return menuTypes;
     }
 
     public DeferredRegister.DataComponents dataComponents() {

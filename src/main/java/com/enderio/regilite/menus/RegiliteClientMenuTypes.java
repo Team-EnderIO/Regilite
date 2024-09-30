@@ -4,21 +4,21 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-public class RegiliteClientMenus {
-    private final RegiliteMenus regiliteMenus;
+public class RegiliteClientMenuTypes {
+    private final RegiliteMenuTypes regiliteMenuTypes;
 
-    public RegiliteClientMenus(RegiliteMenus regiliteMenus) {
-        this.regiliteMenus = regiliteMenus;
+    public RegiliteClientMenuTypes(RegiliteMenuTypes regiliteMenuTypes) {
+        this.regiliteMenuTypes = regiliteMenuTypes;
     }
 
     @SubscribeEvent
     public void registerScreens(RegisterMenuScreensEvent event) {
-        for (var menu : regiliteMenus.menus) {
+        for (var menu : regiliteMenuTypes.menus) {
             registerScreen(event, menu);
         }
     }
 
-    private <T extends AbstractContainerMenu> void registerScreen(RegisterMenuScreensEvent event, MenuBuilder<T> builder) {
+    private <T extends AbstractContainerMenu> void registerScreen(RegisterMenuScreensEvent event, MenuTypeBuilder<T> builder) {
         if (builder.screenConstructor != null) {
             event.register(builder.get(), builder.screenConstructor.get()::create);
         }

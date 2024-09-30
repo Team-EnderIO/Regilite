@@ -10,15 +10,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class BlockEntityBuilder<T extends BlockEntity>
-        extends RegiliteBuilder<BlockEntityBuilder<T>, BlockEntityType<?>, BlockEntityType<T>, DeferredHolder<BlockEntityType<?>, BlockEntityType<T>>> {
+public class BlockEntityTypeBuilder<T extends BlockEntity>
+        extends RegiliteBuilder<BlockEntityTypeBuilder<T>, BlockEntityType<?>, BlockEntityType<T>, DeferredBlockEntityType<T>> {
 
     private final RegiliteTags tagsModule;
 
@@ -26,28 +25,28 @@ public class BlockEntityBuilder<T extends BlockEntity>
 
     private final List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
-    protected BlockEntityBuilder(DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> holder, RegiliteTags tagsModule) {
+    protected BlockEntityTypeBuilder(DeferredBlockEntityType<T> holder, RegiliteTags tagsModule) {
         super(holder);
         this.tagsModule = tagsModule;
     }
 
-    public BlockEntityBuilder<T> tag(TagKey<BlockEntityType<?>> tag) {
+    public BlockEntityTypeBuilder<T> tag(TagKey<BlockEntityType<?>> tag) {
         tagsModule.blockEntityTypes().tag(tag).add(this::get);
         return this;
     }
 
     @SafeVarargs
-    public final BlockEntityBuilder<T> tags(TagKey<BlockEntityType<?>>... tags) {
+    public final BlockEntityTypeBuilder<T> tags(TagKey<BlockEntityType<?>>... tags) {
         tagsModule.blockEntityTypes().addToTags(this::get, tags);
         return this;
     }
 
-    public BlockEntityBuilder<T> renderer(Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> rendererFactory) {
+    public BlockEntityTypeBuilder<T> renderer(Supplier<Function<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> rendererFactory) {
         this.rendererFactory = rendererFactory;
         return this;
     }
 
-    public <TCap, TContext> BlockEntityBuilder<T> capability(BlockCapability<TCap, TContext> capability, ICapabilityProvider<? super T, TContext, TCap> provider) {
+    public <TCap, TContext> BlockEntityTypeBuilder<T> capability(BlockCapability<TCap, TContext> capability, ICapabilityProvider<? super T, TContext, TCap> provider) {
         attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
         return this;
     }

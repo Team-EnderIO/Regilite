@@ -75,18 +75,18 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
 
     // TODO: more permutations, based on those available in RegiliteItems.
     public BlockBuilder<T> createSimpleBlockItem() {
-        return withBlockItem(b -> new BlockItem(b, new Item.Properties()), i -> {});
+        return createBlockItem(b -> new BlockItem(b, new Item.Properties()), i -> {});
     }
 
     public BlockBuilder<T> createSimpleBlockItem(Consumer<ItemBuilder<BlockItem>> itemConfigure) {
-        return withBlockItem(b -> new BlockItem(b, new Item.Properties()), itemConfigure);
+        return createBlockItem(b -> new BlockItem(b, new Item.Properties()), itemConfigure);
     }
 
     public BlockBuilder<T> createSimpleBlockItem(Item.Properties properties, Consumer<ItemBuilder<BlockItem>> itemConfigure) {
-        return withBlockItem(b -> new BlockItem(b, properties), itemConfigure);
+        return createBlockItem(b -> new BlockItem(b, properties), itemConfigure);
     }
 
-    public <I extends BlockItem> BlockBuilder<T> withBlockItem(Function<T, I> function, Consumer<ItemBuilder<I>> itemConfigure) {
+    public <I extends BlockItem> BlockBuilder<T> createBlockItem(Function<T, I> function, Consumer<ItemBuilder<I>> itemConfigure) {
         var item = itemsModule.create(getId().getPath(), () -> function.apply(this.get()));
         itemConfigure.accept(item.removeTranslation());
         return this;
@@ -97,7 +97,7 @@ public final class BlockBuilder<T extends Block> extends RegiliteBuilder<BlockBu
         return this;
     }
 
-    public BlockBuilder<T> blockStateProvider(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
+    public BlockBuilder<T> blockState(BiConsumer<BlockStateProvider, DataGenContext<Block, T>> blockStateProvider) {
         this.blockStateProvider = blockStateProvider;
         return this;
     }

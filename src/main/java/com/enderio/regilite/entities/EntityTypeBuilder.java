@@ -1,7 +1,6 @@
 package com.enderio.regilite.entities;
 
 import com.enderio.regilite.RegiliteBuilder;
-import com.enderio.regilite.fluids.FluidTypeBuilder;
 import com.enderio.regilite.lang.RegiliteLang;
 import com.enderio.regilite.tags.RegiliteTags;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EntityBuilder<T extends Entity> extends RegiliteBuilder<EntityBuilder<T>, EntityType<?>, EntityType<T>, DeferredHolder<EntityType<?>, EntityType<T>>> {
+public class EntityTypeBuilder<T extends Entity> extends RegiliteBuilder<EntityTypeBuilder<T>, EntityType<?>, EntityType<T>, DeferredHolder<EntityType<?>, EntityType<T>>> {
 
     private final RegiliteLang langModule;
     private final RegiliteTags tagsModule;
@@ -28,34 +27,34 @@ public class EntityBuilder<T extends Entity> extends RegiliteBuilder<EntityBuild
 
     private final List<AttachedCapability<T, ?, ?>> attachedCapabilityList = new ArrayList<>();
 
-    protected EntityBuilder(DeferredHolder<EntityType<?>, EntityType<T>> holder, RegiliteLang langModule, RegiliteTags tagsModule) {
+    protected EntityTypeBuilder(DeferredHolder<EntityType<?>, EntityType<T>> holder, RegiliteLang langModule, RegiliteTags tagsModule) {
         super(holder);
         this.langModule = langModule;
         this.tagsModule = tagsModule;
     }
 
-    public EntityBuilder<T> tag(TagKey<EntityType<?>> tag) {
+    public EntityTypeBuilder<T> tag(TagKey<EntityType<?>> tag) {
         tagsModule.entityTypes().tag(tag).add(this::get);
         return this;
     }
 
     @SafeVarargs
-    public final EntityBuilder<T> tags(TagKey<EntityType<?>>... tags) {
+    public final EntityTypeBuilder<T> tags(TagKey<EntityType<?>>... tags) {
         tagsModule.entityTypes().addToTags(this::get, tags);
         return this;
     }
 
-    public EntityBuilder<T> translation(String translation) {
+    public EntityTypeBuilder<T> translation(String translation) {
         langModule.addEntity(this::get, translation);
         return this;
     }
 
-    public EntityBuilder<T> renderer(Supplier<Function<EntityRendererProvider.Context, EntityRenderer<? super T>>> rendererFactory) {
+    public EntityTypeBuilder<T> renderer(Supplier<Function<EntityRendererProvider.Context, EntityRenderer<? super T>>> rendererFactory) {
         this.rendererFactory = rendererFactory;
         return this;
     }
 
-    public <TCap, TContext> EntityBuilder<T> capability(EntityCapability<TCap, TContext> capability, ICapabilityProvider<? super T, TContext, TCap> provider) {
+    public <TCap, TContext> EntityTypeBuilder<T> capability(EntityCapability<TCap, TContext> capability, ICapabilityProvider<? super T, TContext, TCap> provider) {
         attachedCapabilityList.add(new AttachedCapability<>(capability, provider));
         return this;
     }

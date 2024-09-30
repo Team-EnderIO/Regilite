@@ -21,34 +21,34 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-public class RegiliteBlockEntities implements RegiliteRegistryModule<BlockEntityType<?>, DeferredRegister<BlockEntityType<?>>>, RegiliteModuleEvents {
+public class RegiliteBlockEntityTypes implements RegiliteRegistryModule<BlockEntityType<?>, DeferredRegister<BlockEntityType<?>>>, RegiliteModuleEvents {
 
     private final RegiliteTags tagsModule;
     private final DeferredRegister<BlockEntityType<?>> deferredRegister;
 
-    final ObjectList<BlockEntityBuilder<?>> blockEntities = new ObjectArrayList<>();
+    final ObjectList<BlockEntityTypeBuilder<?>> blockEntities = new ObjectArrayList<>();
 
-    protected RegiliteBlockEntities(RegiliteTags tagsModule, DeferredRegister<BlockEntityType<?>> deferredRegister) {
+    protected RegiliteBlockEntityTypes(RegiliteTags tagsModule, DeferredRegister<BlockEntityType<?>> deferredRegister) {
         this.tagsModule = tagsModule;
         this.deferredRegister = deferredRegister;
     }
 
     @ApiStatus.Internal
-    public static RegiliteBlockEntities create(Regilite regilite) {
-        return new RegiliteBlockEntities(regilite.tags(), DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, regilite.modId()));
+    public static RegiliteBlockEntityTypes create(Regilite regilite) {
+        return new RegiliteBlockEntityTypes(regilite.tags(), DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, regilite.modId()));
     }
 
     @SafeVarargs
-    public final <T extends BlockEntity> BlockEntityBuilder<T> create(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<? extends Block>... blocks) {
+    public final <T extends BlockEntity> BlockEntityTypeBuilder<T> create(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<? extends Block>... blocks) {
         return create(name, () -> {
             var blocksArray = Arrays.stream(blocks).map(Supplier::get).toList().toArray(new Block[]{});
             return BlockEntityType.Builder.of(factory, blocksArray).build(null);
         });
     }
 
-    public <T extends BlockEntity> BlockEntityBuilder<T> create(String name, Supplier<BlockEntityType<T>> supplier) {
-        var holder = deferredRegister.register(name, supplier);
-        var builder = new BlockEntityBuilder<>(holder, tagsModule);
+    public <T extends BlockEntity> BlockEntityTypeBuilder<T> create(String name, Supplier<BlockEntityType<T>> supplier) {
+        var holder = DeferredBlockEntityType.from(deferredRegister.register(name, supplier));
+        var builder = new BlockEntityTypeBuilder<>(holder, tagsModule);
         blockEntities.add(builder);
         return builder;
     }
@@ -59,12 +59,12 @@ public class RegiliteBlockEntities implements RegiliteRegistryModule<BlockEntity
         modEventBus.addListener(this::onRegisterCapabilities);
 
         if (FMLEnvironment.dist.isClient()) {
-            modEventBus.register(new RegiliteClientBlockEntities(this));
+            modEventBus.register(new RegiliteClientBlockEntityTypes(this));
         }
     }
 
     private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        blockEntities.forEach(blockEntityBuilder -> blockEntityBuilder.attachCapabilities(event));
+        blockEntities.forEach(blockEntityTypeBuilder -> blockEntityTypeBuilder.attachCapabilities(event));
     }
 
     @Override
