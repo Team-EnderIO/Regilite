@@ -1,6 +1,8 @@
 # Regilite
 A lightweight library helping with registration and data generation.
 
+> Note this Usage guide is now outdated. It will be updated at some point, but the best way to get started is to look at the code :)
+
 ## Usage
 This library provides helper functions and wrappers around for various Holders and registries. To be able to use 
 Regilite, you firstly create and register a `Regilite`-object. This object will do the actual registring data to events 
